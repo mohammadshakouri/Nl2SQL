@@ -11,6 +11,7 @@ import {
 import { baseUrl, GetCurrentTimeString, ServerEventType } from "./enums.js";
 import { i18n } from "./i18n.js";
 import { Delay } from "./Utilities.js";
+import { config } from "./config.js";
 
 const marked = new Marked({
 	gfm: true,
@@ -101,20 +102,67 @@ function SendUserMessage(text = GetUserTypedText()) {
 	isBotResponding = true;
 	DisableSendButton();
 	SendUserMessageToServer(text);
-	clearResultsContainer();
 }
 
-function SendUserMessageToServer(text: string) {
+async function SendUserMessageToServer(text: string) {
 	if (eventSource) eventSource.close();
 
-	const url = new URL(`${baseUrl}/ChatbotEventHandler.ashx`);
-	url.searchParams.append("action", ServerEventType.Message);
-	url.searchParams.append("threadId", threadId);
-	url.searchParams.append("message", text);
+	try {
+		const culture = document.documentElement.lang || "fa"; // Get language from HTML lang attribute
+		
+		const payload = {
+			threadId: threadId || "",
+			question: text,
+			schema_name: config.schemaName,
+			culture: culture,
+			validate_execution: config.validateExecution
+		};
 
-	eventSource = new EventSource(url);
-	eventSource.onmessage = (event) => HandleServerEvent(event);
-	eventSource.onerror = OnRespondError;
+		const response = await fetch(`${baseUrl}/nl2sql`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"api-key": config.apiKey,
+			},
+			body: JSON.stringify(payload),
+		});
+
+		if (!response.ok) {
+			throw new Error(`HTTP error! status: ${response.status}`);
+		}
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+
+		if (!reader) {
+			throw new Error("Response body is not readable");
+		}
+
+		let buffer = "";
+
+		while (true) {
+			const { done, value } = await reader.read();
+
+			if (done) break;
+
+			buffer += decoder.decode(value, { stream: true });
+			const lines = buffer.split("\n");
+			buffer = lines.pop() || "";
+
+			for (const line of lines) {
+				if (line.startsWith("data: ")) {
+					const data = line.substring(6);
+					if (data.trim()) {
+						const event = new MessageEvent("message", { data });
+						await HandleServerEvent(event);
+					}
+				}
+			}
+		}
+	} catch (error) {
+		console.error("Error sending message to server:", error);
+		OnRespondError();
+	}
 }
 
 function OnRespondError() {
@@ -125,6 +173,9 @@ function OnRespondError() {
 		eventSource.close();
 		eventSource = undefined;
 	}
+	// Reset state after error
+	isFirstToken = false;
+	lastMessageRunId = "";
 }
 
 async function HandleServerEvent(event: MessageEvent) {
@@ -155,7 +206,7 @@ async function HandleServerEvent(event: MessageEvent) {
 		isBotResponding = false;
 		isFirstToken = false;
 		lastMessageRunId = "";
-		eventSource.close();
+		// eventSource.close();
 		EnableSendButton();
 		latestAiMessageElement.classList.add("isComplete");
 	} else if (data.event === "on_error") {
@@ -165,7 +216,7 @@ async function HandleServerEvent(event: MessageEvent) {
 		messageTextElement.textContent += data.data;
 		lastMessageRunId = "";
 		isBotResponding = false;
-		eventSource.close();
+		// eventSource.close();
 	}
 }
 
@@ -197,47 +248,6 @@ async function AppendToLastAiMessageText(chunk: string) {
 	messageTextElement.querySelectorAll("a").forEach((a) => {
 		a.target = "_blank";
 		a.rel = "noopener noreferrer";
-	});
-}
-
-async function performSearch(query: string) {
-	try {
-		const url = new URL(`${baseUrl}/ChatbotEventHandler.ashx`);
-		url.searchParams.append("action", ServerEventType.Search);
-		url.searchParams.append("message", query);
-		const response = await fetch(url);
-		const data = await response.json();
-
-		clearResultsContainer();
-		const userInputText = GetUserTypedText();
-		if (!userInputText) {
-			return;
-		}
-		data.results.reverse().forEach((result) => {
-			suggestionListRef.current!.prepend(
-				<SuggestionListItem
-					text={result.question}
-					onClick={() => {
-						SendUserMessage(result.question);
-
-						setTimeout(() => {
-							ShrinkHeader();
-						}, 700);
-					}}
-				></SuggestionListItem>
-			);
-		});
-	} catch (error) {
-		console.error("Search failed:", error);
-		// suggestionListRef.current!.append(<li>پیشنهادی برای ارائه پیدا نشد</li>);
-	}
-}
-
-function clearResultsContainer() {
-	const items = document.querySelectorAll(".suggestionItem");
-	items.forEach((i) => {
-		i.classList.add("isRemovingSuggestionItem");
-		setTimeout(() => i.remove(), 900);
 	});
 }
 
@@ -360,17 +370,6 @@ const wrapper = (
 											ShrinkHeader();
 										}, 700);
 									}
-								}}
-								onInput={() => {
-									clearTimeout(timeout);
-									timeout = setTimeout(() => {
-										const query = GetUserTypedText();
-										if (String(query).length > 2) {
-											performSearch(query);
-										} else {
-											clearResultsContainer();
-										}
-									}, 500);
 								}}
 							></textarea>
 						</div>

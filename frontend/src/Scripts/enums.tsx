@@ -5,7 +5,7 @@ export const enum ServerEventType {
 }
 
 export const baseUrl =
-	import.meta.env.MODE === "development" ? "http://localhost:1000" : window.location.origin;
+	import.meta.env.MODE === "development" ? "http://localhost:80" : window.location.origin;
 
 export function GetCurrentTimeString() {
 	const now = new Date();
