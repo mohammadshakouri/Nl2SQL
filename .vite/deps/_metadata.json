@@ -1,0 +1,21 @@
+{
+  "hash": "8e13f05f",
+  "configHash": "2676ef47",
+  "lockfileHash": "e3b0c442",
+  "browserHash": "8fb21b2b",
+  "optimized": {
+    "lestin/jsx-runtime": {
+      "src": "../../frontend/node_modules/lestin/jsx-runtime/dist/jsx-runtime.mjs",
+      "file": "lestin_jsx-runtime.js",
+      "fileHash": "2f9e37c0",
+      "needsInterop": false
+    },
+    "marked": {
+      "src": "../../frontend/node_modules/marked/lib/marked.esm.js",
+      "file": "marked.js",
+      "fileHash": "55cacb57",
+      "needsInterop": false
+    }
+  },
+  "chunks": {}
+}

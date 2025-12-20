@@ -1,0 +1,876 @@
+| 
+Send the engineer's full details, including name and surname, national code, mobile number, and employment license code, to the province's support email address.
+| 
+Natural/legal entities who are authorized to submit architectural drawings to building permit issuing authorities can complete the form... and send it to the support email.
+| 
+To fix this problem, clear your browser's "cache" and "cookies". Update your browser to the latest version. If the error persists, try using a different browser.
+| 
+Search for your unique code on the simacsupport.ir website in the track your edit request section.
+| 
+Go to your account panel and click on the Modify Cart option. If the Modify Cart option is disabled, after 72 hours, send your SIMAK account information along with a bank statement printout to the province's support email.
+| 
+The calculated area value is based on the width of the passage entered in the Brookfield page. If the entered value is different, return the file to that step for correction.
+| 
+The error "Your access to the database is blocked" is due to one or more of the following reasons: 1- The system address is incorrect. The correct address was sent in the SMS containing the password. 2- You have selected the wrong login panel (users or engineers). Use the engineers panel only if you are a supervising engineer. 3- You do not have access to the system. In this case, you need to complete form number ---- and send it to the provincial SIMAC support office via official email.
+| 
+The system displays the error "User ID and/or password or one-time code is not valid, please try again" due to incorrect user ID or password entry. In this case, you need to make sure the Caps Lock button is on, the keyboard language is set to EN, and the user ID (national number) is correct and try again. If the problem persists, get the one-time code again.
+| 
+The system displays the error "Contact the system administrator" due to incorrect password entry exceeding the allowed limit. You need to complete form number ---- and send it to the provincial support office via official email.
+| 
+To apply for cooperation with the SIMAK project, you need to complete the online form -----. The provincial office will inform you of the next steps.
+| 
+To join SIMAC users, you need to contact SIMAC's head office fax number or email Info@simac.ir .
+| 
+Engineers who are authorized to announce the start of construction operations/possible property violations should, in order to receive the relevant access, authenticate themselves on the first page of the system and send their identity details to the provincial support email.
+| 
+To check the error "Due to an error in the calculations, there is no possibility to save", send the unique code, the income row, and the error phrase displayed in that row to the province's support email.
+| 
+To resolve the error "The number of sessions exceeds the allowed limit", send your national code to the province's support email.
+| 
+Send documents related to changes in toll regulations to the support email in a request with the letterhead, stamp, and signature of the issuing authority.
+| 
+To receive access to register the field/form a file in SIMAC, complete the form... and send it to the support email along with the necessary documents.
+| 
+You need to enter the map drawing menu and enter the unique file number in the search option and click the search option. The unique map will be displayed to you.
+| 
+You need to draw the area from the northwest of the property and clockwise.
+| 
+The correct way to search for the engineer's details in the draft license is as follows: "Last name [space]/[space]First name [space]/[space]License number". If no item is found for selection, the details of the desired engineer must be entered into the system. To enter the engineer's information, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+Mapping documentation during drawing includes a list of coordinates in txt, xlsx format, a mapping statement in pdf format, and a map file prepared in pdf or dwg format.
+| 
+Any correspondence (inquiry/inquiry response) can be deleted as long as it is in the draft stage. Once the correspondence has been signed and sent to the recipient, it cannot be deleted under any circumstances.
+| 
+If you want to select the prepared map on the map page, you can use the shp or kml file.
+| 
+Please send your request in writing along with a scan of your national ID to the provincial support email.
+| 
+To introduce a new user and gain access to the SIMAC system, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+Go to the home page of the system and verify your identity details with your new mobile number through the Heda authentication system link.
+| 
+To obtain a new user and access to the SIMAK system, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To activate access to the new village area for the technical expert, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+Make sure that the system URL address in your internet browser toolbar is correct and that it is the provincial system address. If you are a municipality/district/service office/surveyor user, you must log in to the system from the users section. Only supervising engineers must log in to the system from the engineers section. If you are a citizen (owner or beneficiary of a property file), you must log in to the system from the citizens section. Be careful when entering your user ID, password, and security numbers. The password must be in English. Make sure that your computer system language is Persian or English. The password contains lowercase and uppercase English letters. When entering your password, pay attention to whether the caps lock key is on or off. If you still have problems logging in to the system, your information as a user in the system may not be defined or the necessary access rights may not be assigned to you, in which case you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To recover your password, click on one of the options "I forgot my password" or "Get password" on the login page. On the page that opens, you need to enter your national ID number and mobile phone number registered in the Heda system in the User ID and Mobile Phone fields, respectively.
+| 
+When you first log in to the system, click on the "Get Password" link. On the page that opens, enter your national ID and mobile phone number registered in the Heda system in the User ID and Mobile Phone fields, respectively.
+| 
+The error "No file registered in your name" is displayed for supervising engineers who have not been issued a construction permit in their name in the system. If you have an active supervision file, the file owner needs to file a "Permit Amendment" request.
+| 
+The system displays the error "Number of sessions exceeded the allowed limit" because your account is open on other devices and browsers. To resolve the issue, you need to log out of your account on other devices and browsers. If the issue persists, contact the provincial SIMAC support office.
+| 
+To fix the error "Your identity has not been verified, please authenticate from the Heda system section", authenticate using the "Heda Authentication System" link on the login page.
+| 
+Before logging into the system, you need to either select the Heda Authentication System from the Useful Links menu, the Heda Authentication System submenu, or on the users page, under the login button, and enter the Heda Authentication System link. A window will open in which you can enter your personal information, including your national ID number, name, surname, date of birth, day/month/year, and mobile phone number that is in your name in the telecommunications system, and enter the security code. After that, a 6-digit code will be sent to your phone number. Enter it in the fields of the window that is displayed to you. By performing these steps, you will encounter the message Dear user, authentication was successful and you can log into the SIMAK system.
+| 
+After the map order, the file is placed in the mayor/district/district manager's folder for approval or rejection. They must select the map order submenu from the signature menu and, after searching and viewing, approve or reject the desired file. If the map is approved, the file is visible in the map menu, map approval submenu. If it is rejected, the file is in the map menu, map order submenu.
+| 
+The error *Your access to the database is blocked* could be due to incorrect user ID and password. To reactivate access, contact the provincial office support and provide your national ID number.  The error "Your access to the database is blocked" can occur for one of the following reasons: 1. Error in entering the system URL address in the Internet browser bar: Make sure that the system URL address in your Internet browser bar is correct and that it is the provincial system address. 2. Wrongly entering the user ID and password more than three times: The user ID is your national number. The password is a combination of English numbers and letters. When entering the password, make sure that the language of your computer system is English and that the caps lock key is on or off to enter lowercase and uppercase English letters. 3. Wrong selection of the login panel: Note that users of municipalities/districts/service offices and surveyors must enter the system from the users section. Only supervising engineers can enter the system from the engineers section and citizens from the citizens section. 4. Failure to define a user or access authority in the system: Your user or access authority needs to be defined in the system. To investigate the problem, you need to complete form number .... and send it to the email address of the provincial support office.
+| 
+The error "User ID, password or one-time password is not valid" can occur for one of the following reasons: 1. Error in entering the system URL address in the Internet browser bar: Make sure that the system URL address in your Internet browser bar is correct and that the system address is provincial. . 2. Incorrect entry of user ID and password: The user ID is your national number. The password is a combination of English numbers and letters. When entering the password, make sure that the language of your computer system is English and that the caps lock key is on or off to enter lowercase and uppercase English letters. 3. Incorrect selection of the login panel: Note that users of municipalities/districts/service offices and surveyors must enter the system from the users section. Only supervising engineers can enter the system from the engineers section and citizens from the citizens section. 4. Password expiration: If you have received a temporary password, its validity period may have expired. From the password retrieval link, receive a new password again and enter the password in the system before its validity period expires. If you are still having trouble logging into the system, you need to complete form number .... and send it to the email address of the provincial support office.
+| 
+To receive a new password, click on the "I forgot my password" link on the first page of the system login and enter your national ID and mobile phone number, and a temporary password will be sent to you by SMS. After logging in with the temporary password, you can change your password. Please note that if you are a citizen, log in to the system from the citizens panel, if you are a supervising engineer, from the engineers panel, and otherwise from the users panel.
+| 
+The message "User ID and mobile phone number do not match" could be because the mobile phone number entered when receiving the password is different from the number registered in the system, in which case the information needs to be edited. To edit your personal information, you can click on the "Huda Authentication System" link on the home page of the SIMAC system from the Useful Links section and update your information in this system by entering your identity information and correct mobile phone number. Note that the mobile phone number must match the national number and be in the person's name. After authenticating in the Huda system, you can again receive your temporary password via SMS from the "Get Password" link.
+| 
+To check the error that occurred, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+The number of active sessions of your user in the system is too high. Please note that after finishing work in the system, be sure to click the exit button. To resolve the problem, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+No, the wallet charge is related to the user group, and any amount charged is specific to that office, and a fee is deducted from it based on the filing of the case.
+| 
+Any file that is returned for the same review can be displayed in the review program (to identify the reviewer). In this program, either the same reviewer or a new reviewer is selected and saved. After that, the file can be viewed in the same reviewer's folder that was selected in the review.
+| 
+It is necessary to thoroughly examine the displayed unique number and ask the applicant about ownership, property address, property map, and purchase and sale chain. If the unique number is for the applicant, the location must be determined with the mentioned area code, unique number, otherwise you must get a new unique number for the applicant.
+| 
+The full information of the supervising engineer (name, surname, national code, contact number, and engineer's employment license number) needs to be emailed to the provincial support office in the form of an official letter from the Building Engineering System Organization or the Kardan System, or the confirmation letter from the Building Engineering System Organization or the Kardan System stating that the supervising engineer is a member should be attached to the letter from the relevant municipality or village and emailed to the provincial support office. Second Edition: To introduce the supervising engineer, you need to complete form number ... and send it to the provincial support office.
+| 
+You need to send your request to the support office email stating your first and last name, the county area under your responsibility, the name of the region where the property is located, and a photo of the error. The problem will be resolved by assigning the desired area to your area of ​​responsibility (of course, if the area is in the county area under your responsibility). Second edition: To control the areas under your responsibility, you need to complete form number .... and send it to the provincial support office.
+| 
+You must send your request along with your national code and a photo of the error to the provincial SIMAC support office. This message is displayed due to entering the wrong password more than 3 times when logging into the system (access to the Azadsazy citizens program and the problem is resolved). Second edition: This message is displayed due to entering the wrong password more than 3 times when logging into the system. To resolve the problem, you need to complete form number .... and send it to the provincial support office's email address .....
+| 
+The limit for sending one-time passwords is 3 times per day. It should be noted that in some cases, due to network disruptions, sending SMS messages may be delayed. In this case, you need to request one-time passwords at appropriate intervals.
+| 
+The error "The drawing area overlaps with other areas. If you are sure of the accuracy of the surveyed area, draw it in layer F" indicates the presence of unauthorized interference between one of the adjacent areas and the area currently being drawn. Therefore, if you are sure of the accuracy of the map and the accuracy of the office operations, you need to email the ---- form to the City and District Office, attaching the documents mentioned in it, to enable the registration of the Property Map Management (MENA) request.
+| 
+The error "You are not authorized to plot outside the authorized organizational area" is due to the coordinates of the parcel being plotted being outside the area in which you are authorized to operate. If you are sure of the accuracy of the mapping and the location of the parcel within the authorized area, you need to send the coordinates file, survey form number 5, your username and password as an attachment to the support form to the support office via an official confirmed email to fix the error.
+| 
+Please send your request in writing on the letterhead of the village/district/municipality with the bank name on it to the provincial support email.
+| 
+Please send the toll booklet for the year the violation occurred to the support email.
+| 
+To check and fix the error, send your user ID, password, and unique code to the province's support email.
+| 
+You must select the Location Map option in the Sketch Type field in the Drafting License program.
+| 
+An official letter from the district/municipality needs to be sent to the provincial support office, stating the account number of the income rows, the bank name, and the branch name, separately for each income row.  To introduce/change the account number, you need to complete form number .... and send it to the provincial support office.
+| 
+You need to send your request, stating the unique property number and a photo of the geographic map, to the provincial support office's email address: .....
+| 
+An official letter from the municipality stating the user's full details (name, surname, national ID number, contact number, and date of birth day/month/year) and the user's access area forms with the mayor's seal and signature need to be sent to the provincial support office (after necessary coordination regarding training and testing). Authentication is performed in the Heda system and access is granted to the new user in SIMAK.  To introduce a new user, you need to complete forms numbered .... and .... and send them to the provincial support office.
+| 
+To register an electronic signature in correspondence, one of the following two steps needs to be taken: 1- A user who is authorized to sign and send correspondence should go to the support office with a valid ID card. 2- Send a scan of your signature with the official letterhead, identity information, seal, and signature to the province's support email.
+| 
+You must send an official letter from the service office introducing the user who wants to delete the document, their contact number, the document number uploaded to the system, and the reason for its deletion to the SIMAC support office (after reviewing the support office and coordinating with the introduced user, the mission of deleting the document is assigned to them on a limited basis, and after deleting the document, the mission is removed again). Second edition: To delete a document from a file, you need to complete form number .... and send it to the provincial support office email address .......
+| 
+The mobile number registered by the surveyor is different from the beneficiary's mobile number. The surveyor needs to enter the correct mobile number once again from the SMS sending option.
+| 
+To delete the area, if a unique code is not assigned, use the map deletion program. If a unique code is assigned, you need to email the form ---- with the documents mentioned in it to the city and county office to enable the registration of the property map management request (MENA). The map must be deactivated and a new map drawn. If no file is attached/allocated to the drawn area, you can delete the drawn area from the "Map deletion" program. Otherwise, the "MENA" process must be followed.
+| 
+The test link will not be sent for the following reasons: 1- The user's email is incorrect or duplicated. 2- The user has received the test link twice this year.
+| 
+The error "Applicant information not registered" is displayed due to the applicant field not being completed in the applicant error form program. To fix the error, the applicant information needs to be completed and saved. Note that if the applicant is the owner, select the beneficiary option, otherwise select the representative/lawyer national ID option and complete the applicant information.
+| 
+The error "Unique number 11111111111 is waiting to load the error form" is due to the error form not loading. The action taken on the last file is required to load the error form of the said file.
+| 
+The warning window "There is another file at this location" appears for one of the following reasons. One - The property is an apartment and a unique code has been obtained for other units. In this case, you must click the Create File option after making sure that there is no unique code for the desired unit. Two - A unique code has been obtained for adjacent areas. In this case, use the Select Location option to make sure that there is no unique code.
+| 
+If permission is not issued after uploading the wrong document, only the user who inserted the document can deactivate the wrong document using the edit option built into the document archive program.
+| 
+To assign new access to a user, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To deactivate a user, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To change the user position and access level, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To upload a new village area to the system, you need to complete form number ... and send it along with the approved village guide plan file to the email address of the provincial support office.
+| 
+To determine the location and the possibility of filing a case, you need to complete form number ... and send it along with the documents to the email address of the provincial support office.
+| 
+To check, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To make changes to income rows, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To introduce/change toll slips and income rows, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To enter the transaction value book information into the system, you need to complete form number ... and send it along with the latest approved transaction value book to the email address of the provincial support office.
+| 
+The user filing the case after his last action in the property identification document, which includes editing dimensions, changing the beneficiary or the property address, and also in the case of archiving a new document, is required to reload the error correction form and confirm the payment.
+| 
+Yes, if the user has the mission to delete correspondence, it is possible to delete correspondence before signing and sending it to the recipient(s).
+| 
+To create a signing and sending mission, the user's details must be sent to the support office's email in the form of an official letter with the seal and signature of the highest executive authority.
+| 
+The file is in the municipality/village layer. To determine the location, the owner must be guided by the counter user to map and draw in the g layer and determine the location. To determine the location of files that are in the municipality/village layer, the owner must be guided by the counter user to map and draw in the g layer and finally determine the location.
+| 
+Yes, if it is necessary to attach an expert report or any other documents when responding to an inquiry or creating correspondence, it is possible to do so in the form of a PDF file.
+| 
+If you do not see the query, the user's access range needs to be checked by the support office. Contact the support office to resolve the problem.
+| 
+When you encounter this message, the unique code has already been deactivated due to separation and is in a suspended state. To remove the suspension, the owner must send his request to the support office email and the suspension will be removed by the office expert after the necessary checks.
+| 
+To edit a query response that was sent by mistake, search for the desired unique code in the sent section, then select the row and click on the follower correspondence.
+| 
+To review and apply changes to the village boundary, send the updated guide plan to the support email address.
+| 
+To check the area of ​​occurrence of the property, send the unique code along with the Housing Foundation inquiry to the support email address.
+| 
+Your access to Layer G has been suspended. To remove the restriction on edit requests, complete your incomplete arena.
+| 
+An official letter from the district office regarding the name of the village and the change in the area of ​​its master plan, with an attached pdf file of the area, needs to be sent to the province's SIMAC support email. Second edition: The letter revising the master plan and its pdf file need to be sent by the district office to the province's SIMAC support office.
+| 
+You need to search for the file in the property review and view the request through the detailed review menu. Any user who is selected as a review agent in the request registration and has the review mission can view the file in the same review program and enter information.
+| 
+The applicant needs to be directed to the Kerman Technical Office at 32477414 - 32475040 - 32453662 (after sending the unique number, area code and documents proving ownership by the applicant). The application for the transfer of the area for the applicant to register and inquire about the possibility of determining the location of the property will be sent to the licensing authority. After the licensing authority approves the file, the location will be determined by the City and Country Office and you will be contacted again to update the file information and obtain a new error form. Second edition: The applicant needs to be directed to the Kerman Technical Office at 32477414 - 32475040 - 32453662
+| 
+To check "An unknown error has occurred", you need to email your account information, along with a screenshot of the computer screen when the error occurred and the relevant user's contact number, to the SIMAC provincial support office.
+| 
+A request for the abstraction of the area, stating the new unique number and a complete explanation of the reason for the abstraction of the area, must be sent to the email of the SIMAC support office with an official letter attached from the service office. Second edition: To abstract the area, you need to complete form number .... and send it to the email of the provincial support office at .......
+| 
+In the useful links section of the province's SIMAC website, from the authenticity menu, by entering the scope and license number, information about the issued license can be viewed.
+| 
+You have an open file to save descriptive information. Go to the error-detection form menu and search for the declaration code and complete the file.
+| 
+The error "Application file is in progress!" is because the previous application for the file has not been successful. In order to be able to register the application, the previous application must be successful or rejected by the issuing authority.
+| 
+If you enter incorrect identity information, you need to first register in the Heda authentication system and if the problem persists, send a picture of your national ID card attached to the support form for correction via a confirmed email to the provincial office.
+| 
+If a duplicate map property identification card is needed, the information should be sent to the provincial support office via an official, confirmed email, including all the codes created for that file.
+| 
+To fix the error "The mobile phone number does not match the number entered by the surveyor", after ensuring that the correct option is selected for the surveyor field on the map property identification page, refer the owner to the surveyor to correct the mobile phone number.
+| 
+For inherited properties, the identity documents of all heirs listed in the inheritance register need to be uploaded and the heirs need to sign the error form. Also, if one of all the heirs has a power of attorney, he can file the case.
+| 
+No. The entrance address to the Simak Monastery is different for each province.
+| 
+No, after obtaining access to the system, a token must be prepared and activated by the relevant user.
+| 
+Purchase the token from the relevant centers, then register your signature certificate, and then submit a token activation request by visiting a SIMAK user in your city.
+| 
+No, currently, this system is only active in the city of Ahvaz. To send reports electronically, this system needs to be active in the municipality of the city of Mezkoz. In municipalities and villages where construction permits are issued using SIMAC, it is also possible to send reports from supervising engineers using SIMAC.
+| 
+The relevant site address was entered incorrectly, please check the site in question.
+| 
+The “There is another file at this location” window and the announcement of the existence of a file on a plot can be for the following reasons: 1- The unique number belongs to the owner’s desired file: The unique number of the file is announced in the display window. Search for it in the property review and match its file information with the desired file. If the information is the same, the announced unique number belongs to the owner’s desired file and there is no need to create a new file and unique number. 2- The plot belongs to an apartment property: In this case, the unique number shown is for the units of an apartment property. In the display window, select the Create file option and receive a new unique number for the file. 3- The plot belongs to a wasteland and no file has been created in this plot yet: In this case, check the location of the plot with neighboring plots. If it has common sides and coordinate points with another area, the unique number can belong to the adjacent property area, because the file information of the adjacent property area will also be displayed on the new property area due to the existence of common sides and coordinates. In this case, select the Create File option and receive a new unique number for the file.
+| 
+To check, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To change your password, log in to the system with your password. At the bottom of the page, select Change Password. A page will open. Then, enter the current password, new password, and the numbers in the box and click the Save button.
+| 
+To investigate the error "It is not possible to perform database-related operations.", you need to email your account information, along with a screenshot of the computer screen when the error occurred, and the relevant user's contact number, to the provincial SIMAC support office.
+| 
+You need to send your request to the SIMAC support office with your national ID number and a photo of the error. Second edition: The reason for this message is that you or your user are logged in with multiple systems. You need to log out of the remaining systems and log in again with one system. If you still encounter the above message, send your request to the SIMAC support office with your national ID number and a photo of the error.
+| 
+You should talk to the applicant about the contact number that he/she gave to the surveyor when drawing the map of his/her property and the area code that was sent to him/her by SMS. Record the same contact number in the applicant's file. If the surveyor has recorded the number incorrectly, the applicant should follow up with the surveyor to correct the contact number. After correction, go to your office and continue the file creation process. Second edition: A correct contact number must be recorded from the applicant in the map drawing and file creation. In case of a discrepancy in the contact number, it is necessary to send your request to the SIMAC support office, stating the area code and the applicant's contact number.
+| 
+An official letter stating the user's first and last name and national ID number, along with an internal order stating their new address, needs to be sent to the SIMAC support office. Second edition: To change the user's position, you need to complete form number .... and send it to the provincial support office's email address .......
+| 
+The ability to edit the license validity period is available in the License Drafting program, in the Validity Period field. You can enter the validity period in this field and the entered period will be displayed in the license output text.
+| 
+To complete the account charging process, you can click on the shopping cart modification option from the shopping cart section to apply the charging amount to your SIMAK account. If the shopping cart modification option is not active for you, complete the form number ... and send it to the email address of the provincial support office.
+| 
+The "sign in" window is displayed when the user changes his/her internet connection after logging into the system and on the geographical infrastructure page, and changing the user's IP will be considered as logging back into the system. There is no need to enter a password. Log out of the system once. Connect to a specific internet and log back into the system without changing your internet.
+| 
+To view urban development fees and their payment slips, use the Urban Development Fees Review/Property Review/Urban Development Fees page. Also, to view renovation fees and their payment slips, use the Property Review/Property Review/Renovation Fees page.
+| 
+Use the Review/Property Review/Mailbox app to view existing correspondence for a unique code.
+| 
+To change the name of the owner of an issued license, you can use the license replacement request.
+| 
+To record information about the change of use, complete the detailed plan/user table/user information.
+| 
+A report titled "Report of Urban Development/Renovation Invoices Awaiting Payment" is active in the tariff calculation system for the financial expert/opinion issuing authority.
+| 
+You can get statistics on the number of times you draw in the map drawing program (on the GIS page) through the map review program (by selecting the G layer, entering the desired date, and your first and last name).
+| 
+The property area code is in the surveying declaration forms, but if the applicant requests to send an SMS, you must enter the mapping program and enter the property points from the left side of the GIS page by selecting the X, Y option and clicking the search button. After finding the property map, select the property map through the SMS sending program (the programs on the right side of the mapping page) by selecting the G layer and the select feature button. This will open a page for you where you enter the owner's name and contact number, and in the service provided option from the drop-down list, select resend SMS, and finally enter the total fee received from the owner and click the send option.
+| 
+In the map drawing program, enter the property area code in the advanced search field and click the search option. After finding the property map, select the property map through the SMS sending program (the programs on the right side of the map drawing page) by selecting layer G and the feature selection button. This will open a page for you where you enter the owner's name and contact number, and in the service provided option from the drop-down list, select the drawing option, and finally enter the drawing cost and click the send option.
+| 
+It is necessary to guide the applicant regarding the property interference and the process of deactivating the area to the technical office by calling 32477414 - 32475040 and 32453662 and finally, by notifying the technical office, draw their area in layer f.
+| 
+You must record each beneficiary with the amount of their ownership and record owners for whom information is not available as unknown owners.
+| 
+Send your account details to the support email. After viewing the relevant training documents, your access to register a request to edit the arena will be activated.
+| 
+To fix the error "The file is suspended and you are not authorized to create or send correspondence", do not fetch geographic coordinates when replying to correspondence.
+| 
+To divide the toll amount in the system, in the receipt issuance program, check the receipt selection box and click on the Split receipt option. Enter the number of divisions and click the Apply option to divide the receipt into the desired number. Then issue the divided receipts. The payment confirmation step must be performed for the divided receipts.
+| 
+Manually calculate the income row of the wage earner, send the comment and unique code to the province's support email.
+| 
+The document format must be compatible with the formats that can be uploaded to the system, including jpg - jpeg - gif - png - bmp. The maximum uploadable size of the document is 500kb. When saving the document on your computer system, do not use characters such as /, . < (), etc. in the document name. For example, National ID Card (1) - National ID Card (2) If the problem is not resolved, you need to complete Form No. ... and send it to the email address of the provincial support office for review.
+| 
+After registering the application, the applicant's error form must be uploaded for the file and the file invoice must also be confirmed for payment. To check whether the payment of the invoice is confirmed or not, search for the unique file number in the property review. In the review window, select the ID card invoice option. If the flag color is yellow, it means that you have not confirmed the payment. In this case, go to the Shaman menu and the applicant's error form and confirm the payment. If the flag color is green, it means that the payment has already been confirmed. In this case, from the Actions section, check whether the file has been rejected by the municipality before the service office took action. If the rejection of the ability has been issued, the file must be re-activated. Go to the Shaman menu and the file activation program. If the problem is not resolved, you need to complete form No. ... and send it to the email address of the provincial support office for review.
+| 
+Search for the unique file number on the property review page and click on the property location window image in the review drop-down on the left side of the page. The field ID is included in the property location display window.
+| 
+On the Geographic Infrastructure page of the Map Unit Identification Card, enter the area ID in the Advanced Search section. From the Location Selection menu, click on the finger pointer and drag the left mouse button inside the area from right to left until the area is selected and displayed in a blinking mode. By selecting the area, the unique number related to the area is displayed below the Location Selection program. To see the unique number information, click on the file summary.
+| 
+Send the request for change/correction in writing on the district's letterhead to the province's support email.
+| 
+To fix the unknown error, refresh the page. If the error is not resolved, send your account details along with a screenshot of the error to the support email.
+| 
+To file a joint property case where not all owners have applied, you need to enter the applicants' share values ​​in the beneficiaries table and assign an unknown owner for the remaining shares.
+| 
+If the area of ​​the document differs from the area of ​​the survey form, the owner must arrange a commitment of dimensions at the notary's office and submit it along with other documents.
+| 
+If an unofficial document (agreement, copy, etc.) is presented, the owner needs to arrange a commitment of dimensions in the notary's office and enter the dimensions accordingly.
+| 
+The error "At least one of the files has an invalid format!" is due to the file format not matching the uploadable format specified on the archive page. You need to save the file in an acceptable format.
+| 
+The incomplete display of the property's location is due to the fact that the sketch page was saved before the front desk fully loaded the page. The front desk user needs to reload and save the page from the location update program.
+| 
+To register an annual fee request, select the "Renovation Account Settlement 2" request.
+| 
+The inspection officer must record the dimensions taken during his inspection in the same inspection report.
+| 
+A letter from the district/village office stating that the file has been transferred from the district to the relevant village and a confirmation letter from the Housing Foundation stating that the property with the exact coordinates listed therein is located in the village master plan must be sent to the provincial SIMAC support office. Second edition: To transfer the file from the district to the village, you need to complete form number .... and send it along with the letters mentioned in it to the provincial support office's email address .......
+| 
+In the guide plan area sheet, their boundary line needs to be determined with the agreement of the villagers, and they need to put the village seal in their area section, and send the original guide plan file, the district administration's request letter, and a scan of the village boundary determination confirmation sheet to the province's SIMAC support office.
+| 
+First, you need to send the request letter for creating a village branch and its guide plan pdf file from the district office to the SIMAC support office. Second, after branching and uploading the village guide plan, you need to send the letters of introduction of the village head and technical expert and the account numbers of the income rows to the province's SIMAC support office. Second edition: To create a village branch, you need to complete form number .... and send it along with the documents listed in it to the provincial support office's email address .......
+| 
+You need to send the correct name of the village in the form of an official letter from the district administration, with the attached guide map, to the province's SIMAC support office. Second edition: To correct the name of the village, you need to complete form number .... and send it to the provincial support office's email address .......
+| 
+The letter from the country's divisions approving the newly approved village and the letter requesting the district to branch and upload the guide plan to the system and the PDF file of the plan need to be sent to the province's SIMAC support office. Second edition: To create a branch of a newly approved village, you need to complete form number .... and send it to the provincial support office at ...... along with the documents mentioned in it.
+| 
+For apartment properties, complete the dimension table according to the dimensions listed in the parent property document, which is the land area document. If you do not have access to the parent property document, you can enter the dimensions from a sketch of the property's coordinate map in the surveying declaration form.
+| 
+Enter the unique file number in the property review and see what stage the file is in. The file may be at a stage other than the application registration. If the previous application for the file is ongoing, it is not possible to register a new application until the current application is completed and its license is issued. If the application date is old and no longer valid, or the new application has priority over the previous application, the file must be rejected for issuance in coordination with the issuing authority in order to register a new application.
+| 
+To edit and update the identity details of the beneficiaries, you can use the Heda authentication system. On the main page of the SIMAC login, click on the Heda authentication system link from the Useful Links section. By entering the person's national ID card information and contact number, the information will be retrieved from the civil registration system and after successfully registering the identity, the person's identity information will be updated in the SIMAC system. Note: Please note that the person's contact number must match the national ID number and be in the person's own name. After registering in the Heda system, a verification code will be sent to the person's contact number by SMS. After receiving the code, enter it in the Heda system.
+| 
+The information of the beneficiaries must be entered in accordance with the inheritance monopoly sheet. The applicant for the file must have the inheritance monopoly sheet and the ownership and identity information of all the heirs with him. In the beneficiaries section, enter the information of all the heirs whose names are written on the inheritance monopoly sheet with a specific share percentage. The identity documents of all the heirs must be uploaded to the document archive. The applicant for the file must have a written and notarized power of attorney from all the heirs to register the application and carry out the relevant matters. Otherwise, the presence of all the heirs is mandatory for filing the file and registering the application and signing the applicant's error form.
+| 
+In the application registration program, in the field Select the owner's name in the license, select the name of the desired owner so that his name is displayed as the owner and the names of the remaining beneficiaries as partners in the license output. (For example, Ali Ahmadi and Partners)
+| 
+In the Beneficiaries section, enter the owner whose information is available as one of the beneficiaries with the share amount specified in the ownership document. To enter the remaining beneficiaries, select the Unknown Person option from the Person Type section. By selecting Unknown Person, there is no need to enter the national code. In the Ownership Amount section, enter the remaining ownership share according to the document. By clicking on the plus sign, the remaining beneficiaries are registered in the file as Unknown Person.
+| 
+First, on the first page of the system, in the Useful Links section, view the educational documents for the engineers' desk, then send your identity details and employment license to the support email.
+| 
+Send your request on the municipality/district letterhead along with legal documents to the province's support email.
+| 
+To calculate the arrears of renovation/city/village tolls, the file needs to have a previous history in the system. Otherwise, you can use the debit/credit option on the renovation page of the same visit.
+| 
+After completing and submitting the access request form, if you meet the requirements to participate in the exam, you will be notified of the exam date via email.
+| 
+To enter/edit the registration plate information, archive the ownership document and send the unique code and office code to the province's support email.
+| 
+The user signing the correspondence (administrator, boss, or any other person with access to sign and send correspondence) is able to modify the draft variable text and file attachments before signing and sending.
+| 
+If, after searching for the unique code on the map property identification card page, you encounter a gray tick in the selection section in the searched row (and you were unable to enter the identification card and modify the descriptive information), the file is definitely pending in the municipality or village, and in order to be able to edit it, the relevant municipality, district, or village must approve the issuance.
+| 
+Requests to amend the national code of the citizen in question, along with their identity documents, must be sent to the support office by email, and if necessary, follow-up by telephone.
+| 
+You have not selected the beneficiary (who can be the owner/attorney or representative) in the error form section and then saved it; by doing the above, the error form will be printable and downloadable for you.
+| 
+When registering all deactivation requests, you must attach all pages of the application, identity documents, consent, applicant document, and payment slip in zip file format or pdf (subject to the downloadable size). (Other documents, for example, a power of attorney, can be attached when the lawyer is following up on the relevant processes.)
+| 
+A contact number mismatch error occurs when the surveyor, while drawing the map and sending the land ID SMS to the owner, has provided a contact number that is inconsistent with the number you have registered for the owner in the beneficiaries. To continue working, you can clear the *Surveyor* field on the property ID page and save the page.
+| 
+To access the surveying system, you need to complete form number ... and send it to the email address of the provincial support office // Surveyors can visit the site ... to register in the SIMAK system.
+| 
+To access service offices in the system, you need to complete form number ... and send it to the email address of the provincial support office // Service offices can visit the site ... to register in the SIMAC system.
+| 
+Any action or edit made to the file requires uploading the applicant's error form and confirming the payment of the bill. Go to the Shaman menu, the applicant's error form program, and confirm the system payment. To view and check the status of the file's bills, you can search for the unique file number in the property review program and select the ID card bill option in the review drop-down on the left side of the page. In this section, bills whose payment has been confirmed in the system are displayed with a green mark, and if the payment has not been confirmed, they are displayed with a yellow mark.
+| 
+The error "The file with the unique number ... is waiting to load the error form" occurs because the service office user has not loaded the applicant error form for the previous file into the system and now wants to create a new file, which is not allowed in the system. Any action or edit performed on a file requires loading the applicant error form and confirming the payment of the invoice, and the user is not allowed to take any action on the new file until this is done. The unique number of the previous file is written in the error message. You must upload the error form and confirm and pay its invoice.
+| 
+A file with this license plate/renovation code may have already been created. Search for the license plate/renovation code information in the property review and if there is a file with these specifications, review the file details so that a new file may not need to be created. If the license plate/renovation code information of the file has changed and needs to be edited, the user needs to be assigned the license plate/renovation code modification access. To assign access, complete the form number ... and send it to the email address of the provincial support office.
+| 
+No, because the token is under Windows, it must be connected to the system.
+| 
+Contact your support user in the relevant city.
+| 
+Yes. Please connect the token to the system. Double-click on the token icon that appears at the bottom of the system. A window will appear for you, then click on login and enter your token password (if you have not changed the password, it is 1234). After entering the password, press the ok button, then enter the token information. From the left side of the image, click once on your first and last name written in English, then on the right side of the image, the word export or (certificate extraction) will be activated for you, click on it and in the window that opens, write your name in English in the name field and save the file in the system. And send the relevant file,
+| 
+If the building permit in question has been recently issued, it may be available to you after a few days. Otherwise, please contact the local municipality for the report.
+| 
+You must download the default file from the main SIMAC website and then install it on your system.
+| 
+To check, you need to complete form number... and send it to the email address of the provincial SIMAC support office.
+| 
+To make changes to the toll calculation formulas, you need to complete form number... and send it to the email address of the provincial SIMAC support office.
+| 
+To obtain a new user account for the office, you need to complete form number... and send it to the email address of the provincial SIMAC support office to register the user to participate in the training course and service office exam.
+| 
+Please note that the user must perform the necessary checks before creating a file to ensure that there is no unique number for the file in the system. The location of the files needs to be corrected. To check, complete the form No. ... and send it to the email address of the provincial support office. You can use the additional unique number created for another file after correcting its location.
+| 
+Drawing a separate area requires the removal of interference and deactivation of the parent property area. Reviewing and removing property conflicts and interferences and deactivating overlapping areas is done through the City and Country Office under the MENA process (Real Estate Map Management). To receive instructions and necessary tips for carrying out the MENA process, send your request to the support email of the City and Country Office of Golestan Province at golestan.shahrodiar.02@gmail.com .
+| 
+The drawing of the area requires the removal of interference and the deactivation of the interfering area. The investigation and removal of property conflicts and interferences and the deactivation of the interfering areas are carried out through the City and Country Office under the MENA process (Real Estate Map Management). To receive instructions and necessary tips for carrying out the MENA process, send your request to the support email of the City and Country Office of Golestan Province at golestan.shahrodiar.02@gmail.com .
+| 
+If a unique number has not yet been created for the area, you have access to the map deletion program in your programs list and you can personally delete and redraw the area you have registered. If the area has a unique number, deactivating the area and reviewing and resolving property conflicts and interferences are carried out through the City and Country Office under the MENA process (Real Estate Map Management). To receive instructions and necessary tips for carrying out the MENA process, send your request to the support email of the City and Country Office of Golestan Province at golestan.shahrodiar.02@gmail.com .
+| 
+You need to complete and finally confirm all the incomplete and incomplete files you have in your file so that you do not encounter this message when filing new cases. Second edition: You need to complete and confirm the unique number of ......... so that you do not encounter the aforementioned message in the process of filing a new file.
+| 
+You need to send your request to the provincial SIMAC support office, stating the name of the office and your identity details, along with a screenshot of the computer screen.
+| 
+If the property is completely shared and none of the owners have a notarized division deed, you must enter each owner in the beneficiaries program by entering the type of ownership shares, national number, and ownership amount (by clicking the Add button), and then select the Edit Information option, enter the ownership type, and click the Confirm option.
+| 
+You can register your signature in 2 ways: 1- In person at the provincial SIMAC support office at the address........ 2- By sending a very clear photo (jpg) file of your signature, stating your full name, surname, and national code, to the provincial SIMAC support office at the address.....
+| 
+In assignment contracts, the owner is always the legal entity or assignor, and the applicant is the natural person mentioned in the contract.
+| 
+All requests are registered by the citizen in the citizenship panel and are visible and actionable for qualified experts in the "Declared Request Review" program.
+| 
+To apply for citizenship, see the educational document in the Useful Links section on the first page of the system.
+| 
+To register a building permit application, citizens must log into the system through the Citizen's Portal, authenticate their identity, and submit their application to the issuing authority.
+| 
+Problem solved.
+| 
+To review/fix the "Out of Range" error, send your request along with the mapping documentation to Shahrodiar's email address gln.shahrodiar.02@gmail.com .
+| 
+The existing use table is identical to the existing building and the permitted use table is included according to the building information included in the latest completion or non-violation certificate.
+| 
+Construction violations are detected based on the permitted building information and comparing it with the existing building information. Instances of these types of discrepancies are automatically displayed in the discrepancies table if the existing building information and the permitted building table are entered correctly.
+| 
+The renovation debt amount is entered all at once in the Debt field of the renovation section, renovation page in the same visit program.
+| 
+By clicking on the return to the same visit sign on the top right of the page, return to the same visit main page and correct the incorrect status on that page. After correcting, you need to click on the green tick at the top of the page (save active page) and then click on Save and Exit.
+| 
+By clicking on the Edit Property Identification Card icon at the top right of the page, you will enter the mapped property identification card page and after modifying the renovation code and file class, click the Save option.
+| 
+For some properties, there is a possibility that the property area overlaps with the area of ​​two or more different land use patches in the detailed plan, in which case the area within each layer must be entered in this table. If the detailed municipal plan is loaded into the system, this table will be automatically completed by clicking on the geographical globe symbol in the land use section.
+| 
+You can enter the Article 5 Commission's opinion in the relevant section on the detailed plan page.
+| 
+If the property is a property of a delinquent nature related to the municipality's violations handling unit, the municipal building police must file a case and register a request to declare a violation and handle the violations in the violations cycle (because the owner is unknown and this registration is registered by the building police, the unknown ownership is used as the owner of the property and after the owner appears in the violations handling commission, the first step is to guide him to update his information to the counter office).
+| 
+Any edits to the file until 12:00 midnight on the same day the file is created are not subject to a fee. After that time period, any edits are subject to a file creation fee.
+| 
+In all leases, the lessor is the owner of the property.
+| 
+Yes, changing the beneficiary, adding documents, and 2 sheets of error correction forms are always subject to a fee.
+| 
+In the event of the death of the owner, a certificate of inheritance along with the ownership document is required to file a case.
+| 
+It is not possible to file a request for ongoing cases. The case must first be rejected by the issuing authority.
+| 
+To enter the citizenship panel as a legal representative, you must first visit the service office, archive the relevant power of attorney documents, and receive an error correction form. Then, visit the citizenship panel and log in with your national ID and mobile number.
+| 
+To resolve the error "Previous invoice for the file has not been confirmed for payment", please visit the office where the file is being filed to confirm the payment.
+| 
+To calculate the mass of renovation fees, issue the mass of renovation receipts, and print the mass of renovation receipts, you must use the Toll Calculation System Mass Operations Management Program. To download and install this program, go to the Tariff Calculation System, the Tolls menu, and one of the programs for calculating the mass of renovation fees or issuing the mass of renovation receipts, and download and install the versions that can be installed on your computer system. The user ID and password are the same as the user's SIMAC ID and password. If you need further assistance, contact the provincial office support number.
+| 
+If the owner is under 18 years old, the attorney should go to the service office, archive his power of attorney and identity documents, and receive a correction form in the applicant's name. Then, go to the citizenship card with the attorney's details.
+| 
+To check, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To calculate license renewal fees, it is necessary to: 1- Enter the authorized/existing information and the map correctly. 2- Set the parameters "Is the license valid?", "Enter the number of years of renewal" and "Enter the amount previously paid for the income line" correctly. 3- Complete the zoning block.
+| 
+Go to the shopping cart section and click on the Modify Shopping Cart option to complete the purchase process. If you do not see the Modify Shopping Cart option, it means the purchase process is complete and in this case the amount may be returned to your bank account within 72 hours. Otherwise, for further investigation, you need to complete the form No.... and send it to the email address of the provincial support office.
+| 
+To activate the receipt distribution feature for the municipality, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To insert default texts into the draft program, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+For review, you need to send form number... to the email address of the provincial support office.
+| 
+The quota of the Justice List is set for all surveyors in the city and it is not possible to increase the quota for a specific surveyor. If there are special conditions for increasing the quota, complete the form number... and send it to the email address of the provincial support office.
+| 
+To remove the display of signatures in the output of forms and permits, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+The corrected area is the remaining area after the setbacks are applied.
+| 
+The error "Architectural drawing not submitted" is displayed for two reasons: 1- The Technical and Engineering Office has not submitted the initial architectural drawing to the licensing authority. 2- The Technical and Engineering Office has submitted the initial architectural drawing to the licensing authority before issuing the drawing order. In both of the above cases, the Technical and Engineering Office needs to submit the initial architectural drawing to fix the problem.
+| 
+If there is an error "The registration plate is duplicated", one of the following two cases occurs: 1. If the official document is of the six-dang type of land and property, the file for this land is already available in the system and it is necessary to find the existing unique code in the property review section by entering the registration plate and edit it, then inform the SIMAC support office so that the unique code that you have created in duplicate is confiscated. 2. If the official document is of the communal type, if you have ensured that the file is not duplicated with the fields available in the property review section, the error message is due to the creation of a file with this registration plate for another communal piece existing on the general land. In this case, activate the check box for "No registration plate" and save the page.
+| 
+The registration plate is entered into the system in one of the following cases: 1. The document is official. 2. By referring to the transaction documents, it is proven that the property is worth six dong and the authenticity of the registration plate is confirmed. Otherwise, the “No registration plate” check box must be activated.
+| 
+After recording and saving the map information, you must select the Send from Map command menu from the map section. By doing this, the file will be visible in the tolls stage.
+| 
+The user can select the license reissue option from the Shaman section and print the issued license by searching for the unique code.
+| 
+It is not possible for the municipality/village user to edit the information recorded on the map property identification card page. You must select the Export Ability Rejection submenu from the Shaman menu and then select the reason for the rejection of the ability from the available drop-down list to enable the counter user to edit the property identification card.
+| 
+You need to search for the unique code from the location program and enter the area ID from the advanced search section and finally select layer g using the "Update Property Location Image" tool.
+| 
+It is possible to delete and modify the application attachment before uploading the error correction form and confirming the application payment. However, if you have completed this step, you will not be able to modify the attachment file. The application must be declared successful by the support office expert and you must register a new application again.
+| 
+The user should consider the following explanations: there are 2 cases. Either the unique code belongs to the owner or it does not. In the case where the property belongs to the owner, it is possible that the owner has already filed a case and forgotten, the previous owner has filed a case and the new owner has applied to file a case, or the property is an apartment, or the property has a unique code in the municipality layer of the villages and must be in the reference layer.PositioningIn case the unique code does not belong to the owner but the property is an apartment, this message will be displayed asking the user to enter the unique code.New singlewith the common area for the new applicant, and if the property does not belong to the new applicant and is not an apartment, it mustNew singleTo be taken for a new applicant
+| 
+The documents and evidence required to file a case include: Original ID card and, if not available, a copy equivalent to the original ID card of the owner or owners of the property Original National ID card and, if not available, a copy equivalent to the original National ID card of the owner or owners of the property Proof of ownership, including an official registration document, promissory note, deed of sale, lease, assignment agreement, etc. Surveying statement Surveying service fee invoice Certificate of inheritance monopoly for properties where the property is still in the name of the deceased Power of attorney in cases where the applicant is the representative of one of the owners of the property. Letter of introduction for properties owned by legal entities such as government and non-government organizations A copy of the official newspaper for properties owned by a company A copy of the articles of association for properties owned by a company. Hudood al-Arba'ah commitment letter for all properties with a regular document and promissory note and other documents in which Hudood al-Arba'ah is not mentioned. Corruption detection certificate for regular documents
+| 
+You need to review the file. If the file has requested a building permit from the municipality/district and village administration and has resulted in the issuance of a permit, it is not possible to delete any documents for the file. If the file is ongoing and you are not able to delete the documents, you need to send your request to the provincial support office email address.......
+| 
+The file attachment feature is for cases where the documents are larger than the size considered in the document archive program and is often used for documents that are not part of the original property and owner documents but need to be archived on the file.
+| 
+The applicant needs to have a commitment letter of about four hundred (a certificate of discovery of corruption) and the dimensions and area must be precisely stated in it.
+| 
+To introduce new users, you need to complete form number .... and send it to the email address of the provincial support office.
+| 
+To receive a report containing the number of renovation files, go to the Real Estate Process Management System, Statistics menu, Files option and select the Renovation File Number Report. Set the report type filter to the Detailed option. This allows you to receive a report based on the type of use, main and secondary use.
+| 
+To access SIMAC educational files and videos, visit the lms educational system at https://lms.simacnashr.ir. The username, contact number, and password are your national number. In the My Lessons section, educational videos can be viewed and you should watch the videos in order from the first lesson. If your access to the educational system is not active, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To activate the PC POS device settings in the system, you need to send the device's terminal number to the email address of the provincial support office.
+| 
+Calculations of annual renovation fee arrears are made based on the information on the use of the building from the same inspection of the last file request, which must be entered correctly in the file in accordance with the information items required in the fee formula calculations. To check, you need to complete form number .. and send it to the email address of the provincial support office.
+| 
+To create a new income row in the system, you need to complete form number .. and send it to the email address of the provincial support office.
+| 
+To calculate renovation fees, you need to: Enter the same renovation tab information, including zoning, area, and use of the fronts. If the property has a building, complete the building information and enter the fields that affect the calculation of renovation fees. If you have done the above and the renovation fees are still not calculated, send the unique code to the province's support email.
+| 
+To calculate drilling fees, drilling information needs to be completed on the same side page of the visit.
+| 
+You need to send your complete application, mentioning the city you wish to operate in, in form number ..... to the provincial office support email at ..... Then your application will be reviewed by the support office and the result will be announced to you.
+| 
+You need to send the required documents (survey certificate, photocopy of ID card and national ID card, and engineering system membership number) to the support office email address... so that the necessary steps can be taken for your registration.
+| 
+After reviewing your documents, if they are approved, the support office will send your desired information to the central office so that you can register in the educational system lms.simacnashr.ir to view educational videos. After registration, you will be contacted and information about your username and password will be sent to you (you need to notify the support office after viewing the educational videos).
+| 
+Your name will be sent to the central office for registration in the surveyors exam (the exam time is the first day of the even-numbered months of the year).
+| 
+After you register for the exam, you need to take a series of steps. To prepare for the exam, the central office will assign you some practice coordinates, and you are required to register your coordinates in the tamrin.simac.ir system and the practice arena ID before the exam. You must register the arena IDs in your name and send them to your contact number via SMS. Write down the obtained arenas somewhere because the answers to some questions on your exam are the arenas you registered.
+| 
+Information about the time and method of the exam will be sent to your email by the central office. Also, in the educational system lms.simacnashr.ir, an announcement about the exam method is posted in the bulletin board section.
+| 
+After the test results are announced from the central office to the provincial support office, we will contact you and announce the result.
+| 
+You will also need to take the practical exam. The exam date will be coordinated with you (it should be noted that the practical exam is held by the provincial support office).
+| 
+You need to register 5 copies of the undertaking letter for surveyors, which is sent to you by the support office, in the notary public office and deliver 4 copies to the support office, after which your desired access and scope will be activated in the system.
+| 
+You are only allowed to take the exam twice per year. If you fail or miss the exam once, you must retake it. Otherwise, you must wait until next year to take the exam, the date of which will be notified to you by the support office.
+| 
+For long texts and explanations in the vote registration program, you can enter part of the desired text first in the Vote Summary field and the rest of the text in the Vote Registration Explanation field. The text of both the Vote Summary and Vote Registration Explanation fields is displayed in the output of the Article 100 Commission's primary and appeal vote forms.
+| 
+If the legal boundary and city privacy are loaded in the system, it is possible to register the area within the boundary and privacy. It must be checked whether the boundary and city privacy are loaded in the system. To check, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To investigate the problem, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+You should inform the support office expert so that they can change the correspondence signer position according to the users' authority position in the user group profile section, based on their access rights, and your problem will be solved. If the correspondence signer position is different from the user authority position, you will encounter this message. Contact the support office to resolve the problem.
+| 
+The rows shown in light orange are related to inquiries that have been answered by the relevant expert and sent to the draft for signature by the manager (or any person who has signing and sending access in the office). These inquiries are awaiting signature and sending to the recipient. The rows of inquiries that have been given by the expert and are awaiting signature and sending in the draft section are displayed in orange.
+| 
+It is recommended that you use keywords related to the village name when entering the recipient's name for the search. If you still cannot find the desired recipient, inform the support office expert; the problem may be due to the electronic correspondence of the desired village not being activated, which can be checked and resolved from the user group specifications section. Contact the support office so that the expert can check the settings related to activating electronic correspondence on the desired recipient's device.
+| 
+Given that your request is in the draft section due to the error detection form not being loaded, you must go to the Request - Register Request section and edit and re-save the request, after which the file will be visible in the error detection form section./Given that the request is in the draft section, it is necessary to edit and re-save the request.
+| 
+For areas that have already been surveyed, if the area of ​​the area has not changed, there is no need to re-survey. All that is required is for the surveyor to amend the survey declaration (Form No. 5) in the name of the new owner and archive it by the service office.
+| 
+The error "The desired feature has overlapping vertices or is drawn counterclockwise and cannot be saved. Please redraw the feature correctly." is displayed due to overlapping edges caused by not following the correct order of entering the coordinates of the vertices of the field. To fix the error, the drawing points need to be drawn in clockwise order and note that the edges should not intersect or cross each other.
+| 
+The change in the title of the issued permit compared to the registered application is because the relevant expert has changed the type of permit issued in one of the "Map Information" or "Draft" stages.
+| 
+The message "" may be seen for the following two reasons: 1- The Engineering Technical Office has not selected the correct subject of correspondence for sending the drawings. The Engineering Technical Office must send the correspondence with the subject "Sending preliminary architectural drawings" (code 21500). 2- The Engineering Technical Office has sent the preliminary drawings before registering the request.
+| 
+The maximum file size for attachments for correspondence sending preliminary architectural drawings is 5 MB.
+| 
+The PDF file of the preliminary architectural drawings should be a maximum of 20 pages.
+| 
+The current request user is different from the user entered in the previous license, so entering the date and reference of the user change is required.
+| 
+The file is searchable with all the information fields available on the property review page, including the unique code, national number, and the first and last name of the beneficiary/beneficiaries.
+| 
+To file a property case, depending on the type of document and the type of owner (real or legal), the following documents are required: 1- The owner is a natural person. In this case, the original ownership document, the original national ID and ID card, and Form No. 5 (Survey Declaration) are required. Also, if the owner has died, the original inheritance list along with the national ID and ID cards of all heirs are required. 2- The owner is a legal person. In this case, the original ownership document, the company establishment announcement, the national ID and ID card of the CEO, the representative's introduction letter, the representative's national ID card, and Form No. 5 (Survey Declaration) are required. Also, for both of the aforementioned cases, if the property document is of an unofficial type or its area is inconsistent with Form No. 5, it is mandatory to submit a dimensional commitment sheet. If the owner/owners' lawyer refers, it is mandatory to submit the original power of attorney and the representative's national ID card.
+| 
+No, after the property is redrawn and the location is determined, the user edits the dimensions counter and archives the survey report.
+| 
+In order to divide the property, it is necessary for the points of the desired plot to be taken by a surveyor and the request for division along with the applicant's documents, including the reason for ownership, a certificate of discovery of corruption if there is a contract, and the owner's consent, must be sent to the city and county office.
+| 
+Yes, to view all correspondence for a property, search for the unique code in the property review program and select the Letters window from the Detailed Review drop-down list. After searching for unique code in the property review program, you will be able to view all correspondence related to a property from the Detailed Review drop-down list and selecting the Letters window.
+| 
+To file a joint property case, all owners must be present at the office. If one of the owners wants to obtain a single share for his joint property, you are allowed to file a case by presenting the division letter or the single sheet of the other owners.
+| 
+If the representative has proof of ownership of the owner, file the case. The representative or attorney of the owner can only sign the form of error and the sole beneficiary according to the document must be the owner.
+| 
+Requests announced by citizens can be viewed and reviewed in the menu under the "Review Request" option.
+| 
+The details of the request declared by the citizen can be recorded from the Shaman menu, under the option to review the declared request.
+| 
+To calculate the fencing fees, it is necessary to enter the fence row and complete the relevant fields on the same visit page - Building Use tab - Allowed Construction Table.
+| 
+The reason for the error "No features found in the selected area. Please select again" could be one of the following: 1- The area ID was not entered correctly. 2- The area ID is registered in layer F and does not belong to layer G. 3- The user does not have access to the desired area.
+| 
+You need to send form number .... to the provincial support office email address so that your request can be reviewed.
+| 
+No, the user who introduces the office manager to file a case must be someone other than the office manager.
+| 
+After your request is approved by the management, your information will be sent to the central office to complete your registration. After registration, we will contact you and provide you with information about your username and password. After registration, you must watch the training videos on the lms.simacnashr.ir system and notify the support office after watching the videos in full.
+| 
+After you have announced that you have watched the videos, the provincial support office will inform the Tehran central office. The central office will email you 2 practice area codes in the educational system, which you must enter before creating a file and write down the unique number of the files. Information about each unique number will be posted in the educational system for you. Please note that obtaining practice areas is very important and will constitute part of your exam score.
+| 
+If you have passed the exam, the user and responsible person's commitment letter will be sent to you and the office manager. You register 5 copies of the user and responsible person's commitment letter in the notary public and deliver 4 copies to the support office. After that, access for the responsible person and user to file in the system will be activated.
+| 
+You need to send form number .... to the support office email address ....... If the user you introduced does not have access to the SIMAC system, he/she must participate in the training and system exam and will be granted access after passing. Otherwise, there is no need for training and exam.
+| 
+After saving the map information, it is necessary to perform the sending step from the map, then the file can be viewed in the tolls step.
+| 
+The calculation of building permit renewal fees is based on the validity period of the last permit and the building use table of the map information. Check the correct entry of information in this table. If the calculations are not done correctly, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+The service office manager can receive the invoice report from the system with his/her access and view the status of the office transactions. In the property process management system, select the statistics menu, files submenu, invoice report.
+| 
+Uploading the user's electronic signature to the system requires obtaining an electronic signature through an electronic signature pad. Send your request to the provincial support office's email so that the necessary arrangements can be made to obtain the electronic signature.
+| 
+After ensuring that the file does not have an ongoing request, it is necessary to first select the subscription payment option and pay the related debts in order to activate the request notification option.
+| 
+To enter information about the broken side, add the breaks together and enter them in the Dimensions section.
+| 
+No, a certificate of ownership of a village/district is not acceptable. They must have an official or registered document or a regular agreement.
+| 
+The dimensions must always be taken by the correct surveyor and must be consistent with the document date. Inconsistencies based on the type of use, land area, and surveying accuracy can be ignored, but if the discrepancy is outside the stated criteria, it must be checked and the map must be corrected.
+| 
+To calculate the tolls for the passage, the parameters "Should the tolls for the passage be calculated?" need to be set to Yes and "Enter the usable area".
+| 
+In the event of the death of the file owner, a certificate of inheritance is required along with the ownership document.
+| 
+Yes, in the lease, the landlord is the owner and the tenant is the applicant.
+| 
+After registering the same visit, the file is visible to qualified experts during the submission stage.
+| 
+The file needs to be rejected and the document information needs to be modified by the filing office user.
+| 
+You need to review the file. Files that are in the process of being licensed are inactive for you and the file needs to be issued by the licensing authority user (municipality/district) to enable the user to file.
+| 
+To make changes to the owner's identity information and mobile number, the owner needs to verify his information in the Hoda authentication system.
+| 
+To include the relief committee exemption in the income row "Effects of relief committee beneficiaries exemption", set the parameter "Is the applicant eligible for relief committee beneficiaries exemption?" to Yes and calculate.
+| 
+To include the welfare exemption in the income row "Welfare recipients' exemption benefits", set the parameter "Is the applicant eligible for the welfare recipients' exemption?" to Yes and calculate.
+| 
+To include the martyrs' family exemption in the income row "Martyrs' family exemption benefits", set the parameter "Is the applicant eligible for the martyrs' family exemption?" to Yes and calculate.
+| 
+The number of additional doors is equal to the difference between the number of doors allowed in the license and the number of doors allowed in the property.
+| 
+The error "The user signing the correspondence has not been determined" occurs due to the incorrect definition of the signing user. To fix the error, the details of the signing user need to be sent to the provincial office via official email according to form number ....
+| 
+It is possible that the applicant has made changes to their ID card and national ID card information that have not been properly recorded in the civil registration system. You should follow up on this issue with the Civil Registration Office.
+| 
+To upload large documents and documents in formats such as PDF, you can use the file attachment program in the Shaman menu.
+| 
+To review and control the description of the formula calculations, on the toll calculation page, in front of each income row, there is a control button. By clicking on this button, you will enter the formula evaluation and control page, and the complete description of the calculations can be seen on this page.
+| 
+To introduce a new income line in the system, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+The mission to create an unknown person may not be activated for the user. To check, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To correct and move the location of the file field, you need to send the unique number and correct field ID to the email address of the provincial support office.  To change the location of the file, it is necessary to complete form number ..... and send it to the provincial support office's email address along with the requested documents in the form.
+| 
+To make changes and edit the calculation formula for income rows, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To change/introduce the account number of toll receipts, you need to complete form number... and send it to the email address of the provincial support office.
+| 
+To prevent the flow of the file in the system and stop it at the stage it is in, you can use the file seizure/unseizure program in the Shaman menu. Enter the unique file number in the file seizure/unseizure program and select the file. Then, in the table, by clicking on the plus sign of the seizure option, enter the reason and description of the seizure. This will suspend the desired file. You can also use the file seizure/unseizure program again to remove the seizure of the file. In the existing table, by clicking on the release of seizure sign and entering the reason, the file will be removed from the seizure.
+| 
+You need to update the visit date in the same visit submission program using the Edit Request Registration option in that program.
+| 
+Once a building permit is issued, no further editing of the information is possible, and the permit must be revoked and the map information must be fully included again during the permit issuance process.
+| 
+Yes, you need to select the option to display detailed table in the draft license/certificate program.
+| 
+You need to return the file to the same review stage and the validity of the permit, land type, and existing use will be entered and included in the revised area plan.
+| 
+First, the mayor needs to reject the file, in which case the file is referred to the draft. Then, the municipality/district user sends the file to the map property identification card with the rejection program, and the service office user corrects the registration plate.
+| 
+You need to completely delete the incorrect license plate and re-insert the new license plate.
+| 
+You need to complete form number .... and send it to the provincial support office email address ......
+| 
+First, you need to select the Split Receipt field in the receipt issuance program and split the receipt. Then, after the client pays, record the payment information for the first receipt, and confirm the payment for the remaining receipts so that the file is referred to the draft.
+| 
+The user must enter the exact amount of fees paid by the applicant in the fee calculation program (in this case, the declared amount is the same as the amount paid) and a receipt with a zero amount will be displayed to him, and the case will proceed with the issuance of a zero receipt.
+| 
+In order to correctly calculate the license amendment fees, the building information in the building usage tables and the map information need to be completed correctly. If you are sure of the accuracy of the above information, send the unique code to the support email address.
+| 
+You need to search the file with the license reissue program, enter the time period in which the license was issued, and then print the license.
+| 
+The error "There is no license issued to you" means that your name as an engineer does not appear on any issued license.
+| 
+In order to correctly calculate the building development fees, the building information in the building usage tables and the map information need to be completed correctly. If you are sure of the accuracy of the above information, send the unique code to the support email address.
+| 
+To complete the renovation information after the same visit, the user with the authority to calculate renovation fees can proceed through the "Renovation Form" option on the renovation fee calculation page.
+| 
+Infrastructure fees are calculated for certificate requests if at least one of the following conditions is met: the license is not valid, the file contains violations, and the violation cycle is passed through the system.
+| 
+The file is in the mayor's or urban development official's folder for approval or rejection of the map order. The mayor or urban development official needs to review the map order in their folder and reject or approve it. If the file is approved, it can be viewed in the map approval program. Otherwise, it can be seen in the map order program.
+| 
+A new feature of sending from the map has been added to the system. After sending, the file will be visible in the toll calculation program.
+| 
+To print the map order, you can either print it after saving the map order program (print output) or in the map order partial review program.
+| 
+You must check the location of the property based on the approved transaction value booklet for the year and, based on the area and block in which the property is located, search and complete the area and row number included in the aforementioned booklet in the zoning search field (type 0 for the sub-area number).
+| 
+In the following cases, an official letter must be sent to the provincial support office email address: .... - Introducing a new user, changing the user's access area, deleting a user, sending all basic information (approved transaction value book for the year, approved toll tariff book for the year, names of supervising engineers, announcing the account numbers of urban development/renovation and business revenue lines, municipality/village logo, prices of various construction groups, violations since the establishment of the mayor/village until now)
+| 
+If there is a renewal code, it is mandatory to enter all related fields. This message is displayed because at least one of the renewal fields is not completed.
+| 
+No, you need to issue a request for the division of the area with the amount of fees related to it for the parent property (Unique Number 1) and then apply for a building permit and register the permit on the separated plot with a unique number separate from the parent property (Unique Number 2).
+| 
+You need to guide the applicant to the contact numbers of the technical office for deactivating the arena, so that the request for moving the arena can be registered for them, and after inquiring with the licensing authority and approving it, the file will be determined by the city and district office, and after informing you, the rest of the work will be done by you.
+| 
+Form No. ... (regarding the abstraction of the field) needs to be completed and sent to the provincial support office email address .......
+| 
+If you are the surveyor of the previous area code, you can delete the area with the Delete Map access, but if the surveyor is someone else, send form number .... to the provincial support office email address to delete the expired area (more than 45 days).
+| 
+The Iran map icon has been removed for all surveyor users, and viewing boundary lines is not part of the surveyor's job duties.
+| 
+After drawing the map in the edit layer f, the site description information must be completed. You also need to upload the compressed file of the mapping documentation, the site plan pdf, and the work cost sheet, and then save the page.
+| 
+To investigate the problem, you need to complete form number ... and send it to the email address of the provincial support office.
+| 
+To make changes and edit the calculation formula for the income row, you need to complete form number... and send it along with the formula documentation (tax booklet or legal resolution) to the email address of the provincial support office.
+| 
+The error "User ID and mobile phone do not match" may occur because the mobile phone number registered for the user in the system is different from the number that the user enters when receiving the password. If you have another phone number, enter that number, otherwise your information in the system may need to be edited. To edit your information, on the first page of the system in the Useful Links section, click on the Heda Authentication System link and your information will be updated after authentication. Then try to receive the password again. If the problem still exists, you need to complete the form No. ... and send it to the email address of the provincial support office for review.
+| 
+It is possible that the national number of the engineer in question has been incorrectly registered in the system and needs to be edited. To check, you need to complete the form No. ... and send it to the email address of the provincial support office.
+| 
+To display the information items of the archived documents in the file, such as the workers' insurance slip number in the output of the building permit, you must upload the image of the desired document. Simply inserting the document title in the document archive is not enough. For each document title, there is also a document image symbol in front of the document row, which you must click on, enter the document upload page, and upload the image. If the problem is not resolved by inserting the document image, you need to complete Form No. ... and send it to the email address of the provincial support office.
+| 
+Some types of building use in the system are not included in the total useful area of ​​the infrastructure and the user must use the equivalent that is considered as useful infrastructure in the system settings for all municipalities. For example, the balcony item is defined as useful infrastructure in the system and can be used instead of a terrace. To find out the list of items that are not considered useful infrastructure in the use of the building, you can send your request to the provincial support office email.
+| 
+The message "Registering an area outside the permitted organizational boundaries is not possible" is displayed for the following reasons: 1- The area coordinates are not entered correctly. 2- The correct option is not selected in the Image System and Geometry Type fields.
+| 
+To correctly calculate the license renewal fees, it is necessary to correctly complete the permitted building use table on the same visit page and the building use table on the map information page, and also set the parameter "Is the license valid?" on the fee calculation page.
+| 
+To calculate infrastructure fees in Article 100/99 commission cases, it is necessary to: select the case's violation status (has violation) on the main page of the same visit, and correctly complete the existing and permitted use tables of the "Same Visit Page" building.
+| 
+It is not possible to draw arcs and bows in the system. It is necessary to convert arcs into lines using drawing software.
+| 
+The surveyor must visit the land location and collect the details of the consolidated plot and send it to the support office in the form of a request titled "Consolidation". The surveyor will inform you of the documents required to complete the request.
+| 
+Given that part of the area related to the original unit has been separated and the descriptive information included in the property identification card does not match the area of ​​the current area, the unit has been suspended after the separation request was made; you must contact the support office experts to remove the suspension and, if necessary, correct your archived documents.
+| 
+While re-surveying, your current area must be corrected to determine the correct dimensions of the land, so the surveyor must send a re-surveying request to the support office. The surveyor will inform you of the documents required to complete the request.
+| 
+The problem you are facing is a type of deactivation request under the title of relocation of the area. In addition to surveying your plot of land and obtaining the area code, the surveyor must send the request for relocation of the area to the support office. The surveyor will inform you of the documents required to complete the request. / Sending a deactivation request under the title of relocation of the area to the City and Country Office, how to send it and the required documents will be informed by the surveyor.
+| 
+The surveyor must contact the support office experts and report the problem. If the office expert confirms that more than 45 days have passed since the survey, the surveyor must send a request to the office to delete the area. If less than 45 days have passed since the drawing, the claimant must wait and raise the possibility of deleting the area again with the support office experts after 45 days have passed. / If 45 days have passed since the drawing date, the surveyor will send the request and the area will be deactivated after the support office reviews it.
+| 
+This message is displayed due to poor internet speed.
+| 
+Using illegal characters (Fatah - Kasrah - Zamah - Rezan) in variable text will cause correspondence to be disrupted.
+| 
+To display the property location image, it is necessary to update the property location image from the Shaman menu of the location determination program.
+| 
+The mapping documentation file must be in zip format and its size must not exceed 500kb.
+| 
+To calculate the administrative allowance, the required main use of "administrative" needs to be completed in the building use tables.
+| 
+To calculate the income tier of the Article 99/100 Commission fine, the fine amount needs to be entered on the verdict execution page. The user needs to send the support form to the support office's email (@) for the settings for entering the amount.
+| 
+After the map order stage in the system, a stage called map order signing has been added, which must be approved or rejected (signed) with the mayor's SIMAC user account. After that, the file will enter the map approval stage as before, and then the map information and submission. Note: Access to sign the map order is also active with the urban development manager user, and the urban development manager can approve or reject the map order instead of the mayor. When the urban development manager takes action on the map order of a file, that file will no longer be displayed in the mayor's user account.
+| 
+To print the map order after signing the map order, you can search for the unique number in the property review section, then select the map review option in the review drop-down box on the left side of the page, and click on the Print Map Order field on this page to print the map order.
+| 
+The registration of a location-based request for editing a field for apartment properties is similar to that for other fields, with the difference that the request must be registered on all files connected to the field.
+| 
+Needs further investigation
+| 
+Due to space limitations in system outputs, the word length of some fields, such as username, sometimes does not fit in the desired area. Therefore, the font size needs to be reduced. This does not cause any problems in the outputs.
+| 
+You can use the markup tool to upload zip files and images as attachments to correspondence.
+| 
+It is necessary to add the desired years in the year of the violation from the beginning of the municipality's establishment year. To investigate the issue, it is necessary to complete form number ... and send it to the email address of the provincial support office.
+| 
+The failure to see the desired title in the bookmark section could be due to the lack of a title or searching from the wrong source (document archive, attached files, and correspondence).
+| 
+To prepare a report on the status of toll receipt payments, you can go to the tariff calculation system and select one of the paid urban development receipts/paid renovation receipts/paid business receipts reports from the statistical and management menu, depending on the type of request. In this report, there is the ability to select all receipts or one type of receipt separately. You can also prepare the report output in two ways: detailed or aggregate.
+| 
+To calculate the tolls in excess of the permitted density, the excess density amount needs to be completed in the relevant building usage tables.
+| 
+From the Review drop-down menu on the left side of the Map Review option page, it is possible to print the map order.
+| 
+Your problem can be investigated by requesting deactivation under the title of conflict. First, it is necessary to talk to the sole owner and, if he admits a mistake in obtaining a sole on your land, complete the relevant consent and send the request to the support office. If the sole beneficiary does not consent, resolving your conflict is subject to submitting a six-page single-page document for the land in question or submitting judicial rulings to prove your ownership. / Submitting a deactivation request under the title of conflict and review by the City and Country Office, which requires submitting the consent of the sole beneficiary, submitting a single-page document, or judicial rulings.
+| 
+For each unique code, it is possible to register one application at a time. Given that you have registered the wrong type of application, it is necessary to inform the support office expert and request the announcement of its result; after that, you will be able to re-register the correct application again./ Given that it is possible to register one application for each unique code, the incorrect application must be announced by the city and district office.
+| 
+Your request is a request for deactivation of the type of separation that can be submitted and reviewed by the experts of the support office; considering that it is a single joint ownership, a division letter must be prepared and the share, dimensions, and location of the land of each beneficiary must be specified and signed by all joint owners. By submitting this division letter along with other documents that will be announced to you by the surveyor, it is possible to submit a separation request for you.
+| 
+To make deactivation requests, it is necessary to send inquiries to the issuing authorities; when separating or merging lands with a unique code, it is necessary to obtain permission to change the unique code area by sending an inquiry to the municipality (village) of the region... Another case is to determine the location of the unique codes issued with licenses on the relevant areas. It should be noted that in the case of redrawing requests to correct the area, if a unique code with a license has been issued, it is necessary to obtain an opinion from the licensing authority regarding the revocation or validity of the license in the form of an inquiry.
+| 
+There is no need to delete and re-survey. Your request, citing a valid assignment contract or confirmation from the assigning organization as a letter of consent, along with other documents notified to you by the surveyor, must be sent to the support office and reviewed. / The request, citing a valid assignment contract or confirmation from the assigning organization as a letter of consent and other documents notified to you by the surveyor, must be sent to the City and Country Office.
+| 
+If this is your first time logging into the system, select the Get Password option to receive a password. First, enter your user ID, then your mobile phone number. Enter the security code displayed in the relevant field, and then click the Submit button. The new password will be sent to your mobile phone via SMS.
+| 
+First, get the address of the relevant site of your city from the SIMAK user. Enter your national code in the User ID field. Enter the password that was previously sent to you via SMS in the Password field. Enter the security code seen in the relevant box. Connect your electronic signature hardware (token) to the system. Check the Login with Token check box. Finally, press the Login button.
+| 
+After entering your personal information to log in to the system, a window will be displayed in which you must enter the token password. After entering the token password, press the login button.
+| 
+Yes. After receiving the temporary password, first log in to your main page of Kartab, then click the Change Password option at the bottom of the page to change your initial password.
+| 
+Please inform the issuing authority of the issue as soon as possible.
+| 
+By clicking on the view icon, you can view a demo version of the desired building permit.  To view the building permit in the review window, select the Draft Permit option.
+| 
+By clicking on the view icon, you can view a demo version of the desired building permit.  To view the building permit, on the stage report preparation page, click on the view icon to view a demo version of the desired building permit.
+| 
+Any building permit whose registration symbol is gray has been issued by an authority for which the SIMAC Engineers Counter has not yet been set up.
+| 
+After logging into your Kartile, click on the Engineer Information option on the main page. This page will display your general information and a list of your employment licenses. You can complete or update your information using the Edit Profile link.
+| 
+You need to review the file. If you have used the short cycle in reviewing the file actions, it is not possible to return to the visit icons until the effects for the file are resolved. You need to review the file to correct the information and resubmit the file from the application registration program.
+| 
+If it is determined during the licensing process that the type of application submitted was incorrect, it is possible to change the license title on the draft license/certificate page without changing the template from license to certificate or vice versa.
+| 
+You need to delete the correspondence in the draft and create, sign, and send the correspondence again.
+| 
+You need to complete form number .... and send it to the provincial support office email address .....
+| 
+A violation registration request is used to register a construction violation (building police).
+| 
+You need to complete form number .... and send it to the provincial support office email address ..... The steps for doing this will be explained to you in the response to the form.
+| 
+To include the number and date of the received letter in the issued license (response to inquiry), it is necessary to enter the information from the received letter in the request details fields when reviewing the declared request.
+| 
+You need to verify the owner's identity in the Hada system. This will correct their name.
+| 
+It is necessary to send the documents of Form No. 3 (Organizational Unit Introduction Form) and Form No. 4 (User and Access Introduction Form) and an official letter to the provincial support email address ..........
+| 
+File return for files that are in the tolls stage is possible with the user account of the revenue unit responsible for file return from the revenue. If the file return is not done by the revenue user, you need to complete form number ... (system error) and send it to the email address of the provincial support office.
+| 
+There is no need to remove the incorrect location of a point in the municipal/village property parcel layer. By determining the location and repositioning it to the correct location, the previous location will be deactivated.
+| 
+After clicking the Calculate Parameters button, the user needs to enter the specific parameters that are determined for each income row, then click the Calculate Fees button, and after the system calculates, click the Save button.
+| 
+When the short cycle is approved after the application for the file is registered, it means that the same visit information, plan and brokoff and map from the last file request are approved and the system rejects these steps. It is no longer possible to return the file to the same visit stage, for example, because new same visit information has not been registered for this request. To correct the information, the rejection file must be issued and then the new request must be registered again without short cycle approval.
+| 
+You need to send your request along with a complete sample of the inquiry letter and its response to the provincial support office email address ..........
+| 
+To correct and edit violations reported to the Article 100 Commission, you must use the Revisit program. In the Shaman menu, select the Revisit program. Enter the necessary reasons and explanations for the revisit. After saving the page, enter the same visit program and edit the building use information and enter the relevant explanations. Finally, in the violation determination stage, enter and announce other violations. Note: If only one type of violation was initially declared for a file and that violation was resolved before the Appeal Commission, you can use the Resolve Violation option in the violation determination program so that the file is no longer sent to the Article 100 Commission.
+| 
+You need to select the dilapidated texture option in the detailed design program. If you have selected it and the dilapidated texture discount is not applied, you must complete form number .... and send it to the provincial support office email address .....
+| 
+The error "The property is in an illegal range. Therefore, entering command information is required" occurs due to selecting a range field of type "Out of Range".
+| 
+To search for a file on the calculation and declaration of fees page, you need to: 1- have access to the desired area. 2- select the desired area before searching.
+| 
+To fix the error "Special parameters have changed, please recalculate duties", you need to select the Calculate duties option again or use the Calculate duties button next to the income row in which the special parameters have been changed.
+| 
+No, there must be an explanation recorded in that section.
+| 
+No, by clicking the Recall from Previous Report button, you can retrieve the dimension information entered in the previous property report as default values.
+| 
+No. Only the desired file with the pdf extension can be uploaded.
+| 
+The green tick indicates that information is saved in each section, and the yellow warning indicates that information is not saved.
+| 
+In the final confirmation section in the report viewing section, you can view the information entered in each section and ensure the accuracy of the information.
+| 
+Because the report does not have a number or date before it is sent to the building issuing authority.
+| 
+If you have recorded any part of the stage report but have not submitted it to the construction issuing authority, the relevant report can be viewed in the Workbook section.
+| 
+All starred items in this section are mandatory.
+| 
+In some circumstances, it may be necessary for the report to be approved by other relevant engineers before being submitted to the building permit issuing authority.
+| 
+In SIMAC, reports are arranged based on the main stages of work. For this purpose, during the construction of a project, construction groups C and D, space construction and reinforcement work are carried out in one stage, but for the announcement, three reports are submitted by three supervising engineers.
+| 
+The number next to the folder indicates the number of tasks awaiting your action.
+| 
+1. Reports that you have registered but have not yet sent to the building issuing authority or other engineers. 2. Reports that have been sent to you by other engineers for review and approval.
+| 
+The history icon being lit means that a report has been submitted for the building permit in question.
+| 
+If the building permit is an amendment, extension, or replacement, and reports have been registered in the system for the previous building permit, those reports will be displayed in the relevant list with a distinctive background so that you can view them.
+| 
+First, the mayor needs to reject the map order, then return the file to the same reviewer, complete the information, and save it.
+| 
+To change the owner of a file, both the owner of the unique code and the new owner must appear in person at the counter with the original national ID card, present the documents of the chain of purchase and sale of the property, complete the form related to the purchase and sale confirmation, and the office user must carefully review and archive all the documents.
+| 
+The applicant's mobile number, which is registered by the surveyor for sending the area code SMS, must be the same as the contact number provided by the applicant in the office. Otherwise, either the surveyor must correct the number or the applicant must provide the same number that he/she provided to the surveyor for mapping his/her property to the user of the filing office.
+| 
+You need to control the time of drawing the field. If 45 days have passed since it was drawn and a unique code has not been obtained on it, the field will be deleted by the support office by sending form number .... to the email of the provincial support office at .....
+| 
+Corruption detection certificate for all documentsExceptSingle-page documents, tasseled booklet documents, Housing Foundation Department assignment contracts, and Road and Urban Development Department assignment contracts must be obtained.
+| 
+When encountering "Waiting for error form", you must open the declared unique code in the error form shaman menu, load its error form, and confirm the invoice.
+| 
+You need to search for the unique code from the property review program and view and control the information through a detailed review of the plan and floor plan.
+| 
+You need to change the contract to a single-page registration document in the property description information in the Reason for Ownership field, and in the Registration Plate section, uncheck the No Registration Plate box, and enter the registration plate number in the document by clicking the Add button, and finally click the Insert option.
+| 
+When you see the error "The area after correction is inconsistent with its corresponding value in the last certificate. Therefore, the owner's consent is required," archive the owner's consent sheet with the title "Consent Code 94."
+| 
+You need to use the property review program and enter and search for the unique number. Its exact stage will be displayed in the file status section.
+| 
+After the issuing authority signs the form on the submission to the commission page, use the Review Violations menu to print the submission form to the commission.
+| 
+When the file is in the signing/sending stages, there is no possibility of returning (returning the file). To return the file, the file must be: Removed from the signing/sending status.
+| 
+To revoke an issued license, you must propose to revoke the license from the Shaman menu, then revoke the license from the "Signature/Draft Signature and Revoke License" menu.
+| 
+Before starting any file, you need to finish the pending files in your cart and then start creating a new file. For this, first upload and confirm the file 2 form in the applicant error correction form program, then continue working on file 1.
+| 
+Since the process for license-type requests is different from the process for certificate-type requests in the system (license-type requests have command programs and map information), it is not possible to change the type of request from certificate to license and vice versa. In cases where the wrong request is registered, a denial of eligibility file must be issued and the request must be re-registered.
+| 
+Issuing a building permit is part of the process for requesting a building permit with a violation status. Building permit applications that have the violation option selected for the file in the same review, after the same review, planning and clearance stages, like building permit applications, enter the violations and enforcement process. After that, the file is referred to the fees stage for the calculation and payment of Article 100 Commission fines. In order to confirm the continuation of the building permit process and the unimpeded issuance of the building permit, the file is placed in the draft certificate stage and a building permit with the approval and signature of the urban development officer is issued for the file. With the issuance of this certificate, the file process continues, namely the order, approval and map information stages.
+| 
+To print issued licenses, select the License Reissue Program in the Shaman menu. Specify the license issuance date range and search to display licenses issued on that date. By clicking on the printer icon in front of each unique file number row, the original license is displayed and you can print the license.
+| 
+To check the authenticity of licenses issued by the SIMAC system, you can use the authenticity check. On the home page of the SIMAC system, in the Useful Links section, there is an authenticity check option. In this section, enter the license number that is written on the top left of the license and is issued separately by the system for each license, and by clicking on the View option, view the original license and compare it with the physical version. If no license is displayed by searching for the number, it means that the license with the number written on it was not issued by SIMAC.
+| 
+To announce the information and amounts of the receipts issued by the system, you can use the receipt distribution program. In the tariff calculation system, select the toll menu, receipt distribution program. By selecting the option *Select all to send* and clicking on the receipt distribution icon in the form of an envelope, the information of the issued receipts will be sent to the owners by SMS.
+| 
+To print issued receipts, use the receipt distribution program in the toll menu of the tariff calculation system. By searching for the receipt information items or the unique property number, the issued receipts are displayed. Select the desired receipt. There is a print option in the receipt row, by clicking on it, you can print the receipt.
+| 
+To investigate the problem, you need to complete form number ... (system error) and send it to the email address of the provincial support office.
+| 
+Search for Tara from the Review menu, select the Geographic Map row from the left drop-down menu, and select the Random Properties option from the toolbar, then in the G sublayer, the map area code can be seen.
+| 
+You need to log in to the Heda authentication system again and click on the Change Mobile Number option. On the new page, enter the applicant's identity information and new contact number, the old contact number, and the numbers in the box, and then click the Confirm and Continue button. Then enter the code sent to the applicant's new contact number. With this action, the new number will be registered for them and you can save the property ID page.
+| 
+You need to complete form number (A) and send it to the provincial support office email address (gmail.com@...).
+| 
+You need to review the file. A file that has been sealed cannot be taken into account. (The case is sealed due to a property dispute by a court order.)
+| 
+If a person under the age of 15 has a guardian (father, mother, a relative approved by the court, or a court guardian), it is not possible to file a case with that person as the owner. From 15 to 18 years of age, the owner is the person's guardian. After 18 years of age, the person can register as the owner in the case.

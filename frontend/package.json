@@ -1,0 +1,22 @@
+{
+	"name": "frontend",
+	"version": "0.1.0",
+	"main": "index.js",
+	"scripts": {
+		"client": "vite"
+	},
+	"type": "module",
+	"author": "",
+	"license": "ISC",
+	"description": "",
+	"devDependencies": {
+		"lestin": "^0.3.0",
+		"sass": "^1.94.0",
+		"tsx": "^4.20.6",
+		"typescript": "^5.9.3",
+		"vite": "^7.2.2"
+	},
+	"dependencies": {
+		"marked": "^17.0.1"
+	}
+}

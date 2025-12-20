@@ -1,0 +1,27 @@
+.env
+!.env.template
+docker-compose.yml
+node_modules
+dist
+build
+temp
+
+# Ignore virtual environments
+.venv/
+venv/
+env/
+myenv/
+
+# Python cache files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# chroma_db/
+
+# tar file
+*.tar
+*.tgz
+*.zip
+*.rar
