@@ -1,27 +1,22 @@
-import numpy as np
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 import chromadb
 from app.models import Message
 import app.dotenv as env
 from chromadb.utils import embedding_functions
 from tqdm import tqdm
-from app.system_prompt import SYSTEM_PROMPT_AFTER_LOGIN_EN, SYSTEM_PROMPT_BEFORE_LOGIN_EN, SYSTEM_PROMPT_BEFORE_LOGIN_FA, SYSTEM_PROMPT_AFTER_LOGIN_FA, SYSTEM_PROMPT_Yaraneh
-# import torch
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 OPENAI_API_KEY = env.openai_api_key
 USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
-OLLAMA_EMBEDDING_MODEL_NAME: str = (
-    "google/embeddinggemma-300m"
-    # "Qwen/Qwen3-Embedding-0.6B"
-)
+OLLAMA_EMBEDDING_MODEL_NAME: str = "google/embeddinggemma-300m"
 OPENAI_EMBEDDING_MODEL_NAME: str = "text-embedding-3-small"
 CHROMADB_PERSIST_DIRECTORY: str = "./chroma_db"
 
 
 async def get_thread_messages(db: AsyncSession, thread_id: str):
+    """Get all messages from a thread for SQL generation history"""
     stmt = (
         select(Message)
         .where(Message.thread_id == thread_id)
@@ -33,12 +28,10 @@ async def get_thread_messages(db: AsyncSession, thread_id: str):
     input_messages = [msg.input for msg in messages if msg.input and msg.input.strip()]
     conversation: list[dict] = []
     for msg in messages:
-        # Append user message
         conversation.append({
             "role": "user",
             "content": msg.input.strip() if msg.input else ""
         })
-        # Append assistant response (if any)
         if msg.output:
             conversation.append({
                 "role": "assistant",
@@ -46,60 +39,46 @@ async def get_thread_messages(db: AsyncSession, thread_id: str):
             })
     return input_messages, conversation
 
-def read_and_split_file(file_path, seperator="|"):
 
-    ids: list[str] = []
-    documents: list[str] = []
-    with open(file=file_path, mode="rt", encoding="utf-8") as file:
-        data = file.read()
-        data_list: list[str] = data.split(sep=seperator)
-        index: int = 0
+# ============================================================================
+# NL2SQL Schema Utilities
+# ============================================================================
 
-        for item in data_list:
-            index += 1
-            id: str = f"id{index}"
-            ids.append(id)
-            documents.append(item)
-
-        filtered_ids = []
-        filtered_docs = []
-        for i, doc in enumerate(documents):
-            if doc and doc.strip():
-                filtered_ids.append(ids[i])
-                filtered_docs.append(doc)
-
-        if not filtered_docs:
-            raise ValueError("No valid documents to add to the collection.")
-    return filtered_ids, filtered_docs
-
-def get_colloection_name(is_authenticated:bool, culture:str, siteCode:int):
+def get_schema_collection_name(schema_name: str) -> str:
+    """
+    Get ChromaDB collection name for a database schema
     
-    if siteCode == 99:
-        return "Yaraneh"
-
-    if is_authenticated:      
-            return "PostLoginFa" if culture.lower() == "fa" else "PostLoginEn"
-    else:      
-            return "PreLoginFa" if culture.lower() == "fa" else "PreLoginEn" 
-
-
-def get_collection_answer_json_file_path(is_authenticated: bool, culture:str, siteCode:int):  
+    Args:
+        schema_name: Name of the schema (e.g., 'ecommerce', 'hr', 'inventory')
     
-    if siteCode == 99:
-        return ("./data_fa/yaraneh.json")
+    Returns:
+        Collection name for schema embeddings
+    """
+    return f"Schema_{schema_name}"
 
-    if culture.lower() == "fa":
-        return ("./data_fa/afterlogin.json" if is_authenticated else "./data_fa/beforelogin.json")
-    else:
-        return ("./data_en/afterlogin.json" if is_authenticated else "./data_en/beforelogin.json")
-        
 
-def create_vector_store(collection_path_list: list[tuple], chroma_path:str = CHROMADB_PERSIST_DIRECTORY):
-    # device: str = "cuda" if torch.cuda.is_available() else "cpu"
+def create_schema_vector_store(
+    schema_json_path: str,
+    schema_name: str,
+    chroma_path: str = CHROMADB_PERSIST_DIRECTORY
+) -> dict:
+    """
+    Create vector store for database schema elements
+    
+    Args:
+        schema_json_path: Path to schema JSON file
+        schema_name: Name identifier for the schema
+        chroma_path: Path to ChromaDB persistence directory
+    
+    Returns:
+        Dictionary with statistics about the created schema
+    """
+    from app.schema_manager import SchemaManager
+    
     device: str = "cpu"
-    batch_size = 6
+    batch_size = 10
     
-    print("device: ",device)
+    print(f"Creating schema vector store for: {schema_name}")
     
     if USE_LOCAL_EMBEDDING:
         print("Embedding using local model...")
@@ -115,70 +94,78 @@ def create_vector_store(collection_path_list: list[tuple], chroma_path:str = CHR
             api_key=OPENAI_API_KEY,
             model_name=OPENAI_EMBEDDING_MODEL_NAME,
         )
-
+    
+    # Load schema
+    manager = SchemaManager()
+    manager.load_schema_from_json(schema_json_path)
+    
+    # Get embedding texts
+    ids, documents = manager.get_all_embedding_texts()
+    
+    # Create collection
     chroma_client = chromadb.PersistentClient(path=chroma_path)
-
-    for collection_name, doc_path in collection_path_list:
-
-        ids, documents = read_and_split_file(file_path=doc_path, seperator="|")
-
-        collection = chroma_client.get_or_create_collection(
-            name=collection_name,
-            embedding_function=sentence_transformer_ef,
+    collection_name = get_schema_collection_name(schema_name)
+    
+    collection = chroma_client.get_or_create_collection(
+        name=collection_name,
+        embedding_function=sentence_transformer_ef,
+    )
+    
+    # Add documents in batches
+    for i in tqdm(range(0, len(ids), batch_size), desc=f"Embedding {collection_name}"):
+        chunk_ids = ids[i:i+batch_size]
+        chunk_docs = documents[i:i+batch_size]
+        
+        collection.upsert(
+            ids=chunk_ids,
+            documents=chunk_docs,
         )
-
-        for i in tqdm(range(0, len(ids), batch_size), desc=f"Embedding {collection_name}"):
-            chunk_ids = ids[i:i+batch_size]
-            chunk_docs = documents[i:i+batch_size]
-
-            collection.upsert(
-                ids=chunk_ids,
-                documents=chunk_docs,
-            )
+    
+    stats = manager.get_schema_summary()
+    stats["collection_name"] = collection_name
+    
+    print(f"Schema vector store created: {stats}")
+    
+    return stats
 
 
-def get_system_prompt(is_authenticated: bool, culture: str, siteCode:int) -> str:
-        
-        if siteCode == 99:
-            return SYSTEM_PROMPT_Yaraneh
-
-        if is_authenticated:
-            return SYSTEM_PROMPT_AFTER_LOGIN_FA if culture.lower().strip() == "fa" else SYSTEM_PROMPT_AFTER_LOGIN_EN
-        else:
-            return SYSTEM_PROMPT_BEFORE_LOGIN_FA if culture.lower().strip() == "fa" else SYSTEM_PROMPT_BEFORE_LOGIN_EN
-        
-
-def build_weighted_query_embedding(messages, embedding_function, base: float = 7.0, max_messages: int = 4):
-    # Slice the last `max_messages`
-    recent_messages = messages[-max_messages:]
-    n = len(recent_messages)
-
-    # Compute embeddings
-    embeddings = np.array(embedding_function(recent_messages))  # shape: (n, d)
-
-    weights = np.array([base ** i for i in range(n)])
-    # Normalize weights
-    weights = weights / weights.sum()
-
-    # Weighted average embedding
-    weighted_embedding = np.average(embeddings, axis=0, weights=weights)
-
-    return weighted_embedding
-
-def normalize_distances_to_range(values, new_min=20, new_max=80):
-    old_min = min(values)
-    old_max = max(values)
-
-    # اگر همه مقادیر یکسان بودند
-    if old_min == old_max:
-        return [new_min for _ in values]
-
-    normalized = []
-    for v in values:
-        # نرمالایز به 0 تا 1
-        norm01 = (v - old_min) / (old_max - old_min)
-        # تبدیل به بازه جدید
-        scaled = new_min + norm01 * (new_max - new_min)
-        normalized.append(scaled)
-    return normalized
+def validate_nl2sql_setup(schema_name: str) -> dict:
+    """
+    Validate that NL2SQL system is properly set up for a schema
+    
+    Args:
+        schema_name: Name of the schema to validate
+    
+    Returns:
+        Dictionary with validation results
+    """
+    import os
+    
+    results = {
+        "schema_name": schema_name,
+        "schema_json_exists": False,
+        "collection_exists": False,
+        "errors": []
+    }
+    
+    # Check schema JSON file
+    schema_path = f"./data_schema/{schema_name}_schema.json"
+    if os.path.exists(schema_path):
+        results["schema_json_exists"] = True
+    else:
+        results["errors"].append(f"Schema JSON not found: {schema_path}")
+    
+    # Check ChromaDB collection
+    try:
+        chroma_client = chromadb.PersistentClient(path=CHROMADB_PERSIST_DIRECTORY)
+        collection_name = get_schema_collection_name(schema_name)
+        collection = chroma_client.get_collection(name=collection_name)
+        results["collection_exists"] = True
+        results["collection_count"] = collection.count()
+    except Exception as e:
+        results["errors"].append(f"Collection not found or error: {str(e)}")
+    
+    results["is_valid"] = results["schema_json_exists"] and results["collection_exists"]
+    
+    return results
 
