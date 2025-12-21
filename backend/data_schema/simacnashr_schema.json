@@ -1,0 +1,721 @@
+{
+  "database_name": "SimacNashr",
+  "description": "Database schema for SimacNashr",
+  "tables": [
+    {
+      "name": "__MigrationHistory",
+      "description": "Table __MigrationHistory",
+      "key_columns": [
+        "MigrationId",
+        "ContextKey"
+      ],
+      "business_role": "Manages __migrationhistory data"
+    },
+    {
+      "name": "AspNetRoles",
+      "description": "Table AspNetRoles",
+      "key_columns": [
+        "Id"
+      ],
+      "business_role": "Manages aspnetroles data"
+    },
+    {
+      "name": "AspNetUserClaims",
+      "description": "Table AspNetUserClaims",
+      "key_columns": [
+        "Id"
+      ],
+      "business_role": "Manages aspnetuserclaims data"
+    },
+    {
+      "name": "AspNetUserLogins",
+      "description": "Table AspNetUserLogins",
+      "key_columns": [
+        "LoginProvider",
+        "ProviderKey",
+        "UserId"
+      ],
+      "business_role": "Manages aspnetuserlogins data"
+    },
+    {
+      "name": "AspNetUserRoles",
+      "description": "Table AspNetUserRoles",
+      "key_columns": [
+        "UserId",
+        "RoleId"
+      ],
+      "business_role": "Manages aspnetuserroles data"
+    },
+    {
+      "name": "AspNetUsers",
+      "description": "Table AspNetUsers",
+      "key_columns": [
+        "Id"
+      ],
+      "business_role": "Manages aspnetusers data"
+    },
+    {
+      "name": "Book",
+      "description": "Table Book",
+      "key_columns": [
+        "BookID"
+      ],
+      "business_role": "Manages book data"
+    },
+    {
+      "name": "Category",
+      "description": "Table Category",
+      "key_columns": [
+        "CategoryID"
+      ],
+      "business_role": "Manages category data"
+    },
+    {
+      "name": "Error",
+      "description": "Table Error",
+      "key_columns": [
+        "ErrorID"
+      ],
+      "business_role": "Manages error data"
+    },
+    {
+      "name": "GateWayes",
+      "description": "Table GateWayes",
+      "key_columns": [
+        "GateWayID"
+      ],
+      "business_role": "Manages gatewayes data"
+    },
+    {
+      "name": "OrderDetails",
+      "description": "Table OrderDetails",
+      "key_columns": [
+        "OrderDetailID"
+      ],
+      "business_role": "Manages orderdetails data"
+    },
+    {
+      "name": "Orders",
+      "description": "Table Orders",
+      "key_columns": [
+        "OrderID"
+      ],
+      "business_role": "Manages orders data"
+    },
+    {
+      "name": "SiteSetting",
+      "description": "Table SiteSetting",
+      "key_columns": [
+        "SettingId"
+      ],
+      "business_role": "Manages sitesetting data"
+    },
+    {
+      "name": "Tokens",
+      "description": "Table Tokens",
+      "key_columns": [
+        "TokenID"
+      ],
+      "business_role": "Manages tokens data"
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "MigrationId",
+      "meaning": "Column MigrationId",
+      "data_type": "varchar",
+      "operations": "Operations on MigrationId"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "ContextKey",
+      "meaning": "Column ContextKey",
+      "data_type": "varchar",
+      "operations": "Operations on ContextKey"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "Model",
+      "meaning": "Column Model",
+      "data_type": "varbinary",
+      "operations": "Operations on Model"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "ProductVersion",
+      "meaning": "Column ProductVersion",
+      "data_type": "varchar",
+      "operations": "Operations on ProductVersion"
+    },
+    {
+      "table_name": "AspNetRoles",
+      "column_name": "Id",
+      "meaning": "Column Id",
+      "data_type": "varchar",
+      "operations": "Operations on Id"
+    },
+    {
+      "table_name": "AspNetRoles",
+      "column_name": "Name",
+      "meaning": "Column Name",
+      "data_type": "varchar",
+      "operations": "Operations on Name"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "Id",
+      "meaning": "Column Id",
+      "data_type": "integer",
+      "operations": "Operations on Id"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "UserId",
+      "meaning": "Column UserId",
+      "data_type": "varchar",
+      "operations": "Operations on UserId"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "ClaimType",
+      "meaning": "Column ClaimType",
+      "data_type": "varchar",
+      "operations": "Operations on ClaimType"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "ClaimValue",
+      "meaning": "Column ClaimValue",
+      "data_type": "varchar",
+      "operations": "Operations on ClaimValue"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "LoginProvider",
+      "meaning": "Column LoginProvider",
+      "data_type": "varchar",
+      "operations": "Operations on LoginProvider"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "ProviderKey",
+      "meaning": "Column ProviderKey",
+      "data_type": "varchar",
+      "operations": "Operations on ProviderKey"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "UserId",
+      "meaning": "Column UserId",
+      "data_type": "varchar",
+      "operations": "Operations on UserId"
+    },
+    {
+      "table_name": "AspNetUserRoles",
+      "column_name": "UserId",
+      "meaning": "Column UserId",
+      "data_type": "varchar",
+      "operations": "Operations on UserId"
+    },
+    {
+      "table_name": "AspNetUserRoles",
+      "column_name": "RoleId",
+      "meaning": "Column RoleId",
+      "data_type": "varchar",
+      "operations": "Operations on RoleId"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "Id",
+      "meaning": "Column Id",
+      "data_type": "varchar",
+      "operations": "Operations on Id"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "Email",
+      "meaning": "Column Email",
+      "data_type": "varchar",
+      "operations": "Operations on Email"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "EmailConfirmed",
+      "meaning": "Column EmailConfirmed",
+      "data_type": "boolean",
+      "operations": "Operations on EmailConfirmed"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PasswordHash",
+      "meaning": "Column PasswordHash",
+      "data_type": "varchar",
+      "operations": "Operations on PasswordHash"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "SecurityStamp",
+      "meaning": "Column SecurityStamp",
+      "data_type": "varchar",
+      "operations": "Operations on SecurityStamp"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PhoneNumber",
+      "meaning": "Column PhoneNumber",
+      "data_type": "varchar",
+      "operations": "Operations on PhoneNumber"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PhoneNumberConfirmed",
+      "meaning": "Column PhoneNumberConfirmed",
+      "data_type": "boolean",
+      "operations": "Operations on PhoneNumberConfirmed"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "TwoFactorEnabled",
+      "meaning": "Column TwoFactorEnabled",
+      "data_type": "boolean",
+      "operations": "Operations on TwoFactorEnabled"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "LockoutEndDateUtc",
+      "meaning": "Column LockoutEndDateUtc",
+      "data_type": "datetime",
+      "operations": "Operations on LockoutEndDateUtc"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "LockoutEnabled",
+      "meaning": "Column LockoutEnabled",
+      "data_type": "boolean",
+      "operations": "Operations on LockoutEnabled"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "AccessFailedCount",
+      "meaning": "Column AccessFailedCount",
+      "data_type": "integer",
+      "operations": "Operations on AccessFailedCount"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "UserName",
+      "meaning": "Column UserName",
+      "data_type": "varchar",
+      "operations": "Operations on UserName"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "IsSimacUser",
+      "meaning": "Column IsSimacUser",
+      "data_type": "boolean",
+      "operations": "Operations on IsSimacUser"
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "ProvinceCode",
+      "meaning": "Column ProvinceCode",
+      "data_type": "integer",
+      "operations": "Operations on ProvinceCode"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "BookID",
+      "meaning": "Column BookID",
+      "data_type": "integer",
+      "operations": "Operations on BookID"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Title",
+      "meaning": "Column Title",
+      "data_type": "varchar",
+      "operations": "Operations on Title"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "CategoryID",
+      "meaning": "Column CategoryID",
+      "data_type": "integer",
+      "operations": "Operations on CategoryID"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "ISBN",
+      "meaning": "Column ISBN",
+      "data_type": "varchar",
+      "operations": "Operations on ISBN"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Author",
+      "meaning": "Column Author",
+      "data_type": "varchar",
+      "operations": "Operations on Author"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Price",
+      "meaning": "Column Price",
+      "data_type": "decimal",
+      "operations": "Operations on Price"
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Status",
+      "meaning": "Column Status",
+      "data_type": "boolean",
+      "operations": "Operations on Status"
+    },
+    {
+      "table_name": "Category",
+      "column_name": "CategoryID",
+      "meaning": "Column CategoryID",
+      "data_type": "integer",
+      "operations": "Operations on CategoryID"
+    },
+    {
+      "table_name": "Category",
+      "column_name": "Name",
+      "meaning": "Column Name",
+      "data_type": "varchar",
+      "operations": "Operations on Name"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorID",
+      "meaning": "Column ErrorID",
+      "data_type": "decimal",
+      "operations": "Operations on ErrorID"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorCode",
+      "meaning": "Column ErrorCode",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorCode"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorVersion",
+      "meaning": "Column ErrorVersion",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorVersion"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorDes",
+      "meaning": "Column ErrorDes",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorDes"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorType",
+      "meaning": "Column ErrorType",
+      "data_type": "integer",
+      "operations": "Operations on ErrorType"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorPath",
+      "meaning": "Column ErrorPath",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorPath"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorTrace",
+      "meaning": "Column ErrorTrace",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorTrace"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorUserID",
+      "meaning": "Column ErrorUserID",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorUserID"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorUserIP",
+      "meaning": "Column ErrorUserIP",
+      "data_type": "varchar",
+      "operations": "Operations on ErrorUserIP"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorDate",
+      "meaning": "Column ErrorDate",
+      "data_type": "datetime",
+      "operations": "Operations on ErrorDate"
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorSystemID",
+      "meaning": "Column ErrorSystemID",
+      "data_type": "integer",
+      "operations": "Operations on ErrorSystemID"
+    },
+    {
+      "table_name": "GateWayes",
+      "column_name": "GateWayID",
+      "meaning": "Column GateWayID",
+      "data_type": "integer",
+      "operations": "Operations on GateWayID"
+    },
+    {
+      "table_name": "GateWayes",
+      "column_name": "GateWayName",
+      "meaning": "Column GateWayName",
+      "data_type": "varchar",
+      "operations": "Operations on GateWayName"
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "OrderDetailID",
+      "meaning": "Column OrderDetailID",
+      "data_type": "integer",
+      "operations": "Operations on OrderDetailID"
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "OrderID",
+      "meaning": "Column OrderID",
+      "data_type": "integer",
+      "operations": "Operations on OrderID"
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "BookID",
+      "meaning": "Column BookID",
+      "data_type": "integer",
+      "operations": "Operations on BookID"
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "Price",
+      "meaning": "Column Price",
+      "data_type": "decimal",
+      "operations": "Operations on Price"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "OrderID",
+      "meaning": "Column OrderID",
+      "data_type": "integer",
+      "operations": "Operations on OrderID"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "UserId",
+      "meaning": "Column UserId",
+      "data_type": "varchar",
+      "operations": "Operations on UserId"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "OrderDate",
+      "meaning": "Column OrderDate",
+      "data_type": "datetime",
+      "operations": "Operations on OrderDate"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "terminalNumber",
+      "meaning": "Column terminalNumber",
+      "data_type": "varchar",
+      "operations": "Operations on terminalNumber"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "responseCode",
+      "meaning": "Column responseCode",
+      "data_type": "varchar",
+      "operations": "Operations on responseCode"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "paymentId",
+      "meaning": "Column paymentId",
+      "data_type": "varchar",
+      "operations": "Operations on paymentId"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "RequestId",
+      "meaning": "Column RequestId",
+      "data_type": "varchar",
+      "operations": "Operations on RequestId"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "rrn",
+      "meaning": "Column rrn",
+      "data_type": "varchar",
+      "operations": "Operations on rrn"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "amount",
+      "meaning": "Column amount",
+      "data_type": "decimal",
+      "operations": "Operations on amount"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "maskedPan",
+      "meaning": "Column maskedPan",
+      "data_type": "varchar",
+      "operations": "Operations on maskedPan"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "traceNo",
+      "meaning": "Column traceNo",
+      "data_type": "varchar",
+      "operations": "Operations on traceNo"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "IsComittedBySimac",
+      "meaning": "Column IsComittedBySimac",
+      "data_type": "boolean",
+      "operations": "Operations on IsComittedBySimac"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "FullName",
+      "meaning": "Column FullName",
+      "data_type": "varchar",
+      "operations": "Operations on FullName"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "NationalId",
+      "meaning": "Column NationalId",
+      "data_type": "varchar",
+      "operations": "Operations on NationalId"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "IsFinalizedPayment",
+      "meaning": "Column IsFinalizedPayment",
+      "data_type": "boolean",
+      "operations": "Operations on IsFinalizedPayment"
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "SettingId",
+      "meaning": "Column SettingId",
+      "data_type": "integer",
+      "operations": "Operations on SettingId"
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "Name",
+      "meaning": "Column Name",
+      "data_type": "varchar",
+      "operations": "Operations on Name"
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "Value",
+      "meaning": "Column Value",
+      "data_type": "integer",
+      "operations": "Operations on Value"
+    },
+    {
+      "table_name": "Tokens",
+      "column_name": "TokenID",
+      "meaning": "Column TokenID",
+      "data_type": "integer",
+      "operations": "Operations on TokenID"
+    },
+    {
+      "table_name": "Tokens",
+      "column_name": "TokenValue",
+      "meaning": "Column TokenValue",
+      "data_type": "varchar",
+      "operations": "Operations on TokenValue"
+    },
+    {
+      "table_name": "Tokens",
+      "column_name": "CreateTime",
+      "meaning": "Column CreateTime",
+      "data_type": "datetime",
+      "operations": "Operations on CreateTime"
+    },
+    {
+      "table_name": "Tokens",
+      "column_name": "UserId",
+      "meaning": "Column UserId",
+      "data_type": "varchar",
+      "operations": "Operations on UserId"
+    }
+  ],
+  "relations": [
+    {
+      "source_table": "AspNetUserClaims",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting AspNetUserClaims to AspNetUsers"
+    },
+    {
+      "source_table": "AspNetUserLogins",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting AspNetUserLogins to AspNetUsers"
+    },
+    {
+      "source_table": "AspNetUserRoles",
+      "source_column": "RoleId",
+      "target_table": "AspNetRoles",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting AspNetUserRoles to AspNetRoles"
+    },
+    {
+      "source_table": "AspNetUserRoles",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting AspNetUserRoles to AspNetUsers"
+    },
+    {
+      "source_table": "OrderDetails",
+      "source_column": "BookID",
+      "target_table": "Book",
+      "target_column": "BookID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting OrderDetails to Book"
+    },
+    {
+      "source_table": "OrderDetails",
+      "source_column": "OrderID",
+      "target_table": "Orders",
+      "target_column": "OrderID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting OrderDetails to Orders"
+    },
+    {
+      "source_table": "Tokens",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting Tokens to AspNetUsers"
+    }
+  ]
+}

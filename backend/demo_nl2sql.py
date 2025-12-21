@@ -35,8 +35,8 @@ async def demo_nl2sql_pipeline():
     print("Step 1: Setting up schema vector store...")
     print("-" * 80)
     
-    schema_json_path = "./data_schema/ecommerce_schema.json"
-    schema_name = "ecommerce"
+    schema_json_path = "./data_schema/simacnashr_schema.json"
+    schema_name = "simacnashr"
     
     # Check if schema exists
     if not os.path.exists(schema_json_path):

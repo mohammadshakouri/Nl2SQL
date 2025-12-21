@@ -64,7 +64,7 @@ def check_schema_files():
     print(f"✓ Schema directory found: {schema_dir}")
     
     # Check example schema
-    example_schema = os.path.join(schema_dir, "ecommerce_schema.json")
+    example_schema = os.path.join(schema_dir, "simacnashr_schema.json")
     if os.path.exists(example_schema):
         print(f"✓ Example schema found: {example_schema}")
         return True
@@ -140,8 +140,8 @@ def validate_setup():
     try:
         from app.utilities import validate_nl2sql_setup
         
-        # Validate ecommerce schema
-        results = validate_nl2sql_setup("ecommerce")
+        # Validate simacnashr schema
+        results = validate_nl2sql_setup("simacnashr")
         
         if results['is_valid']:
             print("✓ System validation passed")
@@ -179,7 +179,7 @@ def print_next_steps():
     print('   curl -X POST "http://localhost:80/nl2sql" \\')
     print('     -H "api_key: YOUR_API_KEY" \\')
     print('     -H "Content-Type: application/json" \\')
-    print('     -d \'{"threadId": "", "question": "کدام مشتریان بیش از ۵ میلیون تومان خرید کرده‌اند؟", "schema_name": "ecommerce", "culture": "fa"}\'')
+    print('     -d \'{"threadId": "", "question": "کدام مشتریان بیش از ۵ میلیون تومان خرید کرده‌اند؟", "schema_name": "simacnashr", "culture": "fa"}\'')
     print()
     print("4. Read the documentation:")
     print("   - NL2SQL_README.md - Complete overview")
