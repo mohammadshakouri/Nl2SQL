@@ -1,5 +1,7 @@
+
 import chromadb
 from app.models import Message
+from app.schema_manager import SchemaManager
 import app.dotenv as env
 from chromadb.utils import embedding_functions
 from tqdm import tqdm
@@ -40,20 +42,7 @@ async def get_thread_messages(db: AsyncSession, thread_id: str):
     return input_messages, conversation
 
 
-# ============================================================================
-# NL2SQL Schema Utilities
-# ============================================================================
-
 def get_schema_collection_name(schema_name: str) -> str:
-    """
-    Get ChromaDB collection name for a database schema
-    
-    Args:
-        schema_name: Name of the schema (e.g., 'ecommerce', 'hr', 'inventory')
-    
-    Returns:
-        Collection name for schema embeddings
-    """
     return f"Schema_{schema_name}"
 
 
@@ -73,7 +62,6 @@ def create_schema_vector_store(
     Returns:
         Dictionary with statistics about the created schema
     """
-    from app.schema_manager import SchemaManager
     
     device: str = "cpu"
     batch_size = 10
