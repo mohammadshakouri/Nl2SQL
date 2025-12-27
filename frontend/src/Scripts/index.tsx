@@ -217,7 +217,8 @@ async function HandleServerEvent(event: MessageEvent) {
 		messageTextElement.textContent += data.data;
 		lastMessageRunId = "";
 		isBotResponding = false;
-		// eventSource.close();
+		EnableSendButton();
+		eventSource.close();
 	}
 }
 

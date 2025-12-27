@@ -146,7 +146,7 @@ async def generate_nl2sql_ollama_stream(threadId: str, question: str, schema_nam
         
         try:
             # Get schema collection name
-            collection_name = utils.get_schema_collection_name(schema_name)
+            collection_name = f"Schema_{schema_name}"
             
             # Generate SQL stream
             chatResponse = await LoadNL2SQLChain(
@@ -217,7 +217,7 @@ async def generate_nl2sql_openai_stream(threadId: str, question: str, schema_nam
         
         try:
             # Get schema collection name
-            collection_name = utils.get_schema_collection_name(schema_name)
+            collection_name = f"Schema_{schema_name}"
             
             # Generate SQL stream
             chatResponse = await LoadNL2SQLChain(
