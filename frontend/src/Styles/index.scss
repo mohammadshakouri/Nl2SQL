@@ -654,6 +654,22 @@
 				background-color: #649bc7;
 			}
 		}
+
+		pre {
+			border-radius: 8px;
+			overflow-x: auto;
+
+			code {
+				font-family: "Consolas", monospace !important;
+				font-size: 0.95rem;
+				direction: ltr !important;
+				padding: 10px;
+
+				* {
+					font-family: "Consolas", monospace !important;
+				}
+			}
+		}
 	}
 	.messageControlBox {
 		display: flex;

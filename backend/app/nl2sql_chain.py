@@ -432,7 +432,7 @@ async def LoadNL2SQLChain(
     if results["documents"] and results["documents"][0]:
         schema_context = "Available Database Schema:\n\n"
         for doc, dist in zip(results["documents"][0], results["distances"][0]):
-            if dist < 0.7:
+            if dist < 0.95:
                 schema_context += f"  - {doc}\n"
     
     # Build user prompt

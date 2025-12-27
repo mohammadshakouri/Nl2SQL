@@ -12,6 +12,7 @@ import { baseUrl, GetCurrentTimeString, ServerEventType } from "./enums.js";
 import { i18n } from "./i18n.js";
 import { Delay } from "./Utilities.js";
 import { config } from "./config.js";
+import { RenderMarkdown } from "./RenderMarkdown.js";
 
 const marked = new Marked({
 	gfm: true,
@@ -109,13 +110,13 @@ async function SendUserMessageToServer(text: string) {
 
 	try {
 		const culture = document.documentElement.lang || "fa"; // Get language from HTML lang attribute
-		
+
 		const payload = {
 			threadId: threadId || "",
 			question: text,
 			schema_name: config.schemaName,
 			culture: culture,
-			validate_execution: config.validateExecution
+			validate_execution: config.validateExecution,
 		};
 
 		const response = await fetch(`${baseUrl}/nl2sql`, {
@@ -239,12 +240,12 @@ async function AppendToLastAiMessageText(chunk: string) {
 	const messageTextElement =
 		latestAiMessageElement.getElementsByClassName("messageText")[0];
 	streamBuffer += chunk;
-	messageTextElement.innerHTML = await marked.parse(
-		streamBuffer.trim().replaceAll(/<br ?\/?>/g, "\n"),
-		{
-			gfm: true,
-		}
-	);
+	const markdownText = streamBuffer.trim().replaceAll(/<br ?\/?>/g, "\n");
+	const html = RenderMarkdown(markdownText);
+	/* const html = await marked.parse(markdownText, {
+		gfm: true,
+	}); */
+	messageTextElement.innerHTML = html;
 	messageTextElement.querySelectorAll("a").forEach((a) => {
 		a.target = "_blank";
 		a.rel = "noopener noreferrer";
@@ -410,7 +411,9 @@ const a = document.querySelector("#aiLogoSparkle2");
 animateSvgFillLoop(a as unknown as SVGElement, 10_000);
 
 const dialogHeader = document.getElementsByClassName("dialogHeader")?.[0];
-const goToSimatic = document.getElementsByClassName("ticketButton")?.[0] as HTMLButtonElement;
+const goToSimatic = document.getElementsByClassName(
+	"ticketButton"
+)?.[0] as HTMLButtonElement;
 
 if (goToSimatic) {
 	goToSimatic.style.removeProperty("display");

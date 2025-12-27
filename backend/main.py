@@ -6,7 +6,7 @@ import uuid
 import jdatetime
 import app.dotenv as env
 import app.utilities as utils
-
+import initialize_nl2sql
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Depends, HTTPException, Header
 from fastapi.middleware.cors import CORSMiddleware
@@ -56,6 +56,7 @@ app.add_middleware(CORSMiddleware,
                    expose_headers=['*'],
                    )
 
+initialize_nl2sql.main()
 
 async def check_api_key(api_key: str = Header(...)):
     if api_key != SIMAC_API_KEY:
