@@ -1,5 +1,5 @@
-
 import chromadb
+import os
 from app.models import Message
 from app.schema_manager import SchemaManager
 import app.dotenv as env
@@ -41,9 +41,62 @@ async def get_thread_messages(db: AsyncSession, thread_id: str):
             })
     return input_messages, conversation
 
-
-def get_schema_collection_name(schema_name: str) -> str:
-    return f"Schema_{schema_name}"
+def initialize_schema_vector_stores():
+    """Create vector stores for all schemas in data_schema/"""
+    
+    print("\nInitializing schema vector stores...")
+    print("-" * 80)
+    
+    try:
+        from app.utilities import create_schema_vector_store
+        import json
+        
+        schema_dir = "./data_schema"
+        
+        # Find all schema JSON files
+        schema_files = [
+            f for f in os.listdir(schema_dir) 
+            if f.endswith('_schema.json')
+        ]
+        
+        if not schema_files:
+            print("✗ No schema files found in data_schema/")
+            return False
+        
+        print(f"Found {len(schema_files)} schema file(s)")
+        print()
+        
+        for schema_file in schema_files:
+            schema_path = os.path.join(schema_dir, schema_file)
+            schema_name = schema_file.replace('_schema.json', '')
+            
+            print(f"Processing: {schema_name}")
+            print(f"  File: {schema_file}")
+            
+            try:
+                # Create vector store
+                stats = create_schema_vector_store(
+                    schema_json_path=schema_path,
+                    schema_name=schema_name
+                )
+                
+                print(f"  ✓ Vector store created")
+                print(f"    - Tables: {stats['tables']}")
+                print(f"    - Columns: {stats['columns']}")
+                print(f"    - Relations: {stats['relations']}")
+                print(f"    - Collection: {stats['collection_name']}")
+                print()
+                
+            except Exception as e:
+                print(f"  ✗ Error: {e}")
+                return False
+        
+        print("✓ All schema vector stores created successfully")
+        return True
+        
+    except Exception as e:
+        print(f"✗ Initialization failed: {e}")
+        return False
 
 
 def create_schema_vector_store(
@@ -92,7 +145,7 @@ def create_schema_vector_store(
     
     # Create collection
     chroma_client = chromadb.PersistentClient(path=chroma_path)
-    collection_name = get_schema_collection_name(schema_name)
+    collection_name = f"Schema_{schema_name}"
     
     collection = chroma_client.get_or_create_collection(
         name=collection_name,
@@ -146,7 +199,7 @@ def validate_nl2sql_setup(schema_name: str) -> dict:
     # Check ChromaDB collection
     try:
         chroma_client = chromadb.PersistentClient(path=CHROMADB_PERSIST_DIRECTORY)
-        collection_name = get_schema_collection_name(schema_name)
+        collection_name = f"Schema_{schema_name}"
         collection = chroma_client.get_collection(name=collection_name)
         results["collection_exists"] = True
         results["collection_count"] = collection.count()

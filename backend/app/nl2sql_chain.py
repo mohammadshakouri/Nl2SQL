@@ -125,7 +125,7 @@ class NL2SQLChain:
         
         for doc, dist in zip(results["documents"][0], results["distances"][0]):
             # Only include highly relevant schema elements
-            if dist < 0.7:  # Adjust threshold as needed
+            if dist < 1:  # Adjust threshold as needed
                 documents.append(doc)
                 distances.append(dist)
         
@@ -341,12 +341,8 @@ class NL2SQLChain:
                 sql_output = response.message.content if hasattr(response, "message") else ""
             else:
                 response = await self.generate_sql_openai(messages, stream=False)
-                # Extract SQL from response
-                sql_output = ""
-                async for chunk in response:
-                    choice = chunk.choices[0]
-                    if choice.delta and choice.delta.content:
-                        sql_output += choice.delta.content
+                # Extract SQL from response (non-streaming)
+                sql_output = response.choices[0].message.content
             
             # Clean SQL output
             sql_result = self.validator.clean_sql_output(sql_output)
