@@ -95,7 +95,7 @@ function DisableSendButton() {
 	canSendMessage = false;
 }
 
-function SendUserMessage(text = GetUserTypedText()) {
+function HandleUserMessage(text = GetUserTypedText()) {
 	if (!text || isBotResponding) return;
 
 	AppendUserMessage(text);
@@ -345,7 +345,7 @@ const wrapper = (
 								onClick={() => {
 									if (GetUserTypedText() === "" || isBotResponding) return;
 
-									SendUserMessage();
+									HandleUserMessage();
 
 									setTimeout(() => {
 										ShrinkHeader();
@@ -367,7 +367,7 @@ const wrapper = (
 										e.preventDefault();
 										if (!canSendMessage) return;
 										if (GetUserTypedText() === "" || isBotResponding) return;
-										SendUserMessage();
+										HandleUserMessage();
 										setTimeout(() => {
 											ShrinkHeader();
 										}, 700);

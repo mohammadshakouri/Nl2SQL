@@ -17,3 +17,5 @@ class Message(Base):
     output = Column(Text)
     feedback = Column(Integer, default=0)
     status = Column(Text, default='error')
+    corrected_sql = Column(Text, nullable=True)
+    feedback_comment = Column(Text, nullable=True)

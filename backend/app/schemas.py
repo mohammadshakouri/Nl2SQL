@@ -18,3 +18,11 @@ class HistoryRequest(BaseModel):
     from_time: Optional[str] = None
     to_time: Optional[str] = None
 
+
+class FeedbackSubmissionRequest(BaseModel):
+    """Request model for feedback submission"""
+    run_id: str
+    feedback: int  # 1 for positive, -1 for negative
+    corrected_sql: Optional[str] = None  # Corrected SQL if feedback is negative
+    comment: Optional[str] = None  # Optional feedback comment
+

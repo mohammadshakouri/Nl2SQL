@@ -14,7 +14,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.future import select
 from app.nl2sql_chain import LoadNL2SQLChain
 from app.models import Base, Message
-from app.schemas import HistoryRequest, NL2SQLRequest
+from app.schemas import HistoryRequest, NL2SQLRequest, FeedbackSubmissionRequest
 
 
 USE_LOCAL_LLM = env.use_local_llm
@@ -61,6 +61,47 @@ if not os.path.exists(utils.CHROMADB_PERSIST_DIRECTORY):
 async def check_api_key(api_key: str = Header(...)):
     if api_key != SIMAC_API_KEY:
         raise HTTPException(status_code=401, detail='Invalid API Key')
+
+@app.post('/nl2sql', dependencies=[Depends(check_api_key)])
+async def nl2sql_stream(request: NL2SQLRequest):
+    """
+    NL2SQL endpoint - Schema-RAG pipeline
+    
+    Converts natural language questions to SQL queries using schema retrieval.
+    Returns streaming response with generated SQL.
+    """
+    if USE_LOCAL_LLM:
+        return StreamingResponse(
+            generate_nl2sql_ollama_stream(
+                request.threadId,
+                request.question,
+                request.schema_name,
+                request.culture
+            ),
+            media_type='text/event-stream'
+        )
+    else:
+        return StreamingResponse(
+            generate_nl2sql_openai_stream(
+                request.threadId,
+                request.question,
+                request.schema_name,
+                request.culture
+            ),
+            media_type='text/event-stream'
+        )
+
+
+@app.post('/nl2sql/validate', dependencies=[Depends(check_api_key)])
+async def validate_schema_setup(schema_name: str):
+    """
+    Validate that NL2SQL is properly configured for a schema
+    
+    Returns validation results including whether schema JSON and 
+    ChromaDB collection exist.
+    """
+    results = utils.validate_nl2sql_setup(schema_name)
+    return JSONResponse(content=results)
 
 
 @app.post('/history', dependencies=[Depends(check_api_key)])
@@ -111,6 +152,65 @@ async def message_history(request: HistoryRequest):
         data = sorted(data, key=lambda x: x['start_time'], reverse=True)
 
         return JSONResponse(content=data, headers={'Content-Type': 'application/json; charset=utf-8'})
+
+
+@app.post('/feedback', dependencies=[Depends(check_api_key)])
+async def submit_feedback(request: FeedbackSubmissionRequest):
+    """
+    Submit feedback for a generated SQL query
+    
+    Allows users to mark queries as correct (feedback=1) or incorrect (feedback=-1).
+    For incorrect queries, users can provide a corrected SQL and optional comment.
+    
+    Args:
+        request: FeedbackSubmissionRequest with run_id, feedback, corrected_sql, comment
+    
+    Returns:
+        JSON response with success status and message
+    """
+    async with AsyncSessionLocal() as db:
+        try:
+            # Find the message by run_id
+            query = select(Message).where(Message.run_id == request.run_id)
+            result = await db.execute(query)
+            message = result.scalar_one_or_none()
+            
+            if not message:
+                raise HTTPException(status_code=404, detail=f"Message with run_id {request.run_id} not found")
+            
+            # Update feedback
+            message.feedback = request.feedback
+            
+            # If negative feedback and corrected SQL provided, store it
+            if request.feedback == -1 and request.corrected_sql:
+                message.corrected_sql = request.corrected_sql
+                message.status = 'corrected'
+            elif request.feedback == 1:
+                message.status = 'success'
+            
+            # Store optional comment
+            if request.comment:
+                message.feedback_comment = request.comment
+            
+            # Commit changes
+            await db.commit()
+            
+            return JSONResponse(
+                content={
+                    "success": True,
+                    "message": "Feedback submitted successfully",
+                    "run_id": request.run_id,
+                    "feedback": request.feedback
+                },
+                headers={'Content-Type': 'application/json; charset=utf-8'}
+            )
+            
+        except HTTPException:
+            raise
+        except Exception as e:
+            await db.rollback()
+            logger.error(f"Error submitting feedback: {str(e)}")
+            raise HTTPException(status_code=500, detail=f"Error submitting feedback: {str(e)}")
 
 
 # ============================================================================
@@ -171,11 +271,29 @@ async def generate_nl2sql_ollama_stream(threadId: str, question: str, schema_nam
                 
                 if getattr(chunk, "done", False):
                     end_time = jdatetime.datetime.now()
+                    latency = (end_time - start_time).total_seconds()
+                    
+                    # Save to database
+                    message = Message(
+                        run_id=run_id,
+                        thread_id=threadId,
+                        start_time=start_time.isoformat(),
+                        latency=latency,
+                        input=question,
+                        output=full_sql,
+                        culture=culture,
+                        provinceName=schema_name,
+                        is_user_authenticated="yes",
+                        status="generated",
+                        feedback=0
+                    )
+                    db.add(message)
+                    await db.commit()
                     
                     data = {
                         "event": "on_end",
                         "sql": full_sql,
-                        "latency": (end_time - start_time).total_seconds()
+                        "latency": latency
                     }
                     yield f"data: {json.dumps(data)}\n\n"
                     break
@@ -245,11 +363,29 @@ async def generate_nl2sql_openai_stream(threadId: str, question: str, schema_nam
                 
                 if choice.finish_reason is not None:
                     end_time = jdatetime.datetime.now()
+                    latency = (end_time - start_time).total_seconds()
+                    
+                    # Save to database
+                    message = Message(
+                        run_id=run_id,
+                        thread_id=threadId,
+                        start_time=start_time.isoformat(),
+                        latency=latency,
+                        input=question,
+                        output=full_sql,
+                        culture=culture,
+                        provinceName=schema_name,
+                        is_user_authenticated="yes",
+                        status="generated",
+                        feedback=0
+                    )
+                    db.add(message)
+                    await db.commit()
                     
                     data = {
                         "event": "on_end",
                         "sql": full_sql,
-                        "latency": (end_time - start_time).total_seconds()
+                        "latency": latency
                     }
                     yield f"data: {json.dumps(data)}\n\n"
                     break
@@ -260,49 +396,6 @@ async def generate_nl2sql_openai_stream(threadId: str, question: str, schema_nam
                 "data": f"Error generating SQL: {str(e)}"
             }
             yield f"data: {json.dumps(data)}\n\n"
-
-
-@app.post('/nl2sql', dependencies=[Depends(check_api_key)])
-async def nl2sql_stream(request: NL2SQLRequest):
-    """
-    NL2SQL endpoint - Schema-RAG pipeline
-    
-    Converts natural language questions to SQL queries using schema retrieval.
-    Returns streaming response with generated SQL.
-    """
-    if USE_LOCAL_LLM:
-        return StreamingResponse(
-            generate_nl2sql_ollama_stream(
-                request.threadId,
-                request.question,
-                request.schema_name,
-                request.culture
-            ),
-            media_type='text/event-stream'
-        )
-    else:
-        return StreamingResponse(
-            generate_nl2sql_openai_stream(
-                request.threadId,
-                request.question,
-                request.schema_name,
-                request.culture
-            ),
-            media_type='text/event-stream'
-        )
-
-
-@app.post('/nl2sql/validate', dependencies=[Depends(check_api_key)])
-async def validate_schema_setup(schema_name: str):
-    """
-    Validate that NL2SQL is properly configured for a schema
-    
-    Returns validation results including whether schema JSON and 
-    ChromaDB collection exist.
-    """
-    results = utils.validate_nl2sql_setup(schema_name)
-    return JSONResponse(content=results)
-
 
 if __name__ == '__main__':
     import uvicorn
