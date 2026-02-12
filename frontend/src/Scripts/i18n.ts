@@ -15,6 +15,18 @@ const fa = {
 	tooltipSubtitle: "کاربران و شهروندان عزیز سلام،",
 	tooltipText:
 		"من، دستیار هوش‌مصنوعی سیماک، اینجا هستم تا به سوالات شما درباره سامانه سیماک پاسخ دهم.",
+	// Feedback modal
+	provideCorrectionTitle: "ارسال SQL اصلاح شده",
+	provideCorrectionText: "لطفاً SQL درست و توضیح مشکل را وارد کنید:",
+	correctedSqlLabel: "SQL اصلاح شده:",
+	correctedSqlPlaceholder: "SQL صحیح را اینجا وارد کنید...",
+	commentLabel: "توضیحات (اختیاری):",
+	commentPlaceholder: "توضیح دهید مشکل SQL قبلی چه بود...",
+	cancelButton: "انصراف",
+	submitButton: "ارسال بازخورد",
+	submittingButton: "در حال ارسال...",
+	correctedSqlRequired: "لطفاً SQL اصلاح شده را وارد کنید.",
+	feedbackError: "خطا در ارسال بازخورد. لطفاً دوباره تلاش کنید.",
 };
 //#endregion
 
@@ -34,6 +46,18 @@ const en: typeof fa = {
 	tooltipSubtitle: "Hello!",
 	tooltipText:
 		"I'm the Simac AI Assistant, and I'm here to answer your questions regarding the processes of issuing buildng permits and inter-agency inquiries.",
+	// Feedback modal
+	provideCorrectionTitle: "Provide Corrected SQL",
+	provideCorrectionText: "Please provide the corrected SQL query and explain what was wrong:",
+	correctedSqlLabel: "Corrected SQL Query:",
+	correctedSqlPlaceholder: "Enter the correct SQL query here...",
+	commentLabel: "Comment (optional):",
+	commentPlaceholder: "Explain what was wrong with the original query...",
+	cancelButton: "Cancel",
+	submitButton: "Submit Feedback",
+	submittingButton: "Submitting...",
+	correctedSqlRequired: "Please provide a corrected SQL query.",
+	feedbackError: "Failed to submit feedback. Please try again.",
 };
 //#endregion
 

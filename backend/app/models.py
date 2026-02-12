@@ -5,7 +5,7 @@ Base = declarative_base()
 
 
 class Message(Base):
-    __tablename__ = 'messages'
+    __tablename__ = 'nltosql'
     run_id = Column(Text, primary_key=True, index=True)
     thread_id = Column(Text, index=True)
     start_time = Column(Text)
