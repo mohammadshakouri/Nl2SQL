@@ -30,6 +30,8 @@ AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_
 
 @asynccontextmanager
 async def initialize(app: FastAPI):
+    if not os.path.exists(utils.CHROMADB_PERSIST_DIRECTORY):
+        utils.initialize_schema_vector_stores()
     # Create database tables
     async with engine.begin() as conn:
         start = time.time()
@@ -55,8 +57,6 @@ app.add_middleware(CORSMiddleware,
                    expose_headers=['*'],
                    )
 
-if not os.path.exists(utils.CHROMADB_PERSIST_DIRECTORY):
-    utils.initialize_schema_vector_stores()
 
 async def check_api_key(api_key: str = Header(...)):
     if api_key != SIMAC_API_KEY:

@@ -17,6 +17,10 @@ from chromadb.utils import embedding_functions
 from sqlalchemy.ext.asyncio import AsyncSession
 from openai import AsyncOpenAI
 from ollama import AsyncClient, ChatResponse
+from chromadb.utils import embedding_functions
+from sentence_transformers import SentenceTransformer
+from chromadb.api.types import EmbeddingFunction
+
 
 import app.dotenv as env
 import app.utilities as utils
@@ -36,6 +40,7 @@ USE_LOCAL_EMBEDDING = env.use_local_embedding
 OLLAMA_TEMPERATURE: float = 0.1
 OLLAMA_MODEL_NAME: str = "gemma3:4b".strip().lower()
 OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
+Model_Dir = r"C:\Users\Mohammad\.cache\huggingface\hub\models--google--embeddinggemma-300m\snapshots\57c266a740f537b4dc058e1b0cda161fd15afa75"
 
 
 class NL2SQLChain:
@@ -67,15 +72,12 @@ class NL2SQLChain:
         
         # Initialize embedding function
         if USE_LOCAL_EMBEDDING:
-            self.embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-                device="cpu",
-                model_name=utils.OLLAMA_EMBEDDING_MODEL_NAME,
-            )
+            embedding_fn = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
         else:
-            self.embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
+            embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=OPENAI_API_KEY,
                 model_name=utils.OPENAI_EMBEDDING_MODEL_NAME,
-            )
+        )
         
         # Initialize ChromaDB client
         self.chroma_client = chromadb.PersistentClient(utils.CHROMADB_PERSIST_DIRECTORY)
@@ -400,10 +402,7 @@ async def LoadNL2SQLChain(
     """
     # Initialize embedding function
     if USE_LOCAL_EMBEDDING:
-        embedding_fn = embedding_functions.SentenceTransformerEmbeddingFunction(
-            device="cpu",
-            model_name=utils.OLLAMA_EMBEDDING_MODEL_NAME,
-        )
+        embedding_fn = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
     else:
         embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
             api_key=OPENAI_API_KEY,
@@ -428,7 +427,7 @@ async def LoadNL2SQLChain(
     if results["documents"] and results["documents"][0]:
         schema_context = "Available Database Schema:\n\n"
         for doc, dist in zip(results["documents"][0], results["distances"][0]):
-            if dist < 0.95:
+            # if dist < 0.95:
                 schema_context += f"  - {doc}\n"
     
     # Build user prompt
@@ -467,3 +466,27 @@ async def LoadNL2SQLChain(
             stream=stream
         )
         return chat_completion
+
+
+class LocalSTEmbeddingFunction(EmbeddingFunction):
+    def __init__(self, model_dir: str, device: str = "cpu"):
+        self._model_dir = model_dir
+        self._device = device
+        self._model = SentenceTransformer(
+            model_dir,
+            local_files_only=True,
+            device=device,
+        )
+        # warm-up forces any lazy loads now (still offline)
+        _ = self._model.encode(["warmup"], normalize_embeddings=True)
+
+    def name(self) -> str:
+        # Must be a METHOD for your Chroma version
+        return f"SentenceTransformer({self._model_dir})"
+
+    def __call__(self, texts):
+        return self._model.encode(
+            texts,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        ).tolist()

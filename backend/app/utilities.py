@@ -7,6 +7,8 @@ from chromadb.utils import embedding_functions
 from tqdm import tqdm
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sentence_transformers import SentenceTransformer
+from chromadb.api.types import EmbeddingFunction
 
 OPENAI_API_KEY = env.openai_api_key
 USE_LOCAL_LLM = env.use_local_llm
@@ -15,6 +17,8 @@ USE_LOCAL_EMBEDDING = env.use_local_embedding
 OLLAMA_EMBEDDING_MODEL_NAME: str = "google/embeddinggemma-300m"
 OPENAI_EMBEDDING_MODEL_NAME: str = "text-embedding-3-small"
 CHROMADB_PERSIST_DIRECTORY: str = "./chroma_db"
+Model_Dir = r"C:\Users\Mohammad\.cache\huggingface\hub\models--google--embeddinggemma-300m\snapshots\57c266a740f537b4dc058e1b0cda161fd15afa75"
+
 
 
 async def get_thread_messages(db: AsyncSession, thread_id: str):
@@ -124,10 +128,7 @@ def create_schema_vector_store(
     if USE_LOCAL_EMBEDDING:
         print("Embedding using local model...")
         print("Embedding model:", OLLAMA_EMBEDDING_MODEL_NAME)
-        sentence_transformer_ef = embedding_functions.SentenceTransformerEmbeddingFunction(
-            device=device,
-            model_name=OLLAMA_EMBEDDING_MODEL_NAME,
-        )
+        sentence_transformer_ef = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
     else:
         print("Embedding using OpenAI model...")
         print("Embedding model:", OPENAI_EMBEDDING_MODEL_NAME)
@@ -210,3 +211,25 @@ def validate_nl2sql_setup(schema_name: str) -> dict:
     
     return results
 
+class LocalSTEmbeddingFunction(EmbeddingFunction):
+    def __init__(self, model_dir: str, device: str = "cpu"):
+        self._model_dir = model_dir
+        self._device = device
+        self._model = SentenceTransformer(
+            model_dir,
+            local_files_only=True,
+            device=device,
+        )
+        # warm-up forces any lazy loads now (still offline)
+        _ = self._model.encode(["warmup"], normalize_embeddings=True)
+
+    def name(self) -> str:
+        # Must be a METHOD for your Chroma version
+        return f"SentenceTransformer({self._model_dir})"
+
+    def __call__(self, texts):
+        return self._model.encode(
+            texts,
+            normalize_embeddings=True,
+            show_progress_bar=False,
+        ).tolist()
