@@ -241,14 +241,14 @@ def main():
     """Main execution function"""
     # SQL Server connection details
     config = {
-        'server': '192.168.100.16',
-        'database': 'SimacNashr',
+        'server': '.\Local2022',
+        'database': 'Transactions',
         'username': 'sa',
-        'password': dotenv.db_password
+        'password': "1212"
     }
     
     # Output file path
-    output_file = 'data_schema/simacnashr_schema.json'
+    output_file = 'data_schema/transactions_schema.json'
     
     print("=" * 60)
     print("   SQL Server Schema Extractor")

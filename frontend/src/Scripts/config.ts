@@ -13,6 +13,7 @@ export const config = {
 	 * Schema name for the database
 	 * Options: 'ecommerce', 'hr', 'inventory', etc.
 	 */
+	// schemaName: import.meta.env.VITE_SCHEMA_NAME || "transactions",
 	schemaName: import.meta.env.VITE_SCHEMA_NAME || "simacnashr",
 
 	/**
