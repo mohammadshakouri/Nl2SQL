@@ -220,6 +220,9 @@ class SQLValidator:
         # Remove multi-line comments
         sql = re.sub(r'/\*.*?\*/', '', sql, flags=re.DOTALL)
         
+        # also remove \n and \t
+        sql = sql.replace('\n', ' ').replace('\t', ' ')
+        
         # Remove leading/trailing whitespace
         sql = sql.strip()
         

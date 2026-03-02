@@ -2,7 +2,6 @@ import os
 import json
 import logging
 import time
-import uuid
 import jdatetime
 import app.dotenv as env
 import app.utilities as utils
@@ -20,11 +19,11 @@ from app.schemas import HistoryRequest, NL2SQLRequest, FeedbackSubmissionRequest
 USE_LOCAL_LLM = env.use_local_llm
 DOCUMENTATION = env.documentation
 SIMAC_API_KEY = env.simac_api_key
-SQL_DATABASE_URL = env.sql_database_url
+MAIN_DATABASE_URL = env.main_database_url
 
 
 logger = logging.getLogger('uvicorn.info')
-engine = create_async_engine(SQL_DATABASE_URL)
+engine = create_async_engine(MAIN_DATABASE_URL)
 AsyncSessionLocal = async_sessionmaker(bind=engine, class_=AsyncSession, expire_on_commit=False)
 
 
@@ -67,29 +66,22 @@ async def nl2sql_stream(request: NL2SQLRequest):
     """
     NL2SQL endpoint - Schema-RAG pipeline
     
-    Converts natural language questions to SQL queries using schema retrieval.
-    Returns streaming response with generated SQL.
+    Unified pipeline handler.  Forwards the request to
+    ``LoadNL2SQLChain`` which performs retrieval, validation, feedback loop and
+    streaming of SQL tokens.  The caller receives a Server-Sent Events stream
+    identical to the behaviour of the previous implementation.
     """
-    if USE_LOCAL_LLM:
-        return StreamingResponse(
-            generate_nl2sql_ollama_stream(
-                request.threadId,
-                request.question,
-                request.schema_name,
-                request.culture
-            ),
-            media_type='text/event-stream'
-        )
-    else:
-        return StreamingResponse(
-            generate_nl2sql_openai_stream(
-                request.threadId,
-                request.question,
-                request.schema_name,
-                request.culture
-            ),
-            media_type='text/event-stream'
-        )
+    collection_name = f"Schema_{request.schema_name}"
+    return StreamingResponse(
+        LoadNL2SQLChain(
+            request.threadId,
+            request.question,
+            collection_name,
+            request.culture,
+            # validate_execution=request.validate_execution,
+        ),
+        media_type='text/event-stream'
+    )
 
 
 @app.post('/nl2sql/validate', dependencies=[Depends(check_api_key)])
@@ -213,191 +205,10 @@ async def submit_feedback(request: FeedbackSubmissionRequest):
             raise HTTPException(status_code=500, detail=f"Error submitting feedback: {str(e)}")
 
 
-# ============================================================================
-# NL2SQL Endpoints - Schema-RAG
-# ============================================================================
-
-async def generate_nl2sql_ollama_stream(threadId: str, question: str, schema_name: str, culture: str):
-    """Generate SQL using Ollama with streaming"""
-    async with AsyncSessionLocal() as db:
-        start_time = jdatetime.datetime.now()
-        
-        run_id = str(uuid.uuid4())
-        if threadId.strip() == "":
-            threadId = str(uuid.uuid4())
-        
-        # Send start event
-        data = {
-            "event": "on_start",
-            "run_id": run_id,
-            "thread_id": threadId,
-            "type": "nl2sql"
-        }
-        yield f"data: {json.dumps(data)}\n\n"
-        
-        # Validate question length
-        if len(question) > 250:
-            data = {
-                "event": "on_error",
-                "data": "Question is too long. Maximum 250 characters allowed."
-            }
-            yield f"data: {json.dumps(data)}\n\n"
-            return
-        
-        try:
-            # Get schema collection name
-            collection_name = f"Schema_{schema_name}"
-            
-            # Generate SQL stream
-            chatResponse = await LoadNL2SQLChain(
-                question=question,
-                schema_collection_name=collection_name,
-                culture=culture,
-                stream=True
-            )
-            
-            full_sql = ""
-            async for chunk in chatResponse:
-                if hasattr(chunk, "message") and chunk.message and chunk.message.content:
-                    token = chunk.message.content
-                    full_sql += token
-                    
-                    # Stream SQL token by token
-                    data = {
-                        "event": "on_stream",
-                        "data": token,
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                
-                if getattr(chunk, "done", False):
-                    end_time = jdatetime.datetime.now()
-                    latency = (end_time - start_time).total_seconds()
-                    
-                    # Save to database
-                    message = Message(
-                        run_id=run_id,
-                        thread_id=threadId,
-                        start_time=start_time.isoformat(),
-                        latency=latency,
-                        input=question,
-                        output=full_sql,
-                        culture=culture,
-                        provinceName=schema_name,
-                        is_user_authenticated="yes",
-                        status="generated",
-                        feedback=0
-                    )
-                    db.add(message)
-                    await db.commit()
-                    
-                    data = {
-                        "event": "on_end",
-                        "sql": full_sql,
-                        "latency": latency
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                    break
-                    
-        except Exception as e:
-            data = {
-                "event": "on_error",
-                "data": f"Error generating SQL: {str(e)}"
-            }
-            yield f"data: {json.dumps(data)}\n\n"
-
-
-async def generate_nl2sql_openai_stream(threadId: str, question: str, schema_name: str, culture: str):
-    """Generate SQL using OpenAI with streaming"""
-    async with AsyncSessionLocal() as db:
-        start_time = jdatetime.datetime.now()
-        
-        run_id = str(uuid.uuid4())
-        if threadId.strip() == "":
-            threadId = str(uuid.uuid4())
-        
-        # Send start event
-        data = {
-            "event": "on_start",
-            "run_id": run_id,
-            "thread_id": threadId,
-            "type": "nl2sql"
-        }
-        yield f"data: {json.dumps(data)}\n\n"
-        
-        # Validate question length
-        if len(question) > 250:
-            data = {
-                "event": "on_error",
-                "data": "Question is too long. Maximum 250 characters allowed."
-            }
-            yield f"data: {json.dumps(data)}\n\n"
-            return
-        
-        try:
-            # Get schema collection name
-            collection_name = f"Schema_{schema_name}"
-            
-            # Generate SQL stream
-            chatResponse = await LoadNL2SQLChain(
-                question=question,
-                schema_collection_name=collection_name,
-                culture=culture,
-                stream=True
-            )
-            
-            full_sql = ""
-            async for chunk in chatResponse:
-                choice = chunk.choices[0]
-                delta = choice.delta
-                
-                if delta and delta.content:
-                    token = delta.content
-                    full_sql += token
-                    
-                    # Stream SQL token by token
-                    data = {
-                        "event": "on_stream",
-                        "data": token,
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                
-                if choice.finish_reason is not None:
-                    end_time = jdatetime.datetime.now()
-                    latency = (end_time - start_time).total_seconds()
-                    
-                    # Save to database
-                    message = Message(
-                        run_id=run_id,
-                        thread_id=threadId,
-                        start_time=start_time.isoformat(),
-                        latency=latency,
-                        input=question,
-                        output=full_sql,
-                        culture=culture,
-                        provinceName=schema_name,
-                        is_user_authenticated="yes",
-                        status="generated",
-                        feedback=0
-                    )
-                    db.add(message)
-                    await db.commit()
-                    
-                    data = {
-                        "event": "on_end",
-                        "sql": full_sql,
-                        "latency": latency
-                    }
-                    yield f"data: {json.dumps(data)}\n\n"
-                    break
-                    
-        except Exception as e:
-            data = {
-                "event": "on_error",
-                "data": f"Error generating SQL: {str(e)}"
-            }
-            yield f"data: {json.dumps(data)}\n\n"
-
 if __name__ == '__main__':
     import uvicorn
 
-    uvicorn.run(app, host='localhost', port=80) 
+    uvicorn.run(app, host='localhost', port=80)
+
+
+

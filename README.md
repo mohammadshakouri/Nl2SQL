@@ -87,7 +87,7 @@ SIMAC_API_KEY=simac-QnrxndWE8iZ3pYLUj36CweOG7nXtkcuVrm9cXSvi0sHArALsY9
 OPENAI_API_KEY=sk-your-generated-key-here
 
 # DATABASE
-SQL_DATABASE_URL=postgresql+asyncpg://user:password@db:5432/aidb
+MAIN_DATABASE_URL=postgresql+asyncpg://user:password@db:5432/aidb
 ```
 
 ### Step 2: Connect to the VPS
