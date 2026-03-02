@@ -72,9 +72,9 @@ class NL2SQLChain:
         
         # Initialize embedding function
         if USE_LOCAL_EMBEDDING:
-            embedding_fn = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
+            self.embedding_fn = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
         else:
-            embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
+            self.embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=OPENAI_API_KEY,
                 model_name=utils.OPENAI_EMBEDDING_MODEL_NAME,
         )

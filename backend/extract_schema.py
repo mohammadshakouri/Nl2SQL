@@ -242,13 +242,13 @@ def main():
     # SQL Server connection details
     config = {
         'server': '.\Local2022',
-        'database': 'Transactions',
+        'database': 'concert_singer',
         'username': 'sa',
         'password': "1212"
     }
     
     # Output file path
-    output_file = 'data_schema/transactions_schema.json'
+    output_file = 'data_schema/concert_singer_schema.json'
     
     print("=" * 60)
     print("   SQL Server Schema Extractor")

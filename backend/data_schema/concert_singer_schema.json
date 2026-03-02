@@ -1,0 +1,214 @@
+{
+  "database_name": "concert_singer",
+  "description": "Database schema for concert_singer",
+  "tables": [
+    {
+      "name": "concert",
+      "description": "Table concert",
+      "key_columns": [
+        "concert_ID"
+      ],
+      "business_role": "Manages concert data"
+    },
+    {
+      "name": "singer",
+      "description": "Table singer",
+      "key_columns": [
+        "Singer_ID"
+      ],
+      "business_role": "Manages singer data"
+    },
+    {
+      "name": "singer_in_concert",
+      "description": "Table singer_in_concert",
+      "key_columns": [
+        "concert_ID",
+        "Singer_ID"
+      ],
+      "business_role": "Manages singer_in_concert data"
+    },
+    {
+      "name": "stadium",
+      "description": "Table stadium",
+      "key_columns": [
+        "Stadium_ID"
+      ],
+      "business_role": "Manages stadium data"
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "concert",
+      "column_name": "concert_ID",
+      "meaning": "Column concert_ID",
+      "data_type": "integer",
+      "operations": "Operations on concert_ID"
+    },
+    {
+      "table_name": "concert",
+      "column_name": "concert_Name",
+      "meaning": "Column concert_Name",
+      "data_type": "varchar",
+      "operations": "Operations on concert_Name"
+    },
+    {
+      "table_name": "concert",
+      "column_name": "Theme",
+      "meaning": "Column Theme",
+      "data_type": "varchar",
+      "operations": "Operations on Theme"
+    },
+    {
+      "table_name": "concert",
+      "column_name": "Stadium_ID",
+      "meaning": "Column Stadium_ID",
+      "data_type": "integer",
+      "operations": "Operations on Stadium_ID"
+    },
+    {
+      "table_name": "concert",
+      "column_name": "Year",
+      "meaning": "Column Year",
+      "data_type": "integer",
+      "operations": "Operations on Year"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Singer_ID",
+      "meaning": "Column Singer_ID",
+      "data_type": "integer",
+      "operations": "Operations on Singer_ID"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Name",
+      "meaning": "Column Name",
+      "data_type": "varchar",
+      "operations": "Operations on Name"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Country",
+      "meaning": "Column Country",
+      "data_type": "varchar",
+      "operations": "Operations on Country"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Song_Name",
+      "meaning": "Column Song_Name",
+      "data_type": "varchar",
+      "operations": "Operations on Song_Name"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Song_release_year",
+      "meaning": "Column Song_release_year",
+      "data_type": "integer",
+      "operations": "Operations on Song_release_year"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Age",
+      "meaning": "Column Age",
+      "data_type": "integer",
+      "operations": "Operations on Age"
+    },
+    {
+      "table_name": "singer",
+      "column_name": "Is_male",
+      "meaning": "Column Is_male",
+      "data_type": "boolean",
+      "operations": "Operations on Is_male"
+    },
+    {
+      "table_name": "singer_in_concert",
+      "column_name": "concert_ID",
+      "meaning": "Column concert_ID",
+      "data_type": "integer",
+      "operations": "Operations on concert_ID"
+    },
+    {
+      "table_name": "singer_in_concert",
+      "column_name": "Singer_ID",
+      "meaning": "Column Singer_ID",
+      "data_type": "integer",
+      "operations": "Operations on Singer_ID"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Stadium_ID",
+      "meaning": "Column Stadium_ID",
+      "data_type": "integer",
+      "operations": "Operations on Stadium_ID"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Location",
+      "meaning": "Column Location",
+      "data_type": "varchar",
+      "operations": "Operations on Location"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Name",
+      "meaning": "Column Name",
+      "data_type": "varchar",
+      "operations": "Operations on Name"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Capacity",
+      "meaning": "Column Capacity",
+      "data_type": "integer",
+      "operations": "Operations on Capacity"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Highest",
+      "meaning": "Column Highest",
+      "data_type": "integer",
+      "operations": "Operations on Highest"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Lowest",
+      "meaning": "Column Lowest",
+      "data_type": "integer",
+      "operations": "Operations on Lowest"
+    },
+    {
+      "table_name": "stadium",
+      "column_name": "Average",
+      "meaning": "Column Average",
+      "data_type": "integer",
+      "operations": "Operations on Average"
+    }
+  ],
+  "relations": [
+    {
+      "source_table": "concert",
+      "source_column": "Stadium_ID",
+      "target_table": "stadium",
+      "target_column": "Stadium_ID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting concert to stadium"
+    },
+    {
+      "source_table": "singer_in_concert",
+      "source_column": "concert_ID",
+      "target_table": "concert",
+      "target_column": "concert_ID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting singer_in_concert to concert"
+    },
+    {
+      "source_table": "singer_in_concert",
+      "source_column": "Singer_ID",
+      "target_table": "singer",
+      "target_column": "Singer_ID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "connecting singer_in_concert to singer"
+    }
+  ]
+}

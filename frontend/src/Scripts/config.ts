@@ -14,7 +14,7 @@ export const config = {
 	 * Options: 'ecommerce', 'hr', 'inventory', etc.
 	 */
 	// schemaName: import.meta.env.VITE_SCHEMA_NAME || "transactions",
-	schemaName: import.meta.env.VITE_SCHEMA_NAME || "simacnashr",
+	schemaName: import.meta.env.VITE_SCHEMA_NAME || "concert_singer",
 
 	/**
 	 * Whether to validate SQL execution on the backend
