@@ -1,0 +1,135 @@
+AspNetUsers Table: جدول کاربران-مشتریان سیستم. شامل ستون های Id, Email, UserName, IsSimacUser, ProvinceCode. استفاده برای مدیریت داده‌های کاربران-مشتریان سیستم.
+ | 
+Book Table: جدول کتاب ها. شامل ستون های BookID, Title, CategoryID, ISBN, Author, Price, Status. استفاده برای مدیریت داده‌های کتاب‌ها.
+ | 
+Category Table: جدول دسته‌بندی‌ها. شامل ستون های CategoryID, Name. استفاده برای مدیریت داده‌های دسته‌بندی‌ها.
+ | 
+Error Table: جدول خطاها. شامل ستون های ErrorID, ErrorCode, ErrorVersion, ErrorDes, ErrorType, ErrorPath, ErrorTrace, ErrorUserID, ErrorUserIP, ErrorDate. استفاده برای مدیریت داده‌های خطاها.
+ | 
+GateWayes Table: جدول درگاه های پرداخت. شامل ستون های GateWayID, GateWayName. استفاده برای مدیریت داده‌های درگاه‌های پرداخت.
+ | 
+OrderDetails Table: جدول جزئیات سفارش. شامل ستون های OrderDetailID, OrderID, BookID, Price. استفاده برای مدیریت داده‌های جزئیات سفارش.
+ | 
+Orders Table: جدول سفارش‌ها. شامل ستون های OrderID, UserId, OrderDate, terminalNumber, responseCode, rrn, amount, IsComittedBySimac, FullName, NationalId, IsFinalizedPayment. استفاده برای مدیریت داده‌های سفارش‌ها.
+ | 
+SiteSetting Table: جدول تنظیمات سایت. شامل ستون های SettingId, Name, Value. استفاده برای مدیریت داده‌های تنظیمات سایت.
+ | 
+AspNetUsers.Id Column: Column Id, نوع داده varchar, استفاده برای Operations on Id.
+ | 
+AspNetUsers.Email Column: Column Email, نوع داده varchar, استفاده برای Operations on Email.
+ | 
+AspNetUsers.EmailConfirmed Column: Column EmailConfirmed, نوع داده boolean, استفاده برای Operations on EmailConfirmed.
+ | 
+AspNetUsers.PasswordHash Column: Column PasswordHash, نوع داده varchar, استفاده برای Operations on PasswordHash.
+ | 
+AspNetUsers.SecurityStamp Column: Column SecurityStamp, نوع داده varchar, استفاده برای Operations on SecurityStamp.
+ | 
+AspNetUsers.PhoneNumber Column: Column PhoneNumber, نوع داده varchar, استفاده برای Operations on PhoneNumber.
+ | 
+AspNetUsers.PhoneNumberConfirmed Column: Column PhoneNumberConfirmed, نوع داده boolean, استفاده برای Operations on PhoneNumberConfirmed.
+ | 
+AspNetUsers.TwoFactorEnabled Column: Column TwoFactorEnabled, نوع داده boolean, استفاده برای Operations on TwoFactorEnabled.
+ | 
+AspNetUsers.LockoutEndDateUtc Column: Column LockoutEndDateUtc, نوع داده datetime, استفاده برای Operations on LockoutEndDateUtc.
+ | 
+AspNetUsers.LockoutEnabled Column: Column LockoutEnabled, نوع داده boolean, استفاده برای Operations on LockoutEnabled.
+ | 
+AspNetUsers.AccessFailedCount Column: Column AccessFailedCount, نوع داده integer, استفاده برای Operations on AccessFailedCount.
+ | 
+AspNetUsers.UserName Column: Column UserName, نوع داده varchar, استفاده برای Operations on UserName.
+ | 
+AspNetUsers.IsSimacUser Column: Column IsSimacUser, نوع داده boolean, استفاده برای Operations on IsSimacUser.
+ | 
+AspNetUsers.ProvinceCode Column: Column ProvinceCode, نوع داده integer, استفاده برای Operations on ProvinceCode.
+ | 
+Book.BookID Column: Column BookID, نوع داده integer, استفاده برای Operations on BookID.
+ | 
+Book.Title Column: Column Title, نوع داده varchar, استفاده برای Operations on Title.
+ | 
+Book.CategoryID Column: Column CategoryID, نوع داده integer, استفاده برای Operations on CategoryID.
+ | 
+Book.ISBN Column: Column ISBN, نوع داده varchar, استفاده برای Operations on ISBN.
+ | 
+Book.Author Column: Column Author, نوع داده varchar, استفاده برای Operations on Author.
+ | 
+Book.Price Column: Column Price, نوع داده decimal, استفاده برای Operations on Price.
+ | 
+Book.Status Column: Column Status, نوع داده boolean, استفاده برای Operations on Status.
+ | 
+Category.CategoryID Column: Column CategoryID, نوع داده integer, استفاده برای Operations on CategoryID.
+ | 
+Category.Name Column: Column Name, نوع داده varchar, استفاده برای Operations on Name.
+ | 
+Error.ErrorID Column: Column ErrorID, نوع داده decimal, استفاده برای Operations on ErrorID.
+ | 
+Error.ErrorCode Column: Column ErrorCode, نوع داده varchar, استفاده برای Operations on ErrorCode.
+ | 
+Error.ErrorVersion Column: Column ErrorVersion, نوع داده varchar, استفاده برای Operations on ErrorVersion.
+ | 
+Error.ErrorDes Column: Column ErrorDes, نوع داده varchar, استفاده برای Operations on ErrorDes.
+ | 
+Error.ErrorType Column: Column ErrorType, نوع داده integer, استفاده برای Operations on ErrorType.
+ | 
+Error.ErrorPath Column: Column ErrorPath, نوع داده varchar, استفاده برای Operations on ErrorPath.
+ | 
+Error.ErrorTrace Column: Column ErrorTrace, نوع داده varchar, استفاده برای Operations on ErrorTrace.
+ | 
+Error.ErrorUserID Column: Column ErrorUserID, نوع داده varchar, استفاده برای Operations on ErrorUserID.
+ | 
+Error.ErrorUserIP Column: Column ErrorUserIP, نوع داده varchar, استفاده برای Operations on ErrorUserIP.
+ | 
+Error.ErrorDate Column: Column ErrorDate, نوع داده datetime, استفاده برای Operations on ErrorDate.
+ | 
+Error.ErrorSystemID Column: Column ErrorSystemID, نوع داده integer, استفاده برای Operations on ErrorSystemID.
+ | 
+GateWayes.GateWayID Column: Column GateWayID, نوع داده integer, استفاده برای Operations on GateWayID.
+ | 
+GateWayes.GateWayName Column: Column GateWayName, نوع داده varchar, استفاده برای Operations on GateWayName.
+ | 
+OrderDetails.OrderDetailID Column: Column OrderDetailID, نوع داده integer, استفاده برای Operations on OrderDetailID.
+ | 
+OrderDetails.OrderID Column: Column OrderID, نوع داده integer, استفاده برای Operations on OrderID.
+ | 
+OrderDetails.BookID Column: Column BookID, نوع داده integer, استفاده برای Operations on BookID.
+ | 
+OrderDetails.Price Column: Column Price, نوع داده decimal, استفاده برای Operations on Price.
+ | 
+Orders.OrderID Column: Column OrderID, نوع داده integer, استفاده برای Operations on OrderID.
+ | 
+Orders.UserId Column: Column UserId, نوع داده varchar, استفاده برای Operations on UserId.
+ | 
+Orders.OrderDate Column: Column OrderDate, نوع داده datetime, استفاده برای Operations on OrderDate.
+ | 
+Orders.terminalNumber Column: Column terminalNumber, نوع داده varchar, استفاده برای Operations on terminalNumber.
+ | 
+Orders.responseCode Column: Column responseCode, نوع داده varchar, استفاده برای Operations on responseCode.
+ | 
+Orders.paymentId Column: Column paymentId, نوع داده varchar, استفاده برای Operations on paymentId.
+ | 
+Orders.RequestId Column: Column RequestId, نوع داده varchar, استفاده برای Operations on RequestId.
+ | 
+Orders.rrn Column: Column rrn, نوع داده varchar, استفاده برای Operations on rrn.
+ | 
+Orders.amount Column: Column amount, نوع داده decimal, استفاده برای Operations on amount.
+ | 
+Orders.maskedPan Column: Column maskedPan, نوع داده varchar, استفاده برای Operations on maskedPan.
+ | 
+Orders.traceNo Column: Column traceNo, نوع داده varchar, استفاده برای Operations on traceNo.
+ | 
+Orders.IsComittedBySimac Column: Column IsComittedBySimac, نوع داده boolean, استفاده برای Operations on IsComittedBySimac.
+ | 
+Orders.FullName Column: Column FullName, نوع داده varchar, استفاده برای Operations on FullName.
+ | 
+Orders.NationalId Column: Column NationalId, نوع داده varchar, استفاده برای Operations on NationalId.
+ | 
+Orders.IsFinalizedPayment Column: Column IsFinalizedPayment, نوع داده boolean, استفاده برای Operations on IsFinalizedPayment.
+ | 
+SiteSetting.SettingId Column: Column SettingId, نوع داده integer, استفاده برای Operations on SettingId.
+ | 
+SiteSetting.Name Column: Column Name, نوع داده varchar, استفاده برای Operations on Name.
+ | 
+SiteSetting.Value Column: Column Value, نوع داده integer, استفاده برای Operations on Value.
+ | 
+Relation: OrderDetails.OrderID ↔ Orders.OrderID. نوع رابطه many-to-one. استفاده برای connecting OrderDetails to Orders.
+ | 
+Relation: OrderDetails.BookID ↔ Book.BookID. نوع رابطه many-to-one. استفاده برای connecting OrderDetails to Book.

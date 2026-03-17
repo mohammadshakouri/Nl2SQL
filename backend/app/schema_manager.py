@@ -21,13 +21,13 @@ class Table:
     def to_embedding_text(self) -> str:
         """
         Convert table to embedding text format:
-        <TableName> Table: <semantic description>. Includes columns <key columns>. Used for <business role>.
+        <TableName> Table: <semantic description>. شامل ستون های <key columns>. استفاده برای <business role>.
         """
         key_cols = ", ".join(self.key_columns)
         return (
             f"{self.name} Table: {self.description}. "
-            f"Includes columns {key_cols}. "
-            f"Used for {self.business_role}."
+            f"شامل ستون های {key_cols}. "
+            f"استفاده برای {self.business_role}."
         )
 
 
@@ -43,11 +43,11 @@ class Column:
     def to_embedding_text(self) -> str:
         """
         Convert column to embedding text format:
-        <TableName>.<ColumnName> Column: <meaning>, data type <type>, used for <operations>.
+        <TableName>.<ColumnName> Column: <meaning>, نوع داده {self.data_type}, استفاده برای {self.operations}.
         """
         return (
             f"{self.table_name}.{self.column_name} Column: {self.meaning}, "
-            f"data type {self.data_type}, used for {self.operations}."
+            f"نوع داده {self.data_type}, استفاده برای {self.operations}."
         )
 
 
@@ -64,13 +64,13 @@ class Relation:
     def to_embedding_text(self) -> str:
         """
         Convert relation to embedding text format:
-        Relation: <TableA>.<Column> ↔ <TableB>.<Column>. Relationship type <type>. Used for <purpose>.
+        Relation: <TableA>.<Column> ↔ <TableB>.<Column>. Relationship type {self.relationship_type}. استفاده برای {self.join_purpose}.
         """
         return (
             f"Relation: {self.source_table}.{self.source_column} ↔ "
             f"{self.target_table}.{self.target_column}. "
-            f"Relationship type {self.relationship_type}. "
-            f"Used for {self.join_purpose}."
+            f"نوع رابطه {self.relationship_type}. "
+            f"استفاده برای {self.join_purpose}."
         )
 
 
@@ -188,7 +188,7 @@ class SchemaManager:
         ids, documents = self.get_all_embedding_texts()
         
         # Join documents with pipe separator
-        text_content = "|".join(documents)
+        text_content = "\n | \n".join(documents)
         
         with open(output_path, "w", encoding="utf-8") as f:
             f.write(text_content)
@@ -201,58 +201,3 @@ class SchemaManager:
             "relations": len(self.relations),
             "total_units": len(self.tables) + len(self.columns) + len(self.relations)
         }
-    
-    def get_table_ddl(self, table_name: str) -> str:
-        """
-        Generate DDL-like structure for a specific table.
-        Used in SQL generation prompt context.
-        """
-        # Find table
-        table = next((t for t in self.tables if t.name == table_name), None)
-        if not table:
-            return ""
-        
-        # Find columns for this table
-        table_columns = [c for c in self.columns if c.table_name == table_name]
-        
-        # Find relations involving this table
-        table_relations = [
-            r for r in self.relations 
-            if r.source_table == table_name or r.target_table == table_name
-        ]
-        
-        # Build DDL-like text
-        ddl = f"Table: {table_name}\n"
-        ddl += f"Description: {table.description}\n"
-        ddl += "Columns:\n"
-        
-        for col in table_columns:
-            ddl += f"  - {col.column_name} ({col.data_type}): {col.meaning}\n"
-        
-        if table_relations:
-            ddl += "Relations:\n"
-            for rel in table_relations:
-                if rel.source_table == table_name:
-                    ddl += f"  - {rel.source_column} -> {rel.target_table}.{rel.target_column} ({rel.relationship_type})\n"
-                else:
-                    ddl += f"  - {rel.target_column} <- {rel.source_table}.{rel.source_column} ({rel.relationship_type})\n"
-        
-        return ddl
-
-
-def create_schema_embedding_file(schema_json_path: str, output_txt_path: str) -> Dict[str, int]:
-    """
-    Utility function to convert schema JSON to embedding text file.
-    
-    Args:
-        schema_json_path: Path to schema JSON file
-        output_txt_path: Path to output text file (pipe-separated)
-    
-    Returns:
-        Dictionary with schema statistics
-    """
-    manager = SchemaManager()
-    manager.load_schema_from_json(schema_json_path)
-    manager.generate_schema_text_file(output_txt_path)
-    
-    return manager.get_schema_summary()

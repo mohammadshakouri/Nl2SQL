@@ -143,6 +143,7 @@ def create_schema_vector_store(
     
     # Get embedding texts
     ids, documents = manager.get_all_embedding_texts()
+    manager.generate_schema_text_file("./schema_text.txt")  # For debugging/inspection
     
     # Create collection
     chroma_client = chromadb.PersistentClient(path=chroma_path)
