@@ -8,6 +8,7 @@ import app.dotenv as dotenv
 import json
 from typing import Dict, List, Any
 from datetime import datetime
+from enrich_schema import enrich_schema
 
 
 class SchemaExtractor:
@@ -227,6 +228,15 @@ class SchemaExtractor:
             print(f"   Tables: {len(schema['tables'])}")
             print(f"   Columns: {len(schema['columns'])}")
             print(f"   Relations: {len(schema['relations'])}")
+
+            # Enrich schema with rich Persian descriptions via Ollama
+            print(f"\n🤖 Enriching schema with Persian LLM descriptions...")
+            enrich_schema(schema)
+
+            with open(output_file, 'w', encoding='utf-8') as f:
+                json.dump(schema, f, indent=2, ensure_ascii=False)
+
+            print(f"\n✅ Enriched schema saved to: {output_file}")
             
             return True
         except Exception as e:

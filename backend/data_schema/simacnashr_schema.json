@@ -1,532 +1,532 @@
 {
-   "database_name":"SimacNashr",
-   "description":"Database schema for SimacNashr",
-   "tables":[
-      {
-         "name":"AspNetUsers",
-         "description":"جدول کاربران-مشتریان سیستم",
-         "key_columns":[
-            "Id",
-            "Email",
-            "UserName",
-            "IsSimacUser",
-            "ProvinceCode"
-         ],
-         "business_role":"مدیریت داده‌های کاربران-مشتریان سیستم"
-      },
-      {
-         "name":"Book",
-         "description":"جدول کتاب ها",
-         "key_columns":[
-            "BookID",
-            "Title",
-            "CategoryID",
-            "ISBN",
-            "Author",
-            "Price",
-            "Status"
-         ],
-         "business_role":"مدیریت داده‌های کتاب‌ها"
-      },
-      {
-         "name":"Category",
-         "description":"جدول دسته‌بندی‌ها",
-         "key_columns":[
-            "CategoryID",
-            "Name"
-         ],
-         "business_role":"مدیریت داده‌های دسته‌بندی‌ها"
-      },
-      {
-         "name":"Error",
-         "description":"جدول خطاها",
-         "key_columns":[
-            "ErrorID",
-            "ErrorCode",
-            "ErrorVersion",
-            "ErrorDes",
-            "ErrorType",
-            "ErrorPath",
-            "ErrorTrace",
-            "ErrorUserID",
-            "ErrorUserIP",
-            "ErrorDate"
-         ],
-         "business_role":"مدیریت داده‌های خطاها"
-      },
-      {
-         "name":"GateWayes",
-         "description":"جدول درگاه های پرداخت",
-         "key_columns":[
-            "GateWayID",
-            "GateWayName"
-         ],
-         "business_role":"مدیریت داده‌های درگاه‌های پرداخت"
-      },
-      {
-         "name":"OrderDetails",
-         "description":"جدول جزئیات سفارش",
-         "key_columns":[
-            "OrderDetailID",
-            "OrderID",
-            "BookID",
-            "Price"
-         ],
-         "business_role":"مدیریت داده‌های جزئیات سفارش"
-      },
-      {
-         "name":"Orders",
-         "description":"جدول سفارش‌ها",
-         "key_columns":[
-            "OrderID",
-            "UserId",
-            "OrderDate",
-            "terminalNumber",
-            "responseCode",
-            "rrn",
-            "amount",
-            "IsComittedBySimac",
-            "FullName",
-            "NationalId",
-            "IsFinalizedPayment"
-         ],
-         "business_role":"مدیریت داده‌های سفارش‌ها"
-      },
-      {
-         "name":"SiteSetting",
-         "description":"جدول تنظیمات سایت",
-         "key_columns":[
-            "SettingId",
-            "Name",
-            "Value"
-         ],
-         "business_role":"مدیریت داده‌های تنظیمات سایت"
-      }
-   ],
-   "columns":[
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"Id",
-         "meaning":"Column Id",
-         "data_type":"varchar",
-         "operations":"Operations on Id"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"Email",
-         "meaning":"Column Email",
-         "data_type":"varchar",
-         "operations":"Operations on Email"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"EmailConfirmed",
-         "meaning":"Column EmailConfirmed",
-         "data_type":"boolean",
-         "operations":"Operations on EmailConfirmed"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"PasswordHash",
-         "meaning":"Column PasswordHash",
-         "data_type":"varchar",
-         "operations":"Operations on PasswordHash"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"SecurityStamp",
-         "meaning":"Column SecurityStamp",
-         "data_type":"varchar",
-         "operations":"Operations on SecurityStamp"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"PhoneNumber",
-         "meaning":"Column PhoneNumber",
-         "data_type":"varchar",
-         "operations":"Operations on PhoneNumber"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"PhoneNumberConfirmed",
-         "meaning":"Column PhoneNumberConfirmed",
-         "data_type":"boolean",
-         "operations":"Operations on PhoneNumberConfirmed"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"TwoFactorEnabled",
-         "meaning":"Column TwoFactorEnabled",
-         "data_type":"boolean",
-         "operations":"Operations on TwoFactorEnabled"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"LockoutEndDateUtc",
-         "meaning":"Column LockoutEndDateUtc",
-         "data_type":"datetime",
-         "operations":"Operations on LockoutEndDateUtc"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"LockoutEnabled",
-         "meaning":"Column LockoutEnabled",
-         "data_type":"boolean",
-         "operations":"Operations on LockoutEnabled"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"AccessFailedCount",
-         "meaning":"Column AccessFailedCount",
-         "data_type":"integer",
-         "operations":"Operations on AccessFailedCount"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"UserName",
-         "meaning":"Column UserName",
-         "data_type":"varchar",
-         "operations":"Operations on UserName"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"IsSimacUser",
-         "meaning":"Column IsSimacUser",
-         "data_type":"boolean",
-         "operations":"Operations on IsSimacUser"
-      },
-      {
-         "table_name":"AspNetUsers",
-         "column_name":"ProvinceCode",
-         "meaning":"Column ProvinceCode",
-         "data_type":"integer",
-         "operations":"Operations on ProvinceCode"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"BookID",
-         "meaning":"Column BookID",
-         "data_type":"integer",
-         "operations":"Operations on BookID"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"Title",
-         "meaning":"Column Title",
-         "data_type":"varchar",
-         "operations":"Operations on Title"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"CategoryID",
-         "meaning":"Column CategoryID",
-         "data_type":"integer",
-         "operations":"Operations on CategoryID"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"ISBN",
-         "meaning":"Column ISBN",
-         "data_type":"varchar",
-         "operations":"Operations on ISBN"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"Author",
-         "meaning":"Column Author",
-         "data_type":"varchar",
-         "operations":"Operations on Author"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"Price",
-         "meaning":"Column Price",
-         "data_type":"decimal",
-         "operations":"Operations on Price"
-      },
-      {
-         "table_name":"Book",
-         "column_name":"Status",
-         "meaning":"Column Status",
-         "data_type":"boolean",
-         "operations":"Operations on Status"
-      },
-      {
-         "table_name":"Category",
-         "column_name":"CategoryID",
-         "meaning":"Column CategoryID",
-         "data_type":"integer",
-         "operations":"Operations on CategoryID"
-      },
-      {
-         "table_name":"Category",
-         "column_name":"Name",
-         "meaning":"Column Name",
-         "data_type":"varchar",
-         "operations":"Operations on Name"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorID",
-         "meaning":"Column ErrorID",
-         "data_type":"decimal",
-         "operations":"Operations on ErrorID"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorCode",
-         "meaning":"Column ErrorCode",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorCode"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorVersion",
-         "meaning":"Column ErrorVersion",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorVersion"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorDes",
-         "meaning":"Column ErrorDes",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorDes"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorType",
-         "meaning":"Column ErrorType",
-         "data_type":"integer",
-         "operations":"Operations on ErrorType"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorPath",
-         "meaning":"Column ErrorPath",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorPath"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorTrace",
-         "meaning":"Column ErrorTrace",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorTrace"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorUserID",
-         "meaning":"Column ErrorUserID",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorUserID"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorUserIP",
-         "meaning":"Column ErrorUserIP",
-         "data_type":"varchar",
-         "operations":"Operations on ErrorUserIP"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorDate",
-         "meaning":"Column ErrorDate",
-         "data_type":"datetime",
-         "operations":"Operations on ErrorDate"
-      },
-      {
-         "table_name":"Error",
-         "column_name":"ErrorSystemID",
-         "meaning":"Column ErrorSystemID",
-         "data_type":"integer",
-         "operations":"Operations on ErrorSystemID"
-      },
-      {
-         "table_name":"GateWayes",
-         "column_name":"GateWayID",
-         "meaning":"Column GateWayID",
-         "data_type":"integer",
-         "operations":"Operations on GateWayID"
-      },
-      {
-         "table_name":"GateWayes",
-         "column_name":"GateWayName",
-         "meaning":"Column GateWayName",
-         "data_type":"varchar",
-         "operations":"Operations on GateWayName"
-      },
-      {
-         "table_name":"OrderDetails",
-         "column_name":"OrderDetailID",
-         "meaning":"Column OrderDetailID",
-         "data_type":"integer",
-         "operations":"Operations on OrderDetailID"
-      },
-      {
-         "table_name":"OrderDetails",
-         "column_name":"OrderID",
-         "meaning":"Column OrderID",
-         "data_type":"integer",
-         "operations":"Operations on OrderID"
-      },
-      {
-         "table_name":"OrderDetails",
-         "column_name":"BookID",
-         "meaning":"Column BookID",
-         "data_type":"integer",
-         "operations":"Operations on BookID"
-      },
-      {
-         "table_name":"OrderDetails",
-         "column_name":"Price",
-         "meaning":"Column Price",
-         "data_type":"decimal",
-         "operations":"Operations on Price"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"OrderID",
-         "meaning":"Column OrderID",
-         "data_type":"integer",
-         "operations":"Operations on OrderID"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"UserId",
-         "meaning":"Column UserId",
-         "data_type":"varchar",
-         "operations":"Operations on UserId"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"OrderDate",
-         "meaning":"Column OrderDate",
-         "data_type":"datetime",
-         "operations":"Operations on OrderDate"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"terminalNumber",
-         "meaning":"Column terminalNumber",
-         "data_type":"varchar",
-         "operations":"Operations on terminalNumber"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"responseCode",
-         "meaning":"Column responseCode",
-         "data_type":"varchar",
-         "operations":"Operations on responseCode"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"paymentId",
-         "meaning":"Column paymentId",
-         "data_type":"varchar",
-         "operations":"Operations on paymentId"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"RequestId",
-         "meaning":"Column RequestId",
-         "data_type":"varchar",
-         "operations":"Operations on RequestId"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"rrn",
-         "meaning":"Column rrn",
-         "data_type":"varchar",
-         "operations":"Operations on rrn"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"amount",
-         "meaning":"Column amount",
-         "data_type":"decimal",
-         "operations":"Operations on amount"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"maskedPan",
-         "meaning":"Column maskedPan",
-         "data_type":"varchar",
-         "operations":"Operations on maskedPan"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"traceNo",
-         "meaning":"Column traceNo",
-         "data_type":"varchar",
-         "operations":"Operations on traceNo"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"IsComittedBySimac",
-         "meaning":"Column IsComittedBySimac",
-         "data_type":"boolean",
-         "operations":"Operations on IsComittedBySimac"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"FullName",
-         "meaning":"Column FullName",
-         "data_type":"varchar",
-         "operations":"Operations on FullName"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"NationalId",
-         "meaning":"Column NationalId",
-         "data_type":"varchar",
-         "operations":"Operations on NationalId"
-      },
-      {
-         "table_name":"Orders",
-         "column_name":"IsFinalizedPayment",
-         "meaning":"Column IsFinalizedPayment",
-         "data_type":"boolean",
-         "operations":"Operations on IsFinalizedPayment"
-      },
-      {
-         "table_name":"SiteSetting",
-         "column_name":"SettingId",
-         "meaning":"Column SettingId",
-         "data_type":"integer",
-         "operations":"Operations on SettingId"
-      },
-      {
-         "table_name":"SiteSetting",
-         "column_name":"Name",
-         "meaning":"Column Name",
-         "data_type":"varchar",
-         "operations":"Operations on Name"
-      },
-      {
-         "table_name":"SiteSetting",
-         "column_name":"Value",
-         "meaning":"Column Value",
-         "data_type":"integer",
-         "operations":"Operations on Value"
-      }
-   ],
-   "relations":[
-      {
-         "source_table":"OrderDetails",
-         "source_column":"OrderID",
-         "target_table":"Orders",
-         "target_column":"OrderID",
-         "relationship_type":"many-to-one",
-         "join_purpose":"connecting OrderDetails to Orders"
-      },
-      {
-         "source_table":"OrderDetails",
-         "source_column":"BookID",
-         "target_table":"Book",
-         "target_column":"BookID",
-         "relationship_type":"many-to-one",
-         "join_purpose":"connecting OrderDetails to Book"
-      }
-   ]
+  "database_name": "SimacNashr",
+  "description": "Database schema for SimacNashr",
+  "tables": [
+    {
+      "name": "AspNetUsers",
+      "description": "این جدول اطلاعات کاربران ثبت‌نام شده در سیستم را نگهداری می‌کند و شامل جزئیات مانند نام کاربری، آدرس ایمیل، رمز عبور، وضعیت فعال‌سازی دو مرحله‌ای و اطلاعات مربوط به استان کاربر می‌باشد. این اطلاعات برای مدیریت کاربران، احراز هویت و ارائه خدمات شخصی‌سازی شده به آن‌ها مورد استفاده قرار می‌گیرد.",
+      "key_columns": [
+        "Id",
+        "Email",
+        "UserName",
+        "IsSimacUser",
+        "ProvinceCode"
+      ],
+      "business_role": "این جدول نقش اصلی کاربران ثبت‌نام شده در سیستم را تعریف و مدیریت می‌کند."
+    },
+    {
+      "name": "Book",
+      "description": "این جدول اطلاعات مربوط به کتاب‌ها را نگهداری می‌کند، از جمله عنوان، دسته، نویسنده، قیمت و وضعیت موجودی. این جدول به کتابداران و مشتریان اجازه می‌دهد تا کتاب‌ها را به طور موثر مدیریت و جستجو کنند و همچنین برای گزارش‌گیری و تحلیل فروش کتاب استفاده می‌شود.",
+      "key_columns": [
+        "BookID",
+        "Title",
+        "CategoryID",
+        "ISBN",
+        "Author",
+        "Price",
+        "Status"
+      ],
+      "business_role": "این جدول، اطلاعات اصلی مربوط به موجودی کتاب و ویژگی‌های آن را در سیستم مدیریت کتابخانه ذخیره می‌کند."
+    },
+    {
+      "name": "Category",
+      "description": "این جدول اطلاعات مربوط به دسته‌بندی‌ها را نگهداری می‌کند. هر ردیف در این جدول نشان‌دهنده یک دسته خاص است که می‌تواند برای سازماندهی و طبقه‌بندی محصولات یا خدمات مورد استفاده قرار گیرد.",
+      "key_columns": [
+        "CategoryID",
+        "Name"
+      ],
+      "business_role": "این جدول برای مدیریت و سازماندهی دسته‌بندی‌های مختلف در سیستم استفاده می‌شود."
+    },
+    {
+      "name": "Error",
+      "description": "این جدول اطلاعات مربوط به خطاها و اشتباهات رخ داده در سیستم را نگهداری می‌کند. این اطلاعات شامل کد خطا، نسخه خطا، توضیحات خطا، نوع خطا، مسیر خطا، ردیف خطا، شناسه کاربر ایجاد کننده خطا، آدرس IP کاربر و تاریخ وقوع خطا را در خود جای می‌دهد و برای تحلیل و رفع مشکلات سیستم به کار می‌رود.",
+      "key_columns": [
+        "ErrorID",
+        "ErrorCode",
+        "ErrorVersion",
+        "ErrorDes",
+        "ErrorType",
+        "ErrorPath",
+        "ErrorTrace",
+        "ErrorUserID",
+        "ErrorUserIP",
+        "ErrorDate"
+      ],
+      "business_role": "این جدول به تیم پشتیبانی و توسعه نرم‌افزار کمک می‌کند تا مشکلات سیستم را شناسایی و برطرف کنند."
+    },
+    {
+      "name": "GateWayes",
+      "description": "این جدول اطلاعات مربوط به دروازه‌های مختلف (Gateways) را نگهداری می‌کند. هر ورودی در این جدول شامل یک شناسه یکتا (GateWayID) و نام مشخص دروازه (GateWayName) را نشان می‌دهد و برای شناسایی و مدیریت این دروازه‌ها استفاده می‌شود.",
+      "key_columns": [
+        "GateWayID",
+        "GateWayName"
+      ],
+      "business_role": "این جدول به سازمان کمک می‌کند تا دروازه‌های ارتباطی خود را به طور سیستماتیک ثبت و مدیریت کند."
+    },
+    {
+      "name": "OrderDetails",
+      "description": "این جدول جزئیات سفارشات را نگهداری می‌کند و برای ثبت هر آیتم موجود در یک سفارش خاص، شامل شناسه سفارش، شناسه کتاب، و قیمت آن آیتم استفاده می‌شود. این اطلاعات به سیستم اجازه می‌دهد تا به طور دقیق میزان سفارش داده شده و ارزش آن را محاسبه کند.",
+      "key_columns": [
+        "OrderDetailID",
+        "OrderID",
+        "BookID",
+        "Price"
+      ],
+      "business_role": "این جدول اطلاعات مربوط به خط‌مشی‌های مربوط به سفارشات و کتاب‌ها را نگهداری می‌کند."
+    },
+    {
+      "name": "Orders",
+      "description": "این جدول اطلاعات مربوط به تمامی سفارشات مشتریان را نگهداری می‌کند. این اطلاعات شامل تاریخ سفارش، مبلغ، شناسه مشتری، وضعیت پرداخت و سایر جزئیات مرتبط با هر سفارش است و برای مدیریت و پیگیری سفارشات و همچنین تحلیل داده‌های فروش استفاده می‌شود.",
+      "key_columns": [
+        "OrderID",
+        "UserId",
+        "OrderDate",
+        "terminalNumber",
+        "responseCode",
+        "rrn",
+        "amount",
+        "IsComittedBySimac",
+        "FullName",
+        "NationalId",
+        "IsFinalizedPayment"
+      ],
+      "business_role": "این جدول، پایگاه داده اصلی برای ثبت و مدیریت تمامی تراکنش‌های مالی سفارشات مشتریان می‌باشد."
+    },
+    {
+      "name": "SiteSetting",
+      "description": "این جدول تنظیمات وب‌سایت را نگهداری می‌کند و شامل مقادیر مختلفی مانند اندازه فونت، رنگ‌ها و سایر تنظیمات ظاهری است که برای سفارشی‌سازی ظاهر وب‌سایت استفاده می‌شوند. این تنظیمات به صورت ساختاریافته ذخیره می‌شوند تا بتوان به راحتی آن‌ها را تغییر داد و مدیریت کرد. این جدول به توسعه‌دهندگان و مدیران وب‌سایت کمک می‌کند تا به سرعت و به آسانی تنظیمات ظاهری وب‌سایت را تغییر دهند.",
+      "key_columns": [
+        "SettingId",
+        "Name",
+        "Value"
+      ],
+      "business_role": "این جدول اطلاعات تنظیمات ظاهری وب‌سایت را برای مدیریت و تغییر آن‌ها فراهم می‌سازد."
+    }
+  ],
+  "columns": [
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "Id",
+      "meaning": "این ستون یک شناسه یکتا (Unique Identifier) برای هر کاربر در سیستم را ذخیره می‌کند و به صورت رشته‌ای (varchar) نمایش داده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن کاربران بر اساس این شناسه، مرتب‌سازی آن‌ها و استفاده از آن در پیوند (join) با سایر جداول استفاده می‌شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "Email",
+      "meaning": "این ستون آدرس ایمیل ثبت شده کاربران را نگهداری می‌کند و برای شناسایی و ارتباط با کاربران به منظور ارسال اطلاعات، احراز هویت و سایر ارتباطات ضروری است.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن کاربران بر اساس آدرس ایمیل، مرتب‌سازی کاربران بر اساس آدرس ایمیل و انجام عملیات join با سایر جداول برای یافتن اطلاعات مرتبط با کاربران استفاده می‌شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "EmailConfirmed",
+      "meaning": "این ستون نشان می‌دهد که آیا ایمیل کاربر به طور کامل تایید شده است یا خیر. مقدار `true` به این معنی است که کاربر ایمیل خود را تایید کرده و مقدار `false` نشان می‌دهد که هنوز تایید نشده است.",
+      "data_type": "boolean",
+      "operations": "معمولاً برای فیلتر کردن کاربران تایید شده ایمیل استفاده می‌شود و همچنین می‌تواند در مرتب‌سازی کاربران بر اساس وضعیت تایید ایمیل کاربرد داشته باشد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PasswordHash",
+      "meaning": "این ستون حاوی هش رمز عبور کاربر است که یک رشته‌ی رمزگذاری شده‌ی طولانی است و برای امنیت اطلاعات رمز عبور کاربر استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای جستجو و فیلتر کردن بر اساس هش رمز عبور، یا برای ادغام با سایر جداول بر اساس هش رمز عبور استفاده می‌شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "SecurityStamp",
+      "meaning": "این ستون یک شناسه یکتا و تصادفی (GUID) را برای هر کاربر ذخیره می‌کند و برای اهداف امنیتی و پیگیری تغییرات در اطلاعات کاربر استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای ایجاد شاخص (index) و فیلتر کردن کاربران بر اساس این شناسه استفاده می‌شود و می‌تواند در عملیات ادغام (join) با سایر جداول برای پیگیری فعالیت‌های کاربر مورد بهره‌برداری قرار گیرد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PhoneNumber",
+      "meaning": "این ستون شماره تلفن کاربر را ذخیره می‌کند و برای ارتباط با کاربر، ارسال پیامک‌های تایید و اطلاع‌رسانی، و همچنین احراز هویت دو مرحله‌ای استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن کاربران بر اساس شماره تلفن، مرتب‌سازی کاربران بر اساس شماره تلفن، و همچنین استفاده در جوین‌ها برای ارتباط با سایر جداول کاربردی استفاده می‌شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "PhoneNumberConfirmed",
+      "meaning": "این ستون نشان می‌دهد که آیا شماره تلفن کاربر به طور تایید شده و معتبر در سیستم ثبت شده است یا خیر.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کاربران تایید شده و همچنین برای مرتب‌سازی کاربران بر اساس وضعیت تایید شماره تلفن استفاده کرد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "TwoFactorEnabled",
+      "meaning": "این ستون نشان می‌دهد که آیا کاربر از فعال‌سازی دو مرحله‌ای برای احراز هویت خود استفاده کرده است یا خیر. مقدار `true` به این معنی است که کاربر فعال‌سازی دو مرحله‌ای را فعال کرده و `false` به این معنی است که فعال نشده است.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کاربران فعال‌سازی دو مرحله‌ای استفاده کرد، همچنین می‌توان آن را در کنار ستون `Email` برای شناسایی کاربران فعال‌سازی دو مرحله‌ای را به همراه اطلاعات ایمیل آن‌ها جستجو کرد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "LockoutEndDateUtc",
+      "meaning": "این ستون تاریخ و زمان انقضای قفل شدن حساب کاربری کاربر را ذخیره می‌کند، که معمولاً پس از تلاش‌های ناموفق برای ورود به سیستم اعمال می‌شود تا از حملات brute-force جلوگیری شود.",
+      "data_type": "datetime",
+      "operations": "این ستون می‌تواند برای فیلتر کردن کاربران که حساب‌هایشان در حال حاضر قفل شده‌اند، مرتب‌سازی کاربران بر اساس تاریخ انقضای قفل شدن و یا انجام محاسبات آماری برای بررسی الگوهای قفل شدن حساب‌ها استفاده شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "LockoutEnabled",
+      "meaning": "این ستون نشان می‌دهد که آیا حساب کاربری کاربر به دلیل تلاش‌های متعدد ناموفق برای ورود، قفل شده است یا خیر.",
+      "data_type": "boolean",
+      "operations": "این ستون می‌تواند برای فیلتر کردن کاربران قفل شده یا غیرقفل شده، و همچنین برای مرتب‌سازی کاربران بر اساس وضعیت قفل شدن آن‌ها استفاده شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "AccessFailedCount",
+      "meaning": "این ستون تعداد دفعاتی را که یک کاربر در تلاش برای احراز هویت ناموفق بوده است، ثبت می‌کند. این مقدار می‌تواند برای تشخیص تلاش‌های هک یا مشکلات مربوط به احراز هویت کاربر استفاده شود.",
+      "data_type": "integer",
+      "operations": "معمولاً برای شمارش تعداد تلاش‌های ناموفق برای احراز هویت کاربران یا برای شناسایی کاربران مشکوک که تعداد تلاش‌های ناموفق زیادی دارند، از این ستون استفاده می‌شود."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "UserName",
+      "meaning": "این ستون نام کاربری منحصر به فرد هر کاربر ثبت‌نام شده در سیستم را ذخیره می‌کند و به عنوان شناسه اصلی برای شناسایی و دسترسی به اطلاعات مربوط به آن کاربر استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن کاربران بر اساس نام کاربری، مرتب‌سازی آن‌ها بر اساس نام کاربری و همچنین استفاده در عملیات اتصال (join) با سایر جداول برای دریافت اطلاعات تکمیلی کاربر مورد استفاده قرار می‌گیرد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "IsSimacUser",
+      "meaning": "این ستون نشان‌دهنده این است که آیا کاربر، کاربر دو مرحله‌ای (Simac) فعال شده است یا خیر. مقدار `true` به این معنی است که کاربر فعال‌سازی دو مرحله‌ای را تکمیل کرده و `false` به این معنی است که کاربر هنوز این مرحله را انجام نداده است.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کاربران فعال‌سازی دو مرحله‌ای، مرتب‌سازی کاربران بر اساس وضعیت فعال‌سازی دو مرحله‌ای و انجام عملیات جمع‌آوری (aggregation) برای محاسبه درصد کاربران فعال‌سازی دو مرحله‌ای استفاده کرد."
+    },
+    {
+      "table_name": "AspNetUsers",
+      "column_name": "ProvinceCode",
+      "meaning": "این ستون کد مربوط به استان محل سکونت کاربر را نگهداری می‌کند و به عنوان یک عدد صحیح (integer) ذخیره می‌شود تا امکان استفاده از آن در محاسبات و روابط با سایر جداول فراهم گردد.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن کاربران بر اساس استان، مرتب‌سازی کاربران بر اساس کد استان و همچنین استفاده از این ستون در پیوند (join) با جدول استان‌ها برای دریافت اطلاعات تکمیلی مربوط به هر کاربر مورد استفاده قرار می‌گیرد."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "BookID",
+      "meaning": "این ستون یک شناسه یکتا برای هر کتاب در جدول کتاب ارائه می‌دهد و به طور منحصر به فرد هر عنوان کتاب را شناسایی می‌کند.",
+      "data_type": "integer",
+      "operations": "این ستون اغلب برای فیلتر کردن کتاب‌ها بر اساس شناسه آن‌ها، مرتب‌سازی کتاب‌ها بر اساس شناسه آن‌ها و همچنین در عملیات جوین با سایر جداول (مانند جداول نویسنده و دسته) استفاده می‌شود."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Title",
+      "meaning": "این ستون نام یا عنوان کتاب را به صورت متنی ذخیره می‌کند و برای شناسایی و تعریف هر کتاب در جدول استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای جستجو و فیلتر کردن کتاب‌ها بر اساس نام آن‌ها، یا برای مرتب‌سازی لیست کتاب‌ها بر اساس نام آن‌ها استفاده می‌شود."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "CategoryID",
+      "meaning": "این ستون شناسه یک دسته کتاب را نگهداری می‌کند و به طور مستقیم به جدول دسته‌بندی کتاب‌ها مرتبط است، که امکان شناسایی و مدیریت کتاب‌ها بر اساس موضوع آن‌ها را فراهم می‌سازد.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن کتاب‌ها بر اساس دسته مورد نظر، مرتب‌سازی کتاب‌ها بر اساس شناسه دسته و همچنین برای پیوند دادن کتاب‌ها به دسته‌های مربوطه در پرس‌وجوها استفاده می‌شود."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "ISBN",
+      "meaning": "این ستون شناسه کتاب بین‌المللی استاندارد (ISBN) را نگهداری می‌کند که یک کد شناسایی منحصر به فرد برای هر کتاب است و به شناسایی کتاب در سطح جهانی کمک می‌کند.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن کتاب‌ها بر اساس ISBN استفاده می‌شود، همچنین می‌توان از آن برای مرتب‌سازی کتاب‌ها و انجام عملیات join با سایر جداول مانند جدول نویسندگان یا جدول موجودی کتاب استفاده کرد."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Author",
+      "meaning": "این ستون نام نویسنده کتاب را به صورت رشته‌ای (text) ذخیره می‌کند و به شناسایی و دسته‌بندی کتاب‌ها بر اساس نویسنده کمک می‌کند.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کتاب‌ها بر اساس نام نویسنده، مرتب‌سازی کتاب‌ها بر اساس نام نویسنده و همچنین برای پیوند دادن کتاب‌ها به نویسندگان مختلف استفاده کرد."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Price",
+      "meaning": "این ستون مقدار قیمت هر کتاب به ریال (و یا ارز دیگر با تعیین واحد) را نگهداری می‌کند و برای محاسبه درآمد و مدیریت بودجه کتابخانه استفاده می‌شود.",
+      "data_type": "decimal",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کتاب‌ها بر اساس قیمت، مرتب‌سازی کتاب‌ها به ترتیب قیمت صعودی یا نزولی، محاسبه مجموع قیمت کتاب‌ها در یک دسته خاص و همچنین برای پیوند با جدول‌های دیگر مانند جدول فروش کتاب استفاده کرد."
+    },
+    {
+      "table_name": "Book",
+      "column_name": "Status",
+      "meaning": "این ستون وضعیت موجودی کتاب را نشان می‌دهد، که می‌تواند نشان‌دهنده \"در دسترس\" (در صورت وجود موجودی) یا \"ناموجود\" (در صورت عدم وجود) باشد.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن کتاب‌های موجود و همچنین برای مرتب‌سازی کتاب‌ها بر اساس وضعیت موجودی استفاده کرد."
+    },
+    {
+      "table_name": "Category",
+      "column_name": "CategoryID",
+      "meaning": "این ستون شناسه یکتا (ID) برای هر دسته در جدول دسته‌بندی‌ها را نگهداری می‌کند و به عنوان یک کلید اصلی (Primary Key) عمل می‌کند.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن دسته‌بندی‌ها بر اساس شناسه آن‌ها، مرتب‌سازی دسته‌بندی‌ها بر اساس شناسه، و همچنین در جوین کردن این جدول با جداول دیگر برای ارتباط بین دسته‌بندی‌ها و سایر اطلاعات استفاده می‌شود."
+    },
+    {
+      "table_name": "Category",
+      "column_name": "Name",
+      "meaning": "این ستون نام دسته را نگهداری می‌کند و نشان‌دهنده نام توصیفی و منحصر به فرد هر دسته در جدول است.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن ردیف‌ها بر اساس نام دسته، مرتب‌سازی ردیف‌ها بر اساس نام دسته و انجام عملیات ادغام با سایر جداول بر اساس نام دسته استفاده می‌شود."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorID",
+      "meaning": "این ستون یک شناسه یکتا و عددی را برای هر خطا در جدول نگهداری می‌کند و به عنوان کلید اصلی جدول عمل می‌کند، به این معنی که هر خطا به طور منحصر به فرد با این شناسه شناسایی می‌شود.",
+      "data_type": "decimal",
+      "operations": "معمولاً برای فیلتر کردن خطاها بر اساس این شناسه استفاده می‌شود، همچنین می‌توان آن را برای مرتب‌سازی خطاها بر اساس ترتیب وقوع آن‌ها یا برای پیوند دادن خطاها به سایر اطلاعات مرتبط در جداول دیگر به کار برد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorCode",
+      "meaning": "این ستون کد خطا را نگهداری می‌کند که یک شناسه منحصر به فرد برای هر نوع خطا در سیستم است و به شناسایی و دسته‌بندی دقیق خطاها کمک می‌کند.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس کد خطا، مرتب‌سازی خطاها بر اساس کد خطا، و همچنین برای گروه‌بندی و شمارش خطاها بر اساس کد خطا استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorVersion",
+      "meaning": "این ستون، شماره نسخه خطا را نگهداری می‌کند که نشان‌دهنده نسخه خاص نرم‌افزار یا سیستم که در زمان وقوع خطا فعال بوده است را مشخص می‌سازد.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس نسخه خطا، مرتب‌سازی خطاها بر اساس نسخه و یا انجام تحلیل‌های آماری در مورد فراوانی خطاها در نسخه‌های مختلف استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorDes",
+      "meaning": "این ستون متن توضیحی مربوط به خطا نگهداری می‌کند و جزئیات مربوط به علت و شرح مشکل را در خود جای می‌دهد.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس متن توضیحی، مرتب‌سازی خطاها بر اساس تاریخ وقوع یا کد خطا، و همچنین برای انجام عملیات join با سایر جداول برای تحلیل دقیق‌تر خطاها استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorType",
+      "meaning": "این ستون نوع خطا را به صورت عددی ذخیره می‌کند و نشان می‌دهد که خطا به چه دسته‌ای تعلق دارد، مانند خطای برنامه، خطای شبکه، خطای امنیتی و غیره.",
+      "data_type": "integer",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس نوع آن‌ها استفاده کرد، همچنین می‌توان آن را برای مرتب‌سازی خطاها بر اساس نوع آن‌ها و یا برای گروه‌بندی خطاها بر اساس نوع آن‌ها به کار برد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorPath",
+      "meaning": "این ستون، مسیر دقیق محل وقوع خطا در سیستم را به صورت یک رشته متنی (varchar) ذخیره می‌کند و برای شناسایی و ردیابی دقیق‌تر محل بروز مشکل استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس مسیر وقوع آن‌ها، مرتب‌سازی خطاها بر اساس مسیر و همچنین انجام عملیات join با سایر جداول برای تحلیل جامع‌تر خطاها استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorTrace",
+      "meaning": "این ستون شامل ردیف‌های متنی جامع از اطلاعات مربوط به خطاها، شامل جزئیات فنی و متن‌های مرتبط با علت اصلی خطا، برای کمک به تحلیل دقیق‌تر و رفع سریع‌تر مشکلات سیستم می‌باشد.",
+      "data_type": "varchar",
+      "operations": "معمولاً از این ستون برای فیلتر کردن خطاها بر اساس کد خطا، نوع خطا، تاریخ وقوع یا سایر فیلدهای مرتبط، همچنین برای مرتب‌سازی خطاها بر اساس تاریخ وقوع یا شدت خطا و برای انجام عملیات جمع‌آوری و تحلیل داده‌ها استفاده می‌شود."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorUserID",
+      "meaning": "این ستون شناسه کاربر ایجاد کننده خطا را به صورت رشته‌ای (text) ذخیره می‌کند و برای شناسایی و پیگیری خطاها توسط کاربران خاص استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس کاربر مسئول، مرتب‌سازی خطاها بر اساس شناسه کاربر و یا انجام عملیات join با جدول کاربران برای دریافت اطلاعات بیشتر در مورد کاربر ایجاد کننده خطا استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorUserIP",
+      "meaning": "این ستون آدرس IP کاربر ایجاد کننده خطا را ذخیره می‌کند و برای شناسایی منبع خطا و بررسی الگوهای خطا از آن استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس آدرس IP کاربر، مرتب‌سازی خطاها بر اساس آدرس IP و انجام عملیات جمع‌آوری آمار خطاها بر اساس آدرس IP استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorDate",
+      "meaning": "این ستون تاریخ و زمان وقوع خطا را به صورت یک تاریخ و زمان مشخص (datetime) ذخیره می‌کند و برای ثبت دقیق زمان بروز هر مشکل در سیستم استفاده می‌شود.",
+      "data_type": "datetime",
+      "operations": "می‌توان از این ستون برای فیلتر کردن خطاها بر اساس تاریخ وقوع، مرتب‌سازی خطاها بر اساس تاریخ وقوع و انجام تحلیل‌های آماری مربوط به زمان وقوع خطاها استفاده کرد."
+    },
+    {
+      "table_name": "Error",
+      "column_name": "ErrorSystemID",
+      "meaning": "این ستون یک شناسه یکتا برای هر خطا در سیستم را نگهداری می‌کند و به شناسایی و ردیابی دقیق هر مورد از خطا کمک می‌کند.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن خطاها بر اساس این شناسه استفاده می‌شود و همچنین می‌تواند برای مرتب‌سازی و گروه‌بندی خطاها بر اساس آن‌ها به کار رود."
+    },
+    {
+      "table_name": "GateWayes",
+      "column_name": "GateWayID",
+      "meaning": "این ستون یک شناسه یکتا و منحصر به فرد برای هر دروازه (GateWay) در جدول نگهداری می‌کند و به عنوان کلید اصلی (Primary Key) برای شناسایی و متمایز کردن هر دروازه استفاده می‌شود.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن نتایج بر اساس این ستون (GateWayID) و همچنین برای مرتب‌سازی و پیوند دادن (Joining) این ستون با سایر جداول در پایگاه داده استفاده می‌شود."
+    },
+    {
+      "table_name": "GateWayes",
+      "column_name": "GateWayName",
+      "meaning": "این ستون نام یا عنوان مشخص دروازه (GateWay) را به صورت یک رشته متنی (varchar) ذخیره می‌کند و برای شناسایی و نام‌گذاری هر یک از دروازه‌ها استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن نتایج بر اساس نام دروازه، مرتب‌سازی نتایج بر اساس نام دروازه و همچنین استفاده در جوین کردن این جدول با جداول دیگر بر اساس نام دروازه استفاده کرد."
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "OrderDetailID",
+      "meaning": "این ستون یک شناسه یکتا برای هر ردیف در جدول جزئیات سفارشات ارائه می‌دهد و به شناسایی و ارجاع به هر آیتم خاص در یک سفارش کمک می‌کند.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس شناسه جزئیات سفارش، مرتب‌سازی جزئیات سفارشات بر اساس شناسه، و پیوند دادن جزئیات سفارشات به اطلاعات مربوط به سفارش اصلی استفاده می‌شود."
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "OrderID",
+      "meaning": "این ستون شناسه یک سفارش را نگهداری می‌کند و به سیستم اجازه می‌دهد تا جزئیات مربوط به آن سفارش خاص را در جدول جزئیات سفارشات شناسایی و پیگیری کند.",
+      "data_type": "integer",
+      "operations": "این ستون معمولاً برای فیلتر کردن سفارشات خاص، مرتب‌سازی سفارشات بر اساس شناسه آن‌ها و همچنین در عملیات اتصال (join) با سایر جداول مانند OrderHeader برای دریافت اطلاعات مربوط به سفارش استفاده می‌شود."
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "BookID",
+      "meaning": "این ستون شناسه یک کتاب را ذخیره می‌کند که به سیستم اجازه می‌دهد تا هر آیتم سفارش داده شده به یک کتاب خاص مرتبط شود و اطلاعات مربوط به آن کتاب را بازیابی کند.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس کتاب، مرتب‌سازی سفارشات بر اساس شناسه کتاب، و انجام عملیات ادغام (join) با سایر جداول برای بازیابی اطلاعات مربوط به کتاب و سفارش استفاده می‌شود."
+    },
+    {
+      "table_name": "OrderDetails",
+      "column_name": "Price",
+      "meaning": "این ستون مقدار قیمت هر آیتم در جزئیات سفارش را به صورت اعشاری ذخیره می‌کند و برای محاسبه کل مبلغ سفارش و ارزش آن استفاده می‌شود.",
+      "data_type": "decimal",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس قیمت، مرتب‌سازی جزئیات سفارش بر اساس قیمت، و محاسبه مجموع قیمت‌ها در یک سفارش از این ستون استفاده می‌شود."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "OrderID",
+      "meaning": "این ستون شناسه یکتای هر سفارش را نگهداری می‌کند و به عنوان یک کلید اصلی (Primary Key) عمل می‌کند تا هر سفارش به طور منحصر به فرد شناسایی شود.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس شناسه آن‌ها، مرتب‌سازی سفارشات بر اساس شناسه، و همچنین در جوین کردن این ستون با سایر جداول برای پیوند دادن سفارشات با اطلاعات مشتریان یا جزئیات پرداخت استفاده می‌شود."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "UserId",
+      "meaning": "این ستون شناسه یک مشتری را ذخیره می‌کند و به ما امکان می‌دهد تا سفارشات مربوط به هر مشتری را شناسایی و مدیریت کنیم.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس شناسه مشتری، مرتب‌سازی سفارشات بر اساس شناسه مشتری و همچنین برای پیوند دادن سفارشات با اطلاعات مشتریان در جداول دیگر استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "OrderDate",
+      "meaning": "این ستون تاریخ ثبت سفارش مشتری را نگهداری می‌کند و برای شناسایی و سازماندهی سفارشات بر اساس زمان ایجاد آن‌ها استفاده می‌شود.",
+      "data_type": "datetime",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس تاریخ، مرتب‌سازی سفارشات بر اساس تاریخ و همچنین محاسبه میانگین تاریخ سفارش برای تحلیل روند فروش استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "terminalNumber",
+      "meaning": "این ستون شناسه دستگاه فروشگاهی (POS) مربوط به سفارش ثبت شده از طریق آن دستگاه را نگهداری می‌کند.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس دستگاه فروشگاهی مورد استفاده، مرتب‌سازی سفارشات بر اساس دستگاه و همچنین انجام عملیات ادغام با سایر جداول برای شناسایی سفارشات ثبت شده از طریق دستگاه‌های خاص استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "responseCode",
+      "meaning": "این ستون کد پاسخ وضعیت پرداخت سفارش را ذخیره می‌کند، مانند 200 برای موفقیت‌آمیز، 400 برای خطا و غیره.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس وضعیت پرداخت و همچنین برای مرتب‌سازی سفارشات بر اساس کد پاسخ استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "paymentId",
+      "meaning": "این ستون شناسه یک تراکنش پرداخت را نگهداری می‌کند که به طور منحصربه‌فرد برای هر سفارش مشتری اختصاص داده شده و به شناسایی و پیگیری وضعیت پرداخت سفارش کمک می‌کند.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس شناسه پرداخت، مرتب‌سازی سفارشات بر اساس شناسه پرداخت و همچنین انجام عملیات ادغام با سایر جداول برای پیگیری دقیق‌تر وضعیت پرداخت هر سفارش استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "RequestId",
+      "meaning": "این ستون شناسه یکتا و منحصر به فردی را برای هر سفارش در جدول سفارشات ذخیره می‌کند و به شناسایی و ردیابی هر سفارش کمک می‌کند.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس شناسه آن‌ها، مرتب‌سازی سفارشات بر اساس شناسه، و همچنین در عملیات جوین با سایر جداول برای ارتباط سفارشات با اطلاعات مشتریان یا سایر جزئیات استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "rrn",
+      "meaning": "این ستون یک شناسه یکتا (Unique Record Identifier) برای هر سفارش در جدول سفارشات است و به طور خاص برای شناسایی و ردیابی هر سفارش به صورت منحصر به فرد استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس این شناسه، مرتب‌سازی سفارشات بر اساس آن و همچنین در عملیات اتصال (Joining) با سایر جداول برای شناسایی سفارشات مرتبط استفاده می‌شود."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "amount",
+      "meaning": "این ستون مقدار کل مبلغ سفارش را به صورت اعشاری (دقیق) نگهداری می‌کند و نشان‌دهنده هزینه نهایی خرید مشتری است.",
+      "data_type": "decimal",
+      "operations": "معمولاً برای فیلتر کردن سفارشات بر اساس مبلغ، مرتب‌سازی سفارشات بر اساس مبلغ و انجام محاسبات جمعی (aggregation) برای محاسبه کل فروش استفاده می‌شود."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "maskedPan",
+      "meaning": "این ستون حاوی یک شماره کارت اعتباری (کارت بانکی) رمزگذاری شده و محو شده است تا اطلاعات حساس مشتریان در مورد پرداخت‌ها محافظت شود و از دسترسی مستقیم به شماره کارت جلوگیری گردد.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس وضعیت پرداخت، مرتب‌سازی سفارشات بر اساس تاریخ سفارش و همچنین انجام عملیات join با سایر جداول برای ارتباط سفارشات با اطلاعات مشتریان استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "traceNo",
+      "meaning": "این ستون شناسه ردیابی سفارش را نگهداری می‌کند، یک رشته‌ی متنی که به شناسایی و پیگیری هر سفارش در سیستم سفارشات اختصاص داده شده است.",
+      "data_type": "varchar",
+      "operations": "این ستون می‌تواند برای فیلتر کردن سفارشات بر اساس شناسه ردیابی، مرتب‌سازی سفارشات بر اساس این شناسه و همچنین در جوین کردن این ستون با سایر جداول برای پیگیری سفارشات و گزارش‌گیری استفاده شود."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "IsComittedBySimac",
+      "meaning": "این ستون نشان می‌دهد که آیا سفارش توسط سیستم Simac ثبت شده است یا خیر؛ یعنی آیا سفارش از طریق نرم‌افزار Simac ایجاد و پردازش شده است.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات Simac، مرتب‌سازی سفارشات بر اساس اینکه آیا توسط Simac ثبت شده‌اند یا خیر، و همچنین برای گروه‌بندی و تحلیل سفارشات بر اساس منبع آن‌ها استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "FullName",
+      "meaning": "این ستون نام کامل مشتری را شامل می‌شود که برای شناسایی و پیگیری سفارشات مشتریان به کار می‌رود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس نام مشتری، مرتب‌سازی سفارشات بر اساس نام مشتری و همچنین در عملیات اتصال (join) با سایر جداول مانند جداول مشتریان استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "NationalId",
+      "meaning": "این ستون شناسه ملی مشتری را به صورت رشته‌ای (text) ذخیره می‌کند و برای شناسایی و پیگیری هر مشتری بر اساس هویت ملی او استفاده می‌شود.",
+      "data_type": "varchar",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات بر اساس شناسه ملی مشتری، مرتب‌سازی سفارشات بر اساس شناسه ملی و همچنین انجام عملیات join با سایر جداول برای ارتباط سفارشات با اطلاعات مشتریان استفاده کرد."
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "IsFinalizedPayment",
+      "meaning": "این ستون نشان می‌دهد که آیا پرداخت سفارش به طور کامل و نهایی شده است یا خیر. مقدار `true` به این معنی است که پرداخت به طور کامل انجام شده و سفارش آماده ارسال است، در حالی که مقدار `false` نشان می‌دهد که پرداخت هنوز انجام نشده است.",
+      "data_type": "boolean",
+      "operations": "می‌توان از این ستون برای فیلتر کردن سفارشات نهایی شده، مرتب‌سازی سفارشات بر اساس وضعیت پرداخت و همچنین برای گروه‌بندی و محاسبه تعداد سفارشات نهایی شده استفاده کرد."
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "SettingId",
+      "meaning": "این ستون یک شناسه یکتا برای هر تنظیمات وب‌سایت را ذخیره می‌کند و به عنوان یک کلید اصلی (Primary Key) عمل می‌کند تا بتوان به هر تنظیمات به طور منحصر به فرد و مستقل دسترسی داشت.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن تنظیمات بر اساس شناسه آن‌ها، مرتب‌سازی تنظیمات بر اساس شناسه و همچنین استفاده از این ستون به عنوان کلید خارجی (Foreign Key) در جداول دیگر برای ایجاد روابط بین تنظیمات استفاده می‌شود."
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "Name",
+      "meaning": "این ستون نام تنظیمات وب‌سایت را نگهداری می‌کند و به عنوان یک شناسه یکپارچه برای هر تنظیم خاص در جدول SiteSetting عمل می‌کند.",
+      "data_type": "varchar",
+      "operations": "معمولاً برای فیلتر کردن تنظیمات بر اساس نام آن‌ها استفاده می‌شود و همچنین می‌تواند برای مرتب‌سازی و گروه‌بندی تنظیمات مختلف بر اساس نامشان به کار رود."
+    },
+    {
+      "table_name": "SiteSetting",
+      "column_name": "Value",
+      "meaning": "این ستون مقدار عددی را نگهداری می‌کند که نشان‌دهنده یک شناسه یا کد منحصربه‌فرد برای هر تنظیمات وب‌سایت است و به عنوان یک معرف برای آن تنظیمات خاص عمل می‌کند.",
+      "data_type": "integer",
+      "operations": "معمولاً برای فیلتر کردن و مرتب‌سازی نتایج بر اساس این ستون استفاده می‌شود و همچنین می‌تواند در عملیات ادغام (join) با سایر جداول برای شناسایی و دسترسی به تنظیمات مربوطه مورد استفاده قرار گیرد."
+    }
+  ],
+  "relations": [
+    {
+      "source_table": "OrderDetails",
+      "source_column": "OrderID",
+      "target_table": "Orders",
+      "target_column": "OrderID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "این رابطه نشان می‌دهد که هر سطر در جدول OrderDetails به یک سفارش خاص در جدول Orders مرتبط است و به ما امکان می‌دهد تعداد و جزئیات هر آیتم موجود در یک سفارش مشخص را به طور دقیق بررسی کنیم."
+    },
+    {
+      "source_table": "OrderDetails",
+      "source_column": "BookID",
+      "target_table": "Book",
+      "target_column": "BookID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "این رابطه نشان می‌دهد که هر ردیف در جدول \"OrderDetails\" (جزئیات سفارش) به یک ردیف خاص در جدول \"Book\" (کتاب) مرتبط است، که به ما امکان می‌دهد تا بفهمیم هر سفارش شامل کدام کتاب‌ها بوده و به طور دقیق تعداد و نوع هر کتابی که در آن سفارش وجود داشته است را محاسبه کنیم."
+    }
+  ]
 }
