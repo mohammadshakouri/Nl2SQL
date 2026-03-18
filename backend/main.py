@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from sqlalchemy.future import select
 from app.nl2sql_chain import LoadNL2SQLChain
 from app.models import Base, Message
-from app.schemas import HistoryRequest, NL2SQLRequest, FeedbackSubmissionRequest
+from app.schemas import HistoryRequest, NL2SQLRequest, FeedbackSubmissionRequest, RegenerateRequest
 
 
 USE_LOCAL_LLM = env.use_local_llm
@@ -127,7 +127,7 @@ async def message_history(request: HistoryRequest):
         for record in data:
             record.pop('_sa_instance_state', None)
 
-        key_order = ['start_time', 'provinceName', 'input', 'output', 'culture', 'is_user_authenticated', 'feedback']
+        key_order = ['start_time', 'schema_collection_name', 'input', 'output', 'culture', 'is_user_authenticated', 'feedback']
         data = [{key: entry[key] for key in key_order if key in entry} for entry in data]
         data = sorted(data, key=lambda x: x['start_time'], reverse=True)
 
@@ -191,6 +191,42 @@ async def submit_feedback(request: FeedbackSubmissionRequest):
             await db.rollback()
             logger.error(f"Error submitting feedback: {str(e)}")
             raise HTTPException(status_code=500, detail=f"Error submitting feedback: {str(e)}")
+
+
+@app.post('/regenerate', dependencies=[Depends(check_api_key)])
+async def regenerate_sql(request: RegenerateRequest):
+    """
+    Regenerate SQL for a previous query using the end-user's semantic feedback comment.
+
+    The endpoint looks up the original message by ``run_id``, reads the stored
+    ``feedback_comment``, and re-runs the full NL2SQL pipeline with the comment
+    injected into the LLM prompt so the model can correct the semantic error the
+    automated validation loop cannot detect.
+
+    Returns a Server-Sent Events stream identical to ``/nl2sql``.
+    """
+    async with AsyncSessionLocal() as db:
+        result = await db.execute(select(Message).where(Message.run_id == request.run_id))
+        message = result.scalar_one_or_none()
+
+    if not message:
+        raise HTTPException(status_code=404, detail=f"Message with run_id '{request.run_id}' not found")
+
+    if not message.feedback_comment:
+        raise HTTPException(status_code=400, detail="No feedback comment stored for this message. Cannot regenerate.")
+
+    collection_name = f"Schema_{message.schema_collection_name}"
+
+    return StreamingResponse(
+        LoadNL2SQLChain(
+            message.thread_id,
+            message.input,
+            collection_name,
+            message.culture,
+            user_semantic_feedback=message.feedback_comment,
+        ),
+        media_type='text/event-stream',
+    )
 
 
 if __name__ == '__main__':

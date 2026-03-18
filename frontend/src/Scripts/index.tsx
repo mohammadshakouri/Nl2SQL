@@ -210,6 +210,16 @@ async function HandleServerEvent(event: MessageEvent) {
 		// eventSource.close();
 		EnableSendButton();
 		latestAiMessageElement.classList.add("isComplete");
+	} else if (data.event === "on_retry") {
+		streamBuffer = "";
+		isFirstToken = true;
+		messageTextElement.replaceChildren();
+		const retryNotice = document.createElement("div");
+		retryNotice.className = "retryNotice";
+		retryNotice.textContent = data.data;
+		messageTextElement.append(retryNotice);
+		messageTextElement.append(<AiIsRespondingMessage />);
+		// await Delay(4000);
 	} else if (data.event === "on_error") {
 		messageTextElement.replaceChildren();
 		DisableSendButton();
@@ -410,6 +420,54 @@ function AppendUserMessage(text: string) {
 document.body.appendChild(wrapper);
 const a = document.querySelector("#aiLogoSparkle2");
 animateSvgFillLoop(a as unknown as SVGElement, 10_000);
+
+async function HandleRegenerateRequest(runId: string) {
+	if (isBotResponding) return;
+
+	try {
+		const response = await fetch(`${baseUrl}/regenerate`, {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+				"api-key": config.apiKey,
+			},
+			body: JSON.stringify({ run_id: runId }),
+		});
+
+		if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+		const reader = response.body?.getReader();
+		const decoder = new TextDecoder();
+		if (!reader) throw new Error("Response body is not readable");
+
+		let buffer = "";
+		while (true) {
+			const { done, value } = await reader.read();
+			if (done) break;
+
+			buffer += decoder.decode(value, { stream: true });
+			const lines = buffer.split("\n");
+			buffer = lines.pop() || "";
+
+			for (const line of lines) {
+				if (line.startsWith("data: ")) {
+					const data = line.substring(6);
+					if (data.trim()) {
+						const event = new MessageEvent("message", { data });
+						await HandleServerEvent(event);
+					}
+				}
+			}
+		}
+	} catch (error) {
+		console.error("Error regenerating SQL:", error);
+		OnRespondError();
+	}
+}
+
+document.addEventListener("sql-regenerate", (e: Event) => {
+	HandleRegenerateRequest((e as CustomEvent<{ runId: string }>).detail.runId);
+});
 
 const dialogHeader = document.getElementsByClassName("dialogHeader")?.[0];
 const goToSimatic = document.getElementsByClassName(

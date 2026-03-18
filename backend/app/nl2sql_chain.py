@@ -208,7 +208,8 @@ class NL2SQLChain:
         self, 
         question: str, 
         schema_context: str,
-        feedback: Optional[str] = None
+        feedback: Optional[str] = None,
+        user_semantic_feedback: Optional[str] = None,
     ) -> str:
         """
         Build complete user prompt with question and schema context
@@ -216,20 +217,25 @@ class NL2SQLChain:
         Args:
             question: User's natural language question
             schema_context: Retrieved schema context
-            feedback: Optional feedback from previous SQL error
+            feedback: Optional feedback from previous SQL error (validation loop)
+            user_semantic_feedback: Optional end-user comment describing a semantic error
         
         Returns:
             Complete user prompt string
         """
         if feedback:
-            # Feedback iteration prompt
-            prompt = f"{feedback}\n\n"
+            # Feedback iteration prompt (validation / syntax error)
+            prompt = f"Syntax error you should fix: {feedback}\n\n"
+            if user_semantic_feedback:
+                prompt += f"User feedback that you should fix it: {user_semantic_feedback}\n\n"
             prompt += f"User Question:\n{question}\n\n"
             prompt += f"{schema_context}\n"
             prompt += "Generate corrected SQL query:\n"
         else:
-            # Initial prompt
-            prompt = f"User Question:\n{question}\n\n"
+            prompt = ""
+            if user_semantic_feedback:
+                prompt += f"User feedback that you should fix it: {user_semantic_feedback}\n\n"
+            prompt += f"User Question:\n{question}\n\n"
             prompt += f"{schema_context}\n"
             
             if self.culture == "fa":
@@ -326,25 +332,21 @@ async def LoadNL2SQLChain(
     schema_collection_name: str,
     culture: str = "fa",
     validate_execution: bool = True,
+    user_semantic_feedback: Optional[str] = None,
 ) -> "AsyncGenerator[str, None]":
     """
-    Unified NL2SQL pipeline used by the API endpoints.
-
-    This function replaces the earlier, simplistic version that merely
-    forwarded the prompt to an LLM.  It now performs the full Schema‑RAG
-    workflow including:
-
+    Extra keyword arg ``user_semantic_feedback`` carries the end-user's natural-
+    language comment explaining a semantic error in the previously generated SQL.
+    When provided it is injected into every prompt so the LLM can fix the
+    semantic mistake the automated validation loop cannot detect.
+    """
+    """
     1. Vector retrieval of relevant schema elements
     2. Construction of a schema context string
     3. A feedback/validation loop (syntax + schema checks and optional
        execution validation)
     4. Streaming of generated SQL tokens as Server‑Sent Events
     5. Logging of the request into the database when the pipeline completes
-
-    The signature is intentionally similar to the previous implementation so
-    that ``main.py`` only needs a small adjustment (we now pass the
-    ``thread_id`` parameter and handle a single generator instead of two
-    separate ones).
 
     Yields
     ------
@@ -403,7 +405,7 @@ async def LoadNL2SQLChain(
     # iterate until validation succeeds or iterations are exhausted
     while feedback_loop.should_continue():
         feedback_prompt = feedback_loop.get_feedback_prompt()
-        user_prompt = chain.build_user_prompt(question, schema_context, feedback_prompt)
+        user_prompt = chain.build_user_prompt(question, schema_context, feedback_prompt, user_semantic_feedback)
         system_prompt = chain.get_system_prompt(is_feedback=feedback_prompt is not None)
         messages = [
             {"role": "system", "content": system_prompt},
@@ -479,7 +481,7 @@ async def LoadNL2SQLChain(
             input=question,
             output=full_sql,
             culture=culture,
-            provinceName=schema_collection_name.replace("Schema_", ""),
+            schema_collection_name=schema_collection_name.replace("Schema_", ""),
             is_user_authenticated="yes",
             status="generated",
             feedback=0,

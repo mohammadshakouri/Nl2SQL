@@ -2,6 +2,16 @@
     direction: rtl;
     font-family: "Vazirmatn FD", "Vazir FD", Vazirmatn, Vazir, sans-serif !important;
 }
+.retryNotice {
+    font-size: 0.78rem;
+    color: #d97706;
+    background: #fffbeb;
+    border-right: 3px solid #f59e0b;
+    padding: 4px 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    opacity: 0.9;
+}
 .feedback-modal {
 	position: fixed;
 	top: 0;

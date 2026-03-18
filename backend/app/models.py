@@ -12,7 +12,7 @@ class Message(Base):
     latency = Column(Float)
     input = Column(Text)
     is_user_authenticated = Column(Text)
-    provinceName = Column(Text)
+    schema_collection_name = Column(Text)
     culture = Column(Text)
     output = Column(Text)
     feedback = Column(Integer, default=0)

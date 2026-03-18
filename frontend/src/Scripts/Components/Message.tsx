@@ -299,6 +299,14 @@ async function handleDislikeFeedback(
 				oppositeButtonElement.append(...((<IconLike />) as any));
 
 				modal.remove();
+
+				// If the user left a comment, ask the LLM to regenerate SQL using it
+				if (comment) {
+					document.dispatchEvent(
+						new CustomEvent("sql-regenerate", { detail: { runId } })
+					);
+				}
+
 				resolve();
 			} catch (error) {
 				console.error("Error submitting feedback:", error);

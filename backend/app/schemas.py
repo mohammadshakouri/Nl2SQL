@@ -26,3 +26,8 @@ class FeedbackSubmissionRequest(BaseModel):
     corrected_sql: Optional[str] = None  # Corrected SQL if feedback is negative
     comment: Optional[str] = None  # Optional feedback comment
 
+
+class RegenerateRequest(BaseModel):
+    """Request model for SQL regeneration based on user semantic feedback"""
+    run_id: str  # The run_id of the message to regenerate; comment must already be stored
+
