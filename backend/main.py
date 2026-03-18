@@ -84,18 +84,6 @@ async def nl2sql_stream(request: NL2SQLRequest):
     )
 
 
-@app.post('/nl2sql/validate', dependencies=[Depends(check_api_key)])
-async def validate_schema_setup(schema_name: str):
-    """
-    Validate that NL2SQL is properly configured for a schema
-    
-    Returns validation results including whether schema JSON and 
-    ChromaDB collection exist.
-    """
-    results = utils.validate_nl2sql_setup(schema_name)
-    return JSONResponse(content=results)
-
-
 @app.post('/history', dependencies=[Depends(check_api_key)])
 async def message_history(request: HistoryRequest):
     run_id = request.run_id

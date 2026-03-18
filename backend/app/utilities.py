@@ -171,47 +171,6 @@ def create_schema_vector_store(
     
     return stats
 
-
-def validate_nl2sql_setup(schema_name: str) -> dict:
-    """
-    Validate that NL2SQL system is properly set up for a schema
-    
-    Args:
-        schema_name: Name of the schema to validate
-    
-    Returns:
-        Dictionary with validation results
-    """
-    import os
-    
-    results = {
-        "schema_name": schema_name,
-        "schema_json_exists": False,
-        "collection_exists": False,
-        "errors": []
-    }
-    
-    # Check schema JSON file
-    schema_path = f"./data_schema/{schema_name}_schema.json"
-    if os.path.exists(schema_path):
-        results["schema_json_exists"] = True
-    else:
-        results["errors"].append(f"Schema JSON not found: {schema_path}")
-    
-    # Check ChromaDB collection
-    try:
-        chroma_client = chromadb.PersistentClient(path=CHROMADB_PERSIST_DIRECTORY)
-        collection_name = f"Schema_{schema_name}"
-        collection = chroma_client.get_collection(name=collection_name)
-        results["collection_exists"] = True
-        results["collection_count"] = collection.count()
-    except Exception as e:
-        results["errors"].append(f"Collection not found or error: {str(e)}")
-    
-    results["is_valid"] = results["schema_json_exists"] and results["collection_exists"]
-    
-    return results
-
 class LocalSTEmbeddingFunction(EmbeddingFunction):
     def __init__(self, model_dir: str, device: str = "cpu"):
         self._model_dir = model_dir
