@@ -2,8 +2,8 @@
 Schema Enricher
 Enriches extracted schema JSON with rich Persian descriptions using a local Ollama LLM.
 Enriches:
-  - tables  → description, business_role
-  - columns → meaning, operations
+  - tables  → description
+  - columns → meaning
   - relations → join_purpose
 """
 
@@ -58,17 +58,15 @@ Columns:
 Outgoing foreign-key relations:
 {rel_lines}
 
-Output exactly two lines:
+Output exactly one lines:
 DESCRIPTION: <2-6 Persian keywords about table content/purpose>
-BUSINESS_ROLE: <2-5 Persian keywords about business role>
 
 Rules:
 - Persian only.
 - Use keywords, NOT sentences.
-- No long text, no explanations.
+- No long text.
 - No punctuation except commas.
 - Keep it minimal and compact.
-- Do not output anything except the two lines above.
 """
 
 
@@ -82,12 +80,9 @@ def enrich_table(
     raw = _call_llm(client, prompt)
 
     description = _extract_label(raw, "DESCRIPTION")
-    business_role = _extract_label(raw, "BUSINESS_ROLE")
 
     if description:
         table["description"] = description
-    if business_role:
-        table["business_role"] = business_role
 
 
 # ---------------------------------------------------------------------------
@@ -108,17 +103,15 @@ Column: {column['column_name']}
 Data type: {column['data_type']}
 Is primary key: {'yes' if column['column_name'] in table.get('key_columns', []) else 'no'}
 
-Output exactly two lines:
+Output exactly one lines:
 MEANING: <2-5 Persian keywords about column meaning>
-OPERATIONS: <2-5 Persian keywords about usage (filter, join, sort, etc.)>
 
 Rules:
 - Persian only.
 - Use keywords, NOT sentences.
-- No long text, no explanations.
+- No long text.
 - No punctuation except commas.
 - Keep it minimal and compact.
-- Do not output anything except the two lines above.
 """
 
 
@@ -131,12 +124,9 @@ def enrich_column(
     raw = _call_llm(client, prompt)
 
     meaning = _extract_label(raw, "MEANING")
-    operations = _extract_label(raw, "OPERATIONS")
 
     if meaning:
         column["meaning"] = meaning
-    if operations:
-        column["operations"] = operations
 
 
 # ---------------------------------------------------------------------------

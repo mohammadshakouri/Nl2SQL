@@ -1,197 +1,145 @@
-__MigrationHistory Table: تاریخچه مهاجرت، شناسه‌ها، مدل‌ها، نسخه‌ها. شامل ستون های MigrationId, ContextKey. استفاده برای ردیابی تغییرات، ورژن‌بندی، مهاجرت‌ها، سوابق سیستم.
+AspNetUsers Table: کاربران، اطلاعات احراز هویت، ایمیل، رمز عبور، شماره تلفن. شامل ستون های Id. 
  | 
-AspNetRoles Table: نقش ها، شناسنامه، کاربر، دسترسی. شامل ستون های Id. استفاده برای مدیریت نقش، احراز هویت، مجوزها.
+Book Table: کتاب، شناسه، عنوان، نویسنده، قیمت، وضعیت. شامل ستون های BookID. 
  | 
-AspNetUserClaims Table: شناسه کاربر، نوع ادعا، مقدار ادعا. شامل ستون های Id. استفاده برای مدیریت مجوزها، پروفایل کاربری، اطلاعات اعتباری.
+Category Table: شناسه دسته، نام دسته، دسته‌بندی‌ها. شامل ستون های CategoryID. 
  | 
-AspNetUserLogins Table: لاگ ورود، ارائه‌دهنده، شناسه کاربر. شامل ستون های LoginProvider, ProviderKey, UserId. استفاده برای ردیابی ورود، احراز هویت، مدیریت حساب کاربری.
+Error Table: شناسه خطا، کد، نوع، توضیحات، تاریخ وقوع. شامل ستون های ErrorID. 
  | 
-AspNetUserRoles Table: کاربر، نقش، ارتباط، نگاشت، هویت. شامل ستون های UserId, RoleId. استفاده برای تخصیص نقش، مدیریت دسترسی، تعیین سطح کاربری.
+GateWayes Table: شناسه، نام، دروازه‌ها، ارتباطات، سیستم. شامل ستون های GateWayID. 
  | 
-AspNetUsers Table: کاربران، اطلاعات احراز هویت، رمز عبور، شماره تلفن. شامل ستون های Id. استفاده برای مدیریت کاربران، احراز هویت، امنیت حساب، پروفایل کاربری.
+OrderDetails Table: جزئیات سفارش، شناسه، کتاب، قیمت. شامل ستون های OrderDetailID. 
  | 
-Book Table: کتاب، شناسه، عنوان، نویسنده، قیمت. شامل ستون های BookID. استفاده برای مدیریت، موجودی، اطلاعات کتاب، فروش.
+Orders Table: سفارشات، اطلاعات خرید، تاریخ، مبلغ، مشتری. شامل ستون های OrderID. 
  | 
-Category Table: دسته‌بندی‌ها، نام‌ها، شناسه‌ها. شامل ستون های CategoryID. استفاده برای طبقه‌بندی، سازماندهی، ردیابی، دسته‌بندی اصلی.
+SiteSetting Table: تنظیمات سایت، شناسه، نام، مقدار. شامل ستون های SettingId. 
  | 
-Error Table: شناسه خطا، کد، نوع، توضیحات، مسیر، تاریخ. شامل ستون های ErrorID. استفاده برای ثبت خطا، ردیابی اشکال، گزارش‌دهی، مدیریت خطا.
+Tokens Table: شناسه توکن، مقدار، زمان ایجاد، کاربر. شامل ستون های TokenID. 
  | 
-GateWayes Table: شناسه، نام، دروازه، ارتباطات. شامل ستون های GateWayID. استفاده برای مدیریت، اتصال، پورتال، سیستم.
+AspNetUsers.Id Column: شناسه کاربری، کلید اصلی، منحصر به فرد, نوع داده varchar.
  | 
-OrderDetails Table: جزئیات سفارش، شناسه، کتاب، قیمت. شامل ستون های OrderDetailID. استفاده برای سفارشات، اقلام، کتاب، قیمت‌گذاری.
+AspNetUsers.Email Column: ایمیل، آدرس الکترونیکی، شناسایی کاربر, نوع داده varchar.
  | 
-Orders Table: سفارشات، تاریخ، مبلغ، اطلاعات پرداخت، شناسه. شامل ستون های OrderID. استفاده برای ثبت سفارش، پیگیری تراکنش، اطلاعات مشتری، پرداخت مالی.
+AspNetUsers.EmailConfirmed Column: تایید ایمیل، وضعیت، باینری، احراز هویت, نوع داده boolean.
  | 
-SiteSetting Table: تنظیمات سایت، شناسه، مقدار. شامل ستون های SettingId. استفاده برای پیکربندی، پارامتر، تنظیمات عمومی.
+AspNetUsers.PasswordHash Column: رمز عبور، هش، امنیتی، داده، متنی, نوع داده varchar.
  | 
-Tokens Table: شناسه توکن، مقدار، زمان ایجاد، کاربر. شامل ستون های TokenID. استفاده برای مدیریت توکن، احراز هویت، سوابق کاربری.
+AspNetUsers.SecurityStamp Column: مهر امنیتی، تغییر رمز، به‌روزرسانی، هش, نوع داده varchar.
  | 
-__MigrationHistory.MigrationId Column: شناسه، مهاجرت، تاریخچه، مدل, نوع داده varchar, استفاده برای کلید اصلی، جستجو، فیلتر، بررسی.
+AspNetUsers.PhoneNumber Column: شماره تلفن، ارتباط، تماس، موبایل, نوع داده varchar.
  | 
-__MigrationHistory.ContextKey Column: کلید، شناسه‌، مهاجرت، مدل, نوع داده varchar, استفاده برای کلید اصلی، جستجو، فیلتر، پیوند.
+AspNetUsers.PhoneNumberConfirmed Column: شماره تلفن، تأیید، احراز هویت، باینری, نوع داده boolean.
  | 
-__MigrationHistory.Model Column: مدل، شناسه‌سازی، تاریخچه، مهاجرت, نوع داده varbinary, استفاده برای فیلتر، جستجو، بررسی، مقایسه.
+AspNetUsers.TwoFactorEnabled Column: احراز هویت دو مرحله‌ای، فعال بودن، تایید امنیتی, نوع داده boolean.
  | 
-__MigrationHistory.ProductVersion Column: نسخه محصول، شناسه‌سازی، تاریخچه، مدل, نوع داده varchar, استفاده برای فیلتر، مقایسه، مرتب‌سازی، بررسی.
+AspNetUsers.LockoutEndDateUtc Column: تاریخ، قفل شدن، زمان، احراز هویت, نوع داده datetime.
  | 
-AspNetRoles.Id Column: شناسه، نقش، منحصر، اصلی, نوع داده varchar, استفاده برای کلید اصلی، فیلتر، پیوند، جستجو.
+AspNetUsers.LockoutEnabled Column: قفل حساب، فعال سازی، محدودیت ورود, نوع داده boolean.
  | 
-AspNetRoles.Name Column: نام، نقش، شناسنامه، کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مرتب‌سازی.
+AspNetUsers.AccessFailedCount Column: تعداد تلاش ناموفق ورود، احراز هویت، شکست ورود, نوع داده integer.
  | 
-AspNetUserClaims.Id Column: شناسه، کاربر، ادعا، کلید اصلی, نوع داده integer, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
+AspNetUsers.UserName Column: نام کاربری، شناسایی، کاربر، یونیک, نوع داده varchar.
  | 
-AspNetUserClaims.UserId Column: شناسه کاربر، شناسایی، مالکیت، کاربر, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، ارتباط.
+AspNetUsers.IsSimacUser Column: کاربر سیم‌کارت، احراز هویت، فعال بودن، منطقی, نوع داده boolean.
  | 
-AspNetUserClaims.ClaimType Column: نوع ادعا، مشخصه کاربر، رشته متنی, نوع داده varchar, استفاده برای فیلتر، جستجو، مقایسه، مرتب‌سازی.
+AspNetUsers.ProvinceCode Column: کد استان، موقعیت جغرافیایی، عدد صحیح, نوع داده integer.
  | 
-AspNetUserClaims.ClaimValue Column: مقدار ادعا، رشته متنی، داده کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مقایسه.
+Book.BookID Column: Column BookID, نوع داده integer.
  | 
-AspNetUserLogins.LoginProvider Column: ارائه‌دهنده، منبع ورود، شناسه، کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، کلید اصلی، پیوند.
+Book.Title Column: عنوان کتاب، نام اثر، عنوان اصلی, نوع داده varchar.
  | 
-AspNetUserLogins.ProviderKey Column: کلید ارائه‌دهنده، منبع ورود، منحصر به فرد, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، کلید اصلی.
+Book.CategoryID Column: شناسه دسته‌بندی، عدد صحیح، ارتباطی, نوع داده integer.
  | 
-AspNetUserLogins.UserId Column: شناسه کاربر، کلید اصلی، منحصر به فرد, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
+Book.ISBN Column: شناسه کتاب، ISBN، منحصر، شناسایی, نوع داده varchar.
  | 
-AspNetUserRoles.UserId Column: شناسه کاربر، نقش، نگاشت، هویت, نوع داده varchar, استفاده برای کلید اصلی، فیلتر، پیوند، جستجو.
+Book.Author Column: نویسنده، نام، نویسنده کتاب, نوع داده varchar.
  | 
-AspNetUserRoles.RoleId Column: شناسه نقش، کلید اصلی، کاربر، نقش, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، تعیین.
+Book.Price Column: قیمت، مبلغ، پول، عددی, نوع داده decimal.
  | 
-AspNetUsers.Id Column: شناسه، کلید اصلی، کاربر، احراز هویت, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
+Book.Status Column: کتاب، موجود، در دسترس، خرید, نوع داده boolean.
  | 
-AspNetUsers.Email Column: ایمیل، آدرس، شناسایی، کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، مقایسه، اتصال.
+Category.CategoryID Column: شناسه، کلید اصلی، شناسه‌دهی دسته, نوع داده integer.
  | 
-AspNetUsers.EmailConfirmed Column: تایید ایمیل، وضعیت، احراز هویت, نوع داده boolean, استفاده برای فیلتر، بررسی، شرط‌بندی.
+Category.Name Column: نام دسته، عنوان، شناسه‌گذاری، متن, نوع داده varchar.
  | 
-AspNetUsers.PasswordHash Column: هش رمز عبور، اطلاعات احراز هویت، رشته متنی, نوع داده varchar, استفاده برای فیلتر، جستجو، مقایسه، ذخیره.
+Error.ErrorID Column: شناسه خطا، کلید اصلی، منحصر به فرد, نوع داده decimal.
  | 
-AspNetUsers.SecurityStamp Column: مهر امنیتی، تغییر رمز، منحصربه‌فرد, نوع داده varchar, استفاده برای فیلتر، مقایسه، بررسی تغییر.
+Error.ErrorCode Column: کد خطا، شناسایی، نوع خطا، مقدار متنی, نوع داده varchar.
  | 
-AspNetUsers.PhoneNumber Column: شماره تلفن، تماس، ارتباط، احراز هویت, نوع داده varchar, استفاده برای فیلتر، جستجو، مرتب‌سازی، اتصال.
+Error.ErrorVersion Column: نسخه خطا، تغییرات، ورژن، شناسایی, نوع داده varchar.
  | 
-AspNetUsers.PhoneNumberConfirmed Column: تایید شماره تلفن، وضعیت تأیید، بولی, نوع داده boolean, استفاده برای فیلتر، بررسی، شرط‌بندی.
+Error.ErrorDes Column: شرح خطا، توضیحات، متن، پیام خطا, نوع داده varchar.
  | 
-AspNetUsers.TwoFactorEnabled Column: احراز هویت، دو مرحله‌ای، فعال، وضعیت, نوع داده boolean, استفاده برای فیلتر، شرط، بررسی، مقایسه.
+Error.ErrorType Column: نوع خطا، کد، شناسایی، دسته‌بندی, نوع داده integer.
  | 
-AspNetUsers.LockoutEndDateUtc Column: تاریخ قفل شدن، زمان محدودیت، احراز هویت, نوع داده datetime, استفاده برای فیلتر، مقایسه تاریخ، مرتب‌سازی.
+Error.ErrorPath Column: مسیر خطا، مسیر وقوع، مسیر سیستم, نوع داده varchar.
  | 
-AspNetUsers.LockoutEnabled Column: قفل حساب، فعال/غیرفعال، امنیت ورود, نوع داده boolean, استفاده برای فیلتر، شرط، بررسی وضعیت.
+Error.ErrorTrace Column: ردیابی خطا، مسیر، جزئیات فنی، اشکال‌زدایی, نوع داده varchar.
  | 
-AspNetUsers.AccessFailedCount Column: تعداد تلاش ناموفق ورود، شمارش، احراز هویت, نوع داده integer, استفاده برای فیلتر، شمارش، مقایسه، مرتب‌سازی.
+Error.ErrorUserID Column: شناسه کاربر، خطای مربوط به، کاربر، شناسایی, نوع داده varchar.
  | 
-AspNetUsers.UserName Column: نام کاربری، شناسایی، کاربر، احراز هویت, نوع داده varchar, استفاده برای فیلتر، جستجو، پیوند، مرتب‌سازی.
+Error.ErrorUserIP Column: آی پی کاربر، منبع خطا، آدرس اینترنت, نوع داده varchar.
  | 
-AspNetUsers.IsSimacUser Column: کاربر، سیم‌کارت، احراز هویت، منطقی, نوع داده boolean, استفاده برای فیلتر، شرط، بررسی، مقایسه.
+Error.ErrorDate Column: تاریخ وقوع خطا، زمان وقوع، ثبت زمان, نوع داده datetime.
  | 
-AspNetUsers.ProvinceCode Column: کد استان، کد منطقه‌ای، اطلاعات جغرافیایی, نوع داده integer, استفاده برای فیلتر، مرتب‌سازی، پیوند، جستجو.
+Error.ErrorSystemID Column: شناسه سیستم خطا، منبع خطا, نوع داده integer.
  | 
-Book.BookID Column: شناسه کتاب، کلید اصلی، منحصربه‌فرد, نوع داده integer, استفاده برای فیلتر، پیوند، مرتب‌سازی.
+GateWayes.GateWayID Column: شناسه، کلید اصلی، منبع، شناسایی، دروازه, نوع داده integer.
  | 
-Book.Title Column: عنوان کتاب، نام اثر، متن اصلی, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش.
+GateWayes.GateWayName Column: نام، دروازه، شناسایی، متن, نوع داده varchar.
  | 
-Book.CategoryID Column: شناسه، دسته‌بندی، عدد صحیح, نوع داده integer, استفاده برای فیلتر، پیوند، مرتب‌سازی.
+OrderDetails.OrderDetailID Column: شناسه جزئیات سفارش، کلید اصلی, نوع داده integer.
  | 
-Book.ISBN Column: شناسه کتاب، منحصربه‌فرد، کتابشناسی, نوع داده varchar, استفاده برای جستجو، فیلتر، پیوند، مرتب‌سازی.
+OrderDetails.OrderID Column: شناسه سفارش، شناسایی، سفارش، کلید خارجی, نوع داده integer.
  | 
-Book.Author Column: نویسنده، نام، خالق، نویسنده کتاب, نوع داده varchar, استفاده برای فیلتر، جستجو، مرتب‌سازی، پیوند.
+OrderDetails.BookID Column: شناسه کتاب، کد کتاب، شناسایی کتاب, نوع داده integer.
  | 
-Book.Price Column: قیمت، مبلغ، پول، هزینه, نوع داده decimal, استفاده برای فیلتر، مرتب‌سازی، مقایسه، محاسبه.
+OrderDetails.Price Column: قیمت، مبلغ، واحد، عددی, نوع داده decimal.
  | 
-Book.Status Column: وضعیت، فعال، غیرفعال، منطقی, نوع داده boolean, استفاده برای فیلتر، شرط، مقایسه، مرتب‌سازی.
+Orders.OrderID Column: شناسه سفارش، منحصربه‌فرد، کلید اصلی, نوع داده integer.
  | 
-Category.CategoryID Column: شناسه، دسته‌بندی، اصلی، عدد صحیح, نوع داده integer, استفاده برای کلید اصلی، فیلتر، پیوند، مرتب‌سازی.
+Orders.UserId Column: شناسه کاربر، خریدار، مشتری, نوع داده varchar.
  | 
-Category.Name Column: نام، عنوان، دسته‌بندی، متن, نوع داده varchar, استفاده برای فیلتر، نمایش، مرتب‌سازی، جستجو.
+Orders.OrderDate Column: تاریخ سفارش، زمان خرید، ثبت تاریخ, نوع داده datetime.
  | 
-Error.ErrorID Column: شناسه خطا، کلید اصلی، منحصربه‌فرد, نوع داده decimal, استفاده برای فیلتر، مرتب‌سازی، پیوند.
+Orders.terminalNumber Column: شماره ترمینال، دستگاه پرداخت، شناسایی تراکنش, نوع داده varchar.
  | 
-Error.ErrorCode Column: کد خطا، شناسه، نوع، توضیحات, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مرتب‌سازی.
+Orders.responseCode Column: کد پاسخ، وضعیت سفارش، سیستم, نوع داده varchar.
  | 
-Error.ErrorVersion Column: نسخه خطا، رشته متنی، ورژن, نوع داده varchar, استفاده برای فیلتر، مقایسه، مرتب‌سازی.
+Orders.paymentId Column: شناسه پرداخت، تراکنش، پرداخت، اطلاعات مالی, نوع داده varchar.
  | 
-Error.ErrorDes Column: شرح خطا، توضیحات، متن، پیام, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، گزارش‌گیری.
+Orders.RequestId Column: شناسه درخواست، منحصربه‌فرد، پیگیری سفارش, نوع داده varchar.
  | 
-Error.ErrorType Column: نوع خطا، کد، عدد، شناسایی, نوع داده integer, استفاده برای فیلتر، جستجو، مقایسه، مرتب‌سازی.
+Orders.rrn Column: شناسه سفارش، کد منحصر، ردیابی, نوع داده varchar.
  | 
-Error.ErrorPath Column: مسیر خطا، آدرس، مسیردهی، متن, نوع داده varchar, استفاده برای فیلتر، جستجو، مقایسه، شرط‌بندی.
+Orders.amount Column: مبلغ، قیمت، ارزش، پول, نوع داده decimal.
  | 
-Error.ErrorTrace Column: ردیابی خطا، متن، جزئیات، مسیر, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، بررسی.
+Orders.maskedPan Column: شماره کارت، شناسایی، مشتری، پرداخت, نوع داده varchar.
  | 
-Error.ErrorUserID Column: شناسه کاربر، خطای مرتبط، شناسایی کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، پیوند، محدود کردن.
+Orders.traceNo Column: شماره پیگیری، ردیابی سفارش، منحصربه‌فرد, نوع داده varchar.
  | 
-Error.ErrorUserIP Column: آی پی کاربر، منبع خطا، شناسایی کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، گزارش‌گیری.
+Orders.IsComittedBySimac Column: تعهد، سیماک، وضعیت، خرید, نوع داده boolean.
  | 
-Error.ErrorDate Column: تاریخ وقوع خطا، زمان ثبت، زمان وقوع, نوع داده datetime, استفاده برای فیلتر، مرتب‌سازی، مقایسه تاریخ.
+Orders.FullName Column: نام کامل، مشتری، فرد، شناسایی, نوع داده varchar.
  | 
-Error.ErrorSystemID Column: شناسه سیستم خطا، شناسه‌دهی، منبع خطا, نوع داده integer, استفاده برای فیلتر، جستجو، پیوند، شرط‌بندی.
+Orders.NationalId Column: کد ملی، شناسایی مشتری، منحصر به فرد, نوع داده varchar.
  | 
-GateWayes.GateWayID Column: شناسه، دروازه، کلیدی، منحصر, نوع داده integer, استفاده برای کلید اصلی، فیلتر، پیوند، جستجو.
+SiteSetting.SettingId Column: شناسه تنظیمات، کلید اصلی، عدد صحیح, نوع داده integer.
  | 
-GateWayes.GateWayName Column: نام، دروازه، شناسایی، متن, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مرتب‌سازی.
+SiteSetting.Name Column: نام، عنوان، تنظیمات، سایت, نوع داده varchar.
  | 
-OrderDetails.OrderDetailID Column: شناسه، جزئیات، سفارش، کلید اصلی, نوع داده integer, استفاده برای فیلتر، پیوند، جستجو، شناسایی.
+SiteSetting.Value Column: مقدار، عدد صحیح، تنظیمات سایت, نوع داده integer.
  | 
-OrderDetails.OrderID Column: شناسه سفارش، جزئیات، ارتباط، کلید, نوع داده integer, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
+Tokens.TokenID Column: شناسه توکن، کلید اصلی، عدد صحیح, نوع داده integer.
  | 
-OrderDetails.BookID Column: شناسه کتاب، کد کتاب، شناسه‌دهی, نوع داده integer, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
+Tokens.TokenValue Column: مقدار توکن، رشته متنی، داده‌ها, نوع داده varchar.
  | 
-OrderDetails.Price Column: قیمت، مبلغ، هزینه، واحد, نوع داده decimal, استفاده برای فیلتر، محاسبه، مرتب‌سازی، گزارش‌گیری.
+Tokens.CreateTime Column: زمان ایجاد، تاریخ، ساعت، ثبت زمان, نوع داده datetime.
  | 
-Orders.OrderID Column: شناسه سفارش، کلیدی، منحصر، شناسایی, نوع داده integer, استفاده برای کلید اصلی، فیلتر، پیوند، جستجو.
+Tokens.UserId Column: شناسه کاربر، مالک توکن، هویت کاربری, نوع داده varchar.
  | 
-Orders.UserId Column: شناسه کاربر، مالک سفارش، هویت, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو.
+Relation: OrderDetails.BookID ↔ Book.BookID. نوع رابطه many-to-one. 
  | 
-Orders.OrderDate Column: تاریخ سفارش، زمان ثبت، تاریخ وقوع, نوع داده datetime, استفاده برای فیلتر، مرتب‌سازی، مقایسه تاریخ.
+Relation: OrderDetails.OrderID ↔ Orders.OrderID. نوع رابطه many-to-one. 
  | 
-Orders.terminalNumber Column: شماره ترمینال، شناسایی پرداخت، متن, نوع داده varchar, استفاده برای فیلتر، جستجو، مقایسه، مرتب‌سازی.
- | 
-Orders.responseCode Column: کد پاسخ، وضعیت تراکنش، متن کوتاه, نوع داده varchar, استفاده برای فیلتر، جستجو، بررسی وضعیت.
- | 
-Orders.paymentId Column: شناسه پرداخت، اطلاعات پرداخت، پیوند، منحصربه‌فرد, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، مرتب‌سازی.
- | 
-Orders.RequestId Column: شناسه سفارش، شناسایی، منحصر به فرد, نوع داده varchar, استفاده برای فیلتر، جستجو، پیوند، مرتب‌سازی.
- | 
-Orders.rrn Column: شناسه، ردیابی، منحصر، سفارش, نوع داده varchar, استفاده برای فیلتر، جستجو، پیوند، مرتب‌سازی.
- | 
-Orders.amount Column: مبلغ، قیمت، ارزش، پول, نوع داده decimal, استفاده برای فیلتر، محاسبه، مرتب‌سازی، گزارش.
- | 
-Orders.maskedPan Column: شماره کارت، اطلاعات پرداخت، شناسایی مشتری, نوع داده varchar, استفاده برای فیلتر، جستجو، امنیت، نمایش.
- | 
-Orders.traceNo Column: شماره پیگیری، شناسایی، ردیابی، سفارش, نوع داده varchar, استفاده برای فیلتر، جستجو، یکتایی، پیوند.
- | 
-Orders.IsComittedBySimac Column: تعهد، سیماک، منطقی، وضعیت, نوع داده boolean, استفاده برای فیلتر، شرط، بررسی، مقایسه.
- | 
-Orders.FullName Column: نام کامل، مشتری، شناسنامه, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش.
- | 
-Orders.NationalId Column: کد ملی، شناسایی، مشتری، منحصر به فرد, نوع داده varchar, استفاده برای فیلتر، جستجو، پیوند، مرتب‌سازی.
- | 
-Orders.IsFinalizedPayment Column: پرداخت نهایی، وضعیت پرداخت، تایید تراکنش, نوع داده boolean, استفاده برای فیلتر، شرط، بررسی وضعیت.
- | 
-SiteSetting.SettingId Column: شناسه، تنظیمات، سایت، کلیدی, نوع داده integer, استفاده برای کلید اصلی، فیلتر، جستجو، اتصال.
- | 
-SiteSetting.Name Column: نام، تنظیمات، سایت، شناسه, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مقایسه.
- | 
-SiteSetting.Value Column: مقدار، عدد صحیح، تنظیمات سایت, نوع داده integer, استفاده برای فیلتر، جستجو، مقایسه، مرتب‌سازی.
- | 
-Tokens.TokenID Column: شناسه توکن، کلید اصلی، منحصربه‌فرد, نوع داده integer, استفاده برای فیلتر، پیوند، مرتب‌سازی، جستجو.
- | 
-Tokens.TokenValue Column: شناسه توکن، مقدار، زمان، کاربر, نوع داده varchar, استفاده برای فیلتر، جستجو، نمایش، مرتب‌سازی.
- | 
-Tokens.CreateTime Column: زمان ایجاد، تاریخ، ساعت، ثبت وقایع, نوع داده datetime, استفاده برای فیلتر، مرتب‌سازی، مقایسه، محدوده زمانی.
- | 
-Tokens.UserId Column: شناسه کاربر، مالکیت، هویت, نوع داده varchar, استفاده برای فیلتر، پیوند، جستجو، محدود کردن.
- | 
-Relation: AspNetUserClaims.UserId ↔ AspNetUsers.Id. نوع رابطه many-to-one. استفاده برای کاربر، شناسه، ارتباط، عضویت.
- | 
-Relation: AspNetUserLogins.UserId ↔ AspNetUsers.Id. نوع رابطه many-to-one. استفاده برای کاربر، شناسه، ارتباط، ورود، حساب.
- | 
-Relation: AspNetUserRoles.RoleId ↔ AspNetRoles.Id. نوع رابطه many-to-one. استفاده برای نقش، کاربر، ارتباط، تعیین نقش.
- | 
-Relation: AspNetUserRoles.UserId ↔ AspNetUsers.Id. نوع رابطه many-to-one. استفاده برای کاربر، نقش، ارتباط، عضویت.
- | 
-Relation: OrderDetails.BookID ↔ Book.BookID. نوع رابطه many-to-one. استفاده برای جزئیات سفارش، کتاب، ارتباط، شناسایی کتاب.
- | 
-Relation: OrderDetails.OrderID ↔ Orders.OrderID. نوع رابطه many-to-one. استفاده برای سفارش جزئیات، سفارش اصلی، ارتباط، شناسایی سفارش.
- | 
-Relation: Orders.OrderID ↔ Orders.OrderID. نوع رابطه many-to-one. استفاده برای پیوند سفارشات، شناسایی، کلید اصلی، یکتا.
- | 
-Relation: Tokens.UserId ↔ AspNetUsers.Id. نوع رابطه many-to-one. استفاده برای کاربر، شناسه، ارتباط، مطابقت.
+Relation: Tokens.UserId ↔ AspNetUsers.Id. نوع رابطه many-to-one. 

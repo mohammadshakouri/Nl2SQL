@@ -16,18 +16,16 @@ class Table:
     name: str
     description: str
     key_columns: List[str]
-    business_role: str
     
     def to_embedding_text(self) -> str:
         """
         Convert table to embedding text format:
-        <TableName> Table: <semantic description>. شامل ستون های <key columns>. استفاده برای <business role>.
+        <TableName> Table: <semantic description>. شامل ستون های <key columns>.
         """
         key_cols = ", ".join(self.key_columns)
         return (
             f"{self.name} Table: {self.description}. "
             f"شامل ستون های {key_cols}. "
-            f"استفاده برای {self.business_role}."
         )
 
 
@@ -38,16 +36,15 @@ class Column:
     column_name: str
     meaning: str
     data_type: str
-    operations: str
     
     def to_embedding_text(self) -> str:
         """
         Convert column to embedding text format:
-        <TableName>.<ColumnName> Column: <meaning>, نوع داده {self.data_type}, استفاده برای {self.operations}.
+        <TableName>.<ColumnName> Column: <meaning>, نوع داده {self.data_type}.
         """
         return (
             f"{self.table_name}.{self.column_name} Column: {self.meaning}, "
-            f"نوع داده {self.data_type}, استفاده برای {self.operations}."
+            f"نوع داده {self.data_type}."
         )
 
 
@@ -59,8 +56,7 @@ class Relation:
     target_table: str
     target_column: str
     relationship_type: str
-    join_purpose: str
-    
+        
     def to_embedding_text(self) -> str:
         """
         Convert relation to embedding text format:
@@ -70,7 +66,6 @@ class Relation:
             f"Relation: {self.source_table}.{self.source_column} ↔ "
             f"{self.target_table}.{self.target_column}. "
             f"نوع رابطه {self.relationship_type}. "
-            f"استفاده برای {self.join_purpose}."
         )
 
 
@@ -92,8 +87,7 @@ class SchemaManager:
                 {
                     "name": "Customers",
                     "description": "اطلاعات مشتریان",
-                    "key_columns": ["CustomerID", "Name", "JoinDate"],
-                    "business_role": "نگهداری مشخصات اشخاصی که خرید انجام داده‌اند"
+                    "key_columns": ["CustomerID", "Name", "JoinDate"]
                 }
             ],
             "columns": [
@@ -102,7 +96,6 @@ class SchemaManager:
                     "column_name": "CustomerID",
                     "meaning": "شناسه یکتای مشتری",
                     "data_type": "integer",
-                    "operations": "شناسایی و ارتباط با جداول دیگر"
                 }
             ],
             "relations": [
@@ -111,8 +104,7 @@ class SchemaManager:
                     "source_column": "CustomerID",
                     "target_table": "Customers",
                     "target_column": "CustomerID",
-                    "relationship_type": "many-to-one",
-                    "join_purpose": "connecting each purchase to its customer"
+                    "relationship_type": "many-to-one"   
                 }
             ]
         }
@@ -125,8 +117,7 @@ class SchemaManager:
             table = Table(
                 name=table_data["name"],
                 description=table_data["description"],
-                key_columns=table_data["key_columns"],
-                business_role=table_data["business_role"]
+                key_columns=table_data["key_columns"]
             )
             self.tables.append(table)
         
@@ -136,8 +127,7 @@ class SchemaManager:
                 table_name=column_data["table_name"],
                 column_name=column_data["column_name"],
                 meaning=column_data["meaning"],
-                data_type=column_data["data_type"],
-                operations=column_data["operations"]
+                data_type=column_data["data_type"]
             )
             self.columns.append(column)
         
@@ -148,8 +138,7 @@ class SchemaManager:
                 source_column=relation_data["source_column"],
                 target_table=relation_data["target_table"],
                 target_column=relation_data["target_column"],
-                relationship_type=relation_data["relationship_type"],
-                join_purpose=relation_data["join_purpose"]
+                relationship_type=relation_data["relationship_type"]
             )
             self.relations.append(relation)
     

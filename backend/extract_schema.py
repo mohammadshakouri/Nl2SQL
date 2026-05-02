@@ -191,8 +191,7 @@ class SchemaExtractor:
             schema['tables'].append({
                 'name': table_name,
                 'description': table['description'],
-                'key_columns': key_columns if key_columns else [col['column_name'] for col in columns[:3]],
-                'business_role': f"Manages {table_name.lower()} data"
+                'key_columns': key_columns if key_columns else [col['column_name'] for col in columns[:3]]
             })
             
             # Add column info
@@ -201,8 +200,7 @@ class SchemaExtractor:
                     'table_name': table_name,
                     'column_name': col['column_name'],
                     'meaning': col['description'],
-                    'data_type': self.map_sql_type_to_generic(col['data_type']),
-                    'operations': f"Operations on {col['column_name']}"
+                    'data_type': self.map_sql_type_to_generic(col['data_type'])
                 })
         
         # Get foreign key relationships
@@ -250,19 +248,19 @@ class SchemaExtractor:
 def main():
     """Main execution function"""
     # SQL Server connection details
-    # config = {
-    #     'server': '.\Local2022',
-    #     'database': 'Team10BookShop',
-    #     'username': 'sa',
-    #     'password': "1212"
-    # }
-
     config = {
-        'server': '192.168.100.16',
-        'database': 'SimacNashr',
+        'server': '.\Local2022',
+        'database': 'Team10BookShop',
         'username': 'sa',
-        'password': "Aa12345678"
+        'password': "1212"
     }
+
+    # config = {
+    #     'server': '192.168.100.16',
+    #     'database': 'SimacNashr',
+    #     'username': 'sa',
+    #     'password': "Aa12345678"
+    # }
     
     # Output file path
     output_file = 'data_schema/simacnashr_schema.json'

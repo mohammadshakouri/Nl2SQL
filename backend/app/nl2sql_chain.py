@@ -41,7 +41,7 @@ GAPGPT_API_KEY = env.gapgpt_api_key
 USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
-OLLAMA_TEMPERATURE: float = 0.2
+OLLAMA_TEMPERATURE: float = 0.1
 OLLAMA_MODEL_NAME: str = "gemma4:e4b".strip().lower()
 OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
@@ -275,11 +275,11 @@ class NL2SQLChain:
         ollama_client = AsyncClient(host=OLLAMA_HOST)
 
         chat_completion = await ollama_client.chat(
-            think=False,
+            think="low",
             stream=stream,
             messages=messages,
             model=OLLAMA_MODEL_NAME,
-            options={"temperature": OLLAMA_TEMPERATURE, "think": False},
+            options={"temperature": OLLAMA_TEMPERATURE},
         )
 
         return chat_completion
@@ -420,7 +420,7 @@ async def LoadNL2SQLChain(
 
     # retrieval + context
     retrieved_elements, distances = chain.retrieve_schema_elements(
-        question, n_results=20
+        question, n_results=15
     )
     if not retrieved_elements:
         yield sse(
@@ -433,7 +433,7 @@ async def LoadNL2SQLChain(
     schema_context = chain.build_schema_context(retrieved_elements)
 
     # feedback loop set up
-    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=3)
+    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=4)
     full_sql = ""
 
     # iterate until validation succeeds or iterations are exhausted
