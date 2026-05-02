@@ -37,6 +37,7 @@ from app.system_prompt import (
 )
 
 OPENAI_API_KEY = env.openai_api_key
+GAPGPT_API_KEY = env.gapgpt_api_key
 USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
@@ -305,6 +306,34 @@ class NL2SQLChain:
         )
         
         return chat_completion
+    
+    
+    async def generate_sql_gapgpt(
+        self,
+        messages: List[Dict[str, str]],
+        stream: bool = True
+    ):
+        """
+        Generate SQL using OpenAI LLM
+        
+        Args:
+            messages: List of message dicts
+            stream: Whether to stream response
+        
+        Returns:
+            OpenAI chat completion stream
+        """
+        openai_client = AsyncOpenAI(base_url='https://api.gapgpt.app/v1',api_key=GAPGPT_API_KEY)
+        
+        chat_completion = await openai_client.chat.completions.create(
+            # model="gapgpt-qwen-3.5",
+            model="gemini-2.5-flash",
+            messages=messages,
+            temperature=0.2,
+            stream=stream
+        )
+        
+        return chat_completion
 
 
 
@@ -399,7 +428,7 @@ async def LoadNL2SQLChain(
     schema_context = chain.build_schema_context(retrieved_elements)
 
     # feedback loop set up
-    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=3)
+    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=10)
     full_sql = ""
 
     # iterate until validation succeeds or iterations are exhausted
@@ -423,7 +452,8 @@ async def LoadNL2SQLChain(
                 if getattr(chunk, "done", False):
                     break
         else:
-            chat_resp = await chain.generate_sql_openai(messages, stream=True)
+            # chat_resp = await chain.generate_sql_openai(messages, stream=True)
+            chat_resp = await chain.generate_sql_gapgpt(messages, stream=True)
             async for chunk in chat_resp:
                 choice = chunk.choices[0]
                 delta = choice.delta

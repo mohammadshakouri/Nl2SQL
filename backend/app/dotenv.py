@@ -10,6 +10,7 @@ def str_to_bool(value: str) -> bool:
 documentation = str_to_bool(os.getenv('DOCUMENTATION', default=False))
 simac_api_key = os.getenv('SIMAC_API_KEY')
 openai_api_key = os.getenv('OPENAI_API_KEY')
+gapgpt_api_key = os.getenv('GAPGPT_API_KEY')
 main_database_url = os.getenv('MAIN_DATABASE_URL')
 execution_database_url = os.getenv('EXECUTION_DATABASE_URL')
 use_local_llm = str_to_bool(os.getenv('USE_LOCAL_LLM', default=False))

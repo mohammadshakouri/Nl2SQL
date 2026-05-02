@@ -14,10 +14,10 @@ export const config = {
 	 * Options: 'ecommerce', 'hr', 'inventory', etc.
 	 */
 	// schemaName: import.meta.env.VITE_SCHEMA_NAME || "transactions",
-	schemaName: import.meta.env.VITE_SCHEMA_NAME || "concert_singer",
+	schemaName: import.meta.env.VITE_SCHEMA_NAME || "simacnashr",
 
 	/**
 	 * Whether to validate SQL execution on the backend
 	 */
-	validateExecution: false,
+	validateExecution: true,
 };

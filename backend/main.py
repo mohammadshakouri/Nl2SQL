@@ -78,7 +78,7 @@ async def nl2sql_stream(request: NL2SQLRequest):
             request.question,
             collection_name,
             request.culture,
-            # validate_execution=request.validate_execution,
+            validate_execution=request.validate_execution,
         ),
         media_type='text/event-stream'
     )
