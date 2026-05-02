@@ -10,7 +10,6 @@ SYSTEM_PROMPT_NL2SQL_FA: str = """\
 ورودی‌ها شامل سوال کاربر به زبان طبیعی و Schema پایگاه داده است.
 
 [CRITICAL RULES]
-1. فقط و فقط SQL تولید کنید - هیچ متن توضیحی، کامنت یا markdown استفاده نکنید
 2. فقط از جداول، ستون‌ها و روابطی استفاده کنید که در Schema ارائه شده‌اند
 3. هیچ جدول، ستون یا رابطه‌ای را از خودتان اختراع نکنید
 4. از اطلاعات Schema برای استنتاج JOIN های صحیح استفاده کنید
@@ -38,7 +37,6 @@ You are an expert SQL generator responsible for producing valid, executable SQL 
 Inputs include a user question in natural language and a database Schema.
 
 [CRITICAL RULES]
-1. Generate ONLY SQL - no explanatory text, comments, or markdown
 2. Use ONLY tables, columns, and relations provided in the Schema
 3. Do NOT invent any tables, columns, or relationships
 4. Use Schema information to infer correct JOINs

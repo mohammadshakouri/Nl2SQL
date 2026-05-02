@@ -250,11 +250,18 @@ class SchemaExtractor:
 def main():
     """Main execution function"""
     # SQL Server connection details
+    # config = {
+    #     'server': '.\Local2022',
+    #     'database': 'Team10BookShop',
+    #     'username': 'sa',
+    #     'password': "1212"
+    # }
+
     config = {
-        'server': '.\Local2022',
-        'database': 'Team10BookShop',
+        'server': '192.168.100.16',
+        'database': 'SimacNashr',
         'username': 'sa',
-        'password': "1212"
+        'password': "Aa12345678"
     }
     
     # Output file path

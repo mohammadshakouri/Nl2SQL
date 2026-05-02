@@ -17,7 +17,7 @@ USE_LOCAL_EMBEDDING = env.use_local_embedding
 OLLAMA_EMBEDDING_MODEL_NAME: str = "google/embeddinggemma-300m"
 OPENAI_EMBEDDING_MODEL_NAME: str = "text-embedding-3-small"
 CHROMADB_PERSIST_DIRECTORY: str = "./chroma_db"
-Model_Dir = r"C:\Users\Mohammad\.cache\huggingface\hub\models--google--embeddinggemma-300m\snapshots\57c266a740f537b4dc058e1b0cda161fd15afa75"
+EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
 
 
@@ -128,7 +128,7 @@ def create_schema_vector_store(
     if USE_LOCAL_EMBEDDING:
         print("Embedding using local model...")
         print("Embedding model:", OLLAMA_EMBEDDING_MODEL_NAME)
-        sentence_transformer_ef = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
+        sentence_transformer_ef = LocalSTEmbeddingFunction(EMBEDDING_MODEL_DIR, device="cpu")
     else:
         print("Embedding using OpenAI model...")
         print("Embedding model:", OPENAI_EMBEDDING_MODEL_NAME)

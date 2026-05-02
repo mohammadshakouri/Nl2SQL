@@ -14,8 +14,8 @@ from typing import Any, Dict, List
 from ollama import Client
 
 OLLAMA_HOST: str = "http://127.0.0.1:11434"
-OLLAMA_MODEL: str = "gemma3:4b"
-OLLAMA_TEMPERATURE: float = 0.2
+OLLAMA_MODEL: str = "gemma4:e4b"
+OLLAMA_TEMPERATURE: float = 0.1
 
 
 def _call_llm(client: Client, prompt: str) -> str:
@@ -23,6 +23,7 @@ def _call_llm(client: Client, prompt: str) -> str:
         messages=[{"role": "user", "content": prompt}],
         model=OLLAMA_MODEL,
         options={"temperature": OLLAMA_TEMPERATURE},
+        think=False,
     )
     return response.message.content.strip()
 
@@ -44,7 +45,9 @@ def _build_table_prompt(
         for r in relations
     ) or "  (no outgoing foreign keys)"
 
-    return f"""You are a database documentation expert. Your task is to write a rich, informative description in **Persian (Farsi)** for a database table.
+    return f"""You are a database documentation expert.
+
+Goal: Generate VERY SHORT Persian (Farsi) descriptions using keywords only (no full sentences).
 
 Table name: {table['name']}
 Key columns: {', '.join(table.get('key_columns', []))}
@@ -55,14 +58,17 @@ Columns:
 Outgoing foreign-key relations:
 {rel_lines}
 
-Write two things, each on its own line with the exact labels shown:
-DESCRIPTION: <a 1-3 sentence Persian description of what this table stores and its business purpose>
-BUSINESS_ROLE: <one concise Persian sentence describing the business role of this table>
+Output exactly two lines:
+DESCRIPTION: <2-6 Persian keywords about table content/purpose>
+BUSINESS_ROLE: <2-5 Persian keywords about business role>
 
 Rules:
-- Write ONLY in Persian.
-- Do not include any explanation or extra text outside the two labeled lines.
-- Do not use markdown formatting inside the values.
+- Persian only.
+- Use keywords, NOT sentences.
+- No long text, no explanations.
+- No punctuation except commas.
+- Keep it minimal and compact.
+- Do not output anything except the two lines above.
 """
 
 
@@ -92,7 +98,9 @@ def _build_column_prompt(
     column: Dict[str, Any],
     table: Dict[str, Any],
 ) -> str:
-    return f"""You are a database documentation expert. Your task is to write rich Persian (Farsi) documentation for a single database column.
+    return f"""You are a database documentation expert.
+
+Goal: Generate VERY SHORT Persian (Farsi) descriptions using keywords only (no full sentences).
 
 Table: {column['table_name']}
 Table description: {table.get('description', '')}
@@ -100,14 +108,17 @@ Column: {column['column_name']}
 Data type: {column['data_type']}
 Is primary key: {'yes' if column['column_name'] in table.get('key_columns', []) else 'no'}
 
-Write two things, each on its own line with the exact labels shown:
-MEANING: <a clear Persian sentence explaining what this column stores and its semantic meaning>
-OPERATIONS: <a Persian sentence describing typical query operations on this column, e.g. filtering, sorting, aggregation, joining>
+Output exactly two lines:
+MEANING: <2-5 Persian keywords about column meaning>
+OPERATIONS: <2-5 Persian keywords about usage (filter, join, sort, etc.)>
 
 Rules:
-- Write ONLY in Persian.
-- Do not include any explanation or extra text outside the two labeled lines.
-- Do not use markdown formatting inside the values.
+- Persian only.
+- Use keywords, NOT sentences.
+- No long text, no explanations.
+- No punctuation except commas.
+- Keep it minimal and compact.
+- Do not output anything except the two lines above.
 """
 
 
@@ -133,7 +144,9 @@ def enrich_column(
 # ---------------------------------------------------------------------------
 
 def _build_relation_prompt(relation: Dict[str, Any]) -> str:
-    return f"""You are a database documentation expert. Your task is to write a rich Persian (Farsi) description explaining the purpose of a foreign-key relationship between two tables.
+    return f"""You are a database documentation expert.
+
+Goal: Generate VERY SHORT Persian (Farsi) description using keywords only (no full sentences).
 
 Source table: {relation['source_table']}
 Source column: {relation['source_column']}
@@ -141,13 +154,16 @@ Target table: {relation['target_table']}
 Target column: {relation['target_column']}
 Relationship type: {relation['relationship_type']}
 
-Write one thing on its own line with the exact label shown:
-JOIN_PURPOSE: <a clear Persian sentence describing why this join exists and what business question it answers>
+Output exactly one line:
+JOIN_PURPOSE: <2-5 Persian keywords about join purpose>
 
 Rules:
-- Write ONLY in Persian.
-- Do not include any explanation or extra text outside the labeled line.
-- Do not use markdown formatting inside the value.
+- Persian only.
+- Use keywords, NOT sentences.
+- No long text, no explanations.
+- No punctuation except commas.
+- Keep it minimal and compact.
+- Do not output anything except the line above.
 """
 
 
