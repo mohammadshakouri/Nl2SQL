@@ -257,21 +257,22 @@ class SQLFeedbackLoop:
             "iteration": len(self.iteration_history) + 1
         })
     
-    def get_feedback_prompt(self) -> str:
+    def get_feedback_prompt(self) -> Optional[str]:
         """
-        Generate feedback prompt for LLM based on previous failures
-        
-        Returns:
-            Formatted feedback string
+        Generate feedback prompt for LLM based on previous failures.
+
+        Returns ``None`` when there is no failure history (first iteration or
+        last iteration succeeded) so callers can distinguish "no feedback"
+        from an empty string.
         """
         if not self.iteration_history:
-            return ""
-        
+            return None
+
         last_iteration = self.iteration_history[-1]
-        
+
         if last_iteration["success"]:
-            return ""
-        
+            return None
+
         feedback = f"\nPrevious attempt failed (Iteration {last_iteration['iteration']}):\n\n"
         feedback += f"SQL: {last_iteration['sql']}\n\n"
         feedback += self.validator.extract_error_feedback(last_iteration['error'])

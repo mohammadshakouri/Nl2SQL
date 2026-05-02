@@ -453,7 +453,7 @@ async def LoadNL2SQLChain(
                     break
         else:
             # chat_resp = await chain.generate_sql_openai(messages, stream=True)
-            chat_resp = await chain.generate_sql_gapgpt(messages, stream=True)
+            chat_resp = await chain.generate_sql_openai(messages, stream=True)
             async for chunk in chat_resp:
                 choice = chunk.choices[0]
                 delta = choice.delta
@@ -495,6 +495,23 @@ async def LoadNL2SQLChain(
 
         feedback_loop.add_iteration(clean_sql, None, success=True)
         break
+
+    # ------------------------------------------------------------------
+    # Guard: if the loop exhausted all iterations without a valid SQL,
+    # report failure and stop — do NOT save an empty/invalid query.
+    # ------------------------------------------------------------------
+    final_result = feedback_loop.get_final_result()
+    if not final_result["success"]:
+        last_error = final_result.get("error") or "Unknown validation error"
+        yield sse({
+            "event": "on_error",
+            "data": (
+                f"Failed to generate a valid SQL query after "
+                f"{feedback_loop.max_iterations} attempt(s). "
+                f"Last error: {last_error}"
+            ),
+        })
+        return
 
     end_time = jdatetime.datetime.now()
     latency = (end_time - start_time).total_seconds()
