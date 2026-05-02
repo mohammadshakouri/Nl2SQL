@@ -41,10 +41,10 @@ GAPGPT_API_KEY = env.gapgpt_api_key
 USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
-OLLAMA_TEMPERATURE: float = 0.1
+OLLAMA_TEMPERATURE: float = 0.2
 OLLAMA_MODEL_NAME: str = "gemma3:4b".strip().lower()
 OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
-Model_Dir = r"C:\Users\Mohammad\.cache\huggingface\hub\models--google--embeddinggemma-300m\snapshots\57c266a740f537b4dc058e1b0cda161fd15afa75"
+EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
 # duplicate a small portion of the database configuration that exists in
 # ``main.py``.  This avoids a circular import while still allowing the
@@ -93,7 +93,7 @@ class NL2SQLChain:
         
         # Initialize embedding function
         if USE_LOCAL_EMBEDDING:
-            self.embedding_fn = LocalSTEmbeddingFunction(Model_Dir, device="cpu")
+            self.embedding_fn = LocalSTEmbeddingFunction(EMBEDDING_MODEL_DIR, device="cpu")
         else:
             self.embedding_fn = embedding_functions.OpenAIEmbeddingFunction(
                 api_key=OPENAI_API_KEY,
@@ -428,7 +428,7 @@ async def LoadNL2SQLChain(
     schema_context = chain.build_schema_context(retrieved_elements)
 
     # feedback loop set up
-    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=10)
+    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=2)
     full_sql = ""
 
     # iterate until validation succeeds or iterations are exhausted
