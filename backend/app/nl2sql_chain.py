@@ -463,8 +463,8 @@ async def LoadNL2SQLChain(
                 if getattr(chunk, "done", False):
                     break
         else:
-            # chat_resp = await chain.generate_sql_openai(messages, stream=True)
-            chat_resp = await chain.generate_sql_gapgpt(messages, stream=True)
+            # chat_resp = await chain.generate_sql_gapgpt(messages, stream=True)
+            chat_resp = await chain.generate_sql_openai(messages, stream=True)
             async for chunk in chat_resp:
                 choice = chunk.choices[0]
                 delta = choice.delta
