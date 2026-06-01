@@ -1,10 +1,49 @@
 {
-  "database_name": "Team10BookShop",
-  "description": "Database schema for Team10BookShop",
+  "database_name": "SimacNashr",
+  "description": "Database schema for SimacNashr",
   "tables": [
     {
+      "name": "__MigrationHistory",
+      "description": "تاریخچه مهاجرت، شناسه، زمینه، مدل، نسخه",
+      "key_columns": [
+        "MigrationId",
+        "ContextKey"
+      ]
+    },
+    {
+      "name": "AspNetRoles",
+      "description": "نقش‌ها، شناسه‌ها، مدیریت دسترسی‌ها",
+      "key_columns": [
+        "Id"
+      ]
+    },
+    {
+      "name": "AspNetUserClaims",
+      "description": "شناسه کاربر، نوع ادعا، مقدار ادعا",
+      "key_columns": [
+        "Id"
+      ]
+    },
+    {
+      "name": "AspNetUserLogins",
+      "description": "لاگ ورود، ارائه‌دهنده، شناسه کاربر",
+      "key_columns": [
+        "LoginProvider",
+        "ProviderKey",
+        "UserId"
+      ]
+    },
+    {
+      "name": "AspNetUserRoles",
+      "description": "کاربر، نقش، ارتباط، عضویت، کاربران",
+      "key_columns": [
+        "UserId",
+        "RoleId"
+      ]
+    },
+    {
       "name": "AspNetUsers",
-      "description": "کاربران، اطلاعات احراز هویت، ایمیل، رمز عبور، شماره تلفن",
+      "description": "کاربران، اطلاعات ورود، امنیت، پروفایل، استان",
       "key_columns": [
         "Id"
       ]
@@ -25,7 +64,7 @@
     },
     {
       "name": "Error",
-      "description": "شناسه خطا، کد، نوع، توضیحات، تاریخ وقوع",
+      "description": "شناسه خطا، کد، نوع، توضیحات، تاریخ، سیستم",
       "key_columns": [
         "ErrorID"
       ]
@@ -39,16 +78,23 @@
     },
     {
       "name": "OrderDetails",
-      "description": "جزئیات سفارش، شناسه، کتاب، قیمت",
+      "description": "جزئیات سفارش، کتاب، قیمت، سفارش‌بندی",
       "key_columns": [
         "OrderDetailID"
       ]
     },
     {
       "name": "Orders",
-      "description": "سفارشات، اطلاعات خرید، تاریخ، مبلغ، مشتری",
+      "description": "سفارشات، اطلاعات خرید، تاریخ، مبلغ، وضعیت پرداخت",
       "key_columns": [
         "OrderID"
+      ]
+    },
+    {
+      "name": "Provinces",
+      "description": "شناسه، نام، استان‌ها",
+      "key_columns": [
+        "Id"
       ]
     },
     {
@@ -68,6 +114,96 @@
   ],
   "columns": [
     {
+      "table_name": "__MigrationHistory",
+      "column_name": "MigrationId",
+      "meaning": "شناسه مهاجرت، کلید اصلی، شناسایی تغییرات",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "ContextKey",
+      "meaning": "کلید زمینه، شناسایی، مهاجرت، منبع",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "Model",
+      "meaning": "مدل، نوع داده، شناسایی، مهاجرت",
+      "data_type": "varbinary"
+    },
+    {
+      "table_name": "__MigrationHistory",
+      "column_name": "ProductVersion",
+      "meaning": "نسخه محصول، شناسایی، تغییرات، تاریخچه",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetRoles",
+      "column_name": "Id",
+      "meaning": "شناسه، منحصر، نقش، کلید اصلی",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetRoles",
+      "column_name": "Name",
+      "meaning": "نام کاربر، نقش، شناسه‌گذاری",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "Id",
+      "meaning": "شناسه، کلید اصلی، عدد صحیح",
+      "data_type": "integer"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "UserId",
+      "meaning": "شناسه کاربر، شناسایی کاربر، کلید خارجی",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "ClaimType",
+      "meaning": "نوع ادعا، مشخصه کاربر، رشته متنی",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserClaims",
+      "column_name": "ClaimValue",
+      "meaning": "مقدار ادعا، رشته متنی، اطلاعات کاربر",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "LoginProvider",
+      "meaning": "ارائه‌دهنده ورود، شناسه، منبع احراز هویت",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "ProviderKey",
+      "meaning": "کلید ارائه‌دهنده، منبع ورود، شناسه منبع",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserLogins",
+      "column_name": "UserId",
+      "meaning": "شناسه کاربر، کلید اصلی، varchar",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserRoles",
+      "column_name": "UserId",
+      "meaning": "شناسه کاربر، کلید اصلی، کاربر، عضویت",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "AspNetUserRoles",
+      "column_name": "RoleId",
+      "meaning": "شناسه نقش، کلید اصلی، کاربر، نقش، ارتباط",
+      "data_type": "varchar"
+    },
+    {
       "table_name": "AspNetUsers",
       "column_name": "Id",
       "meaning": "شناسه کاربری، کلید اصلی، منحصر به فرد",
@@ -76,79 +212,79 @@
     {
       "table_name": "AspNetUsers",
       "column_name": "Email",
-      "meaning": "ایمیل، آدرس الکترونیکی، شناسایی کاربر",
+      "meaning": "ایمیل، آدرس، ورود، شناسایی، کاربر",
       "data_type": "varchar"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "EmailConfirmed",
-      "meaning": "تایید ایمیل، وضعیت، باینری، احراز هویت",
+      "meaning": "ایمیل تایید شده، احراز هویت، فعال بودن، پروفایل",
       "data_type": "boolean"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "PasswordHash",
-      "meaning": "رمز عبور، هش، امنیتی، داده، متنی",
+      "meaning": "رمز عبور، هش، امنیتی، ورود، کاربر",
       "data_type": "varchar"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "SecurityStamp",
-      "meaning": "مهر امنیتی، تغییر رمز، به‌روزرسانی، هش",
+      "meaning": "امضای امنیتی، تغییر رمز، به‌روزرسانی پروفایل",
       "data_type": "varchar"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "PhoneNumber",
-      "meaning": "شماره تلفن، ارتباط، تماس، موبایل",
+      "meaning": "شماره تلفن، تماس، احراز هویت، ارتباط",
       "data_type": "varchar"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "PhoneNumberConfirmed",
-      "meaning": "شماره تلفن، تأیید، احراز هویت، باینری",
+      "meaning": "شماره تلفن، تأیید، احراز هویت، فعال بودن",
       "data_type": "boolean"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "TwoFactorEnabled",
-      "meaning": "احراز هویت دو مرحله‌ای، فعال بودن، تایید امنیتی",
+      "meaning": "احراز هویت دو مرحله‌ای، فعال بودن، امنیت، ورود",
       "data_type": "boolean"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "LockoutEndDateUtc",
-      "meaning": "تاریخ، قفل شدن، زمان، احراز هویت",
+      "meaning": "Column LockoutEndDateUtc",
       "data_type": "datetime"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "LockoutEnabled",
-      "meaning": "قفل حساب، فعال سازی، محدودیت ورود",
+      "meaning": "قفل حساب، فعال سازی، امنیت، ورود، محدودیت",
       "data_type": "boolean"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "AccessFailedCount",
-      "meaning": "تعداد تلاش ناموفق ورود، احراز هویت، شکست ورود",
+      "meaning": "تعداد تلاش ناموفق ورود، امنیت، حساب کاربری",
       "data_type": "integer"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "UserName",
-      "meaning": "نام کاربری، شناسایی، کاربر، یونیک",
+      "meaning": "نام کاربری، شناسایی، ورود، پروفایل",
       "data_type": "varchar"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "IsSimacUser",
-      "meaning": "کاربر سیم‌کارت، احراز هویت، فعال بودن، منطقی",
+      "meaning": "کاربر سیم‌کارت، عضویت، احراز هویت، سیماک",
       "data_type": "boolean"
     },
     {
       "table_name": "AspNetUsers",
       "column_name": "ProvinceCode",
-      "meaning": "کد استان، موقعیت جغرافیایی، عدد صحیح",
+      "meaning": "کد استان، موقعیت جغرافیایی، شناسایی منطقه‌ای",
       "data_type": "integer"
     },
     {
@@ -172,13 +308,13 @@
     {
       "table_name": "Book",
       "column_name": "ISBN",
-      "meaning": "شناسه کتاب، ISBN، منحصر، شناسایی",
+      "meaning": "Column ISBN",
       "data_type": "varchar"
     },
     {
       "table_name": "Book",
       "column_name": "Author",
-      "meaning": "نویسنده، نام، نویسنده کتاب",
+      "meaning": "نویسنده، نام، خالق، نویسندگی",
       "data_type": "varchar"
     },
     {
@@ -190,7 +326,7 @@
     {
       "table_name": "Book",
       "column_name": "Status",
-      "meaning": "کتاب، موجود، در دسترس، خرید",
+      "meaning": "کتاب، موجود، در دسترس، فعال، غیرفعال",
       "data_type": "boolean"
     },
     {
@@ -208,7 +344,7 @@
     {
       "table_name": "Error",
       "column_name": "ErrorID",
-      "meaning": "شناسه خطا، کلید اصلی، منحصر به فرد",
+      "meaning": "شناسه خطا، کلید اصلی، منحصر به فرد، شناسایی خطا",
       "data_type": "decimal"
     },
     {
@@ -232,7 +368,7 @@
     {
       "table_name": "Error",
       "column_name": "ErrorType",
-      "meaning": "نوع خطا، کد، شناسایی، دسته‌بندی",
+      "meaning": "نوع خطا، کد، دسته‌بندی، نوع خطا",
       "data_type": "integer"
     },
     {
@@ -250,7 +386,7 @@
     {
       "table_name": "Error",
       "column_name": "ErrorUserID",
-      "meaning": "شناسه کاربر، خطای مربوط به، کاربر، شناسایی",
+      "meaning": "شناسه کاربر، خطای مربوط به، کاربر، شناسایی خطا",
       "data_type": "varchar"
     },
     {
@@ -262,7 +398,7 @@
     {
       "table_name": "Error",
       "column_name": "ErrorDate",
-      "meaning": "تاریخ وقوع خطا، زمان وقوع، ثبت زمان",
+      "meaning": "تاریخ وقوع خطا، زمان ثبت خطا",
       "data_type": "datetime"
     },
     {
@@ -274,7 +410,7 @@
     {
       "table_name": "GateWayes",
       "column_name": "GateWayID",
-      "meaning": "شناسه، کلید اصلی، منبع، شناسایی، دروازه",
+      "meaning": "شناسه، کلید اصلی، منبع، شناسایی دروازه",
       "data_type": "integer"
     },
     {
@@ -286,19 +422,19 @@
     {
       "table_name": "OrderDetails",
       "column_name": "OrderDetailID",
-      "meaning": "شناسه جزئیات سفارش، کلید اصلی",
+      "meaning": "شناسه جزئیات سفارش، کلید اصلی، منحصر به فرد",
       "data_type": "integer"
     },
     {
       "table_name": "OrderDetails",
       "column_name": "OrderID",
-      "meaning": "شناسه سفارش، شناسایی، سفارش، کلید خارجی",
+      "meaning": "شناسه سفارش، شماره سفارش، شناسایی سفارش",
       "data_type": "integer"
     },
     {
       "table_name": "OrderDetails",
       "column_name": "BookID",
-      "meaning": "شناسه کتاب، کد کتاب، شناسایی کتاب",
+      "meaning": "شناسه کتاب، کتاب، شناسه‌دهی",
       "data_type": "integer"
     },
     {
@@ -316,7 +452,7 @@
     {
       "table_name": "Orders",
       "column_name": "UserId",
-      "meaning": "شناسه کاربر، خریدار، مشتری",
+      "meaning": "شناسه کاربر، خریدار، سفارش‌دهنده",
       "data_type": "varchar"
     },
     {
@@ -334,19 +470,19 @@
     {
       "table_name": "Orders",
       "column_name": "responseCode",
-      "meaning": "کد پاسخ، وضعیت سفارش، سیستم",
+      "meaning": "کد پاسخ، وضعیت تراکنش، سیستم",
       "data_type": "varchar"
     },
     {
       "table_name": "Orders",
       "column_name": "paymentId",
-      "meaning": "شناسه پرداخت، تراکنش، پرداخت، اطلاعات مالی",
+      "meaning": "شناسه پرداخت، پیوند پرداخت، تراکنش مالی",
       "data_type": "varchar"
     },
     {
       "table_name": "Orders",
       "column_name": "RequestId",
-      "meaning": "شناسه درخواست، منحصربه‌فرد، پیگیری سفارش",
+      "meaning": "شناسه درخواست، شناسایی سفارش",
       "data_type": "varchar"
     },
     {
@@ -364,31 +500,61 @@
     {
       "table_name": "Orders",
       "column_name": "maskedPan",
-      "meaning": "شماره کارت، شناسایی، مشتری، پرداخت",
+      "meaning": "شماره کارت، اطلاعات پرداخت، محرمانه",
       "data_type": "varchar"
     },
     {
       "table_name": "Orders",
       "column_name": "traceNo",
-      "meaning": "شماره پیگیری، ردیابی سفارش، منحصربه‌فرد",
+      "meaning": "شماره پیگیری، ردیابی سفارش",
       "data_type": "varchar"
     },
     {
       "table_name": "Orders",
       "column_name": "IsComittedBySimac",
-      "meaning": "تعهد، سیماک، وضعیت، خرید",
+      "meaning": "تعهد، سیماک، بله، خیر",
       "data_type": "boolean"
     },
     {
       "table_name": "Orders",
       "column_name": "FullName",
-      "meaning": "نام کامل، مشتری، فرد، شناسایی",
+      "meaning": "نام کامل مشتری، شناسایی کاربر",
       "data_type": "varchar"
     },
     {
       "table_name": "Orders",
       "column_name": "NationalId",
       "meaning": "کد ملی، شناسایی مشتری، منحصر به فرد",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "ProvinceName",
+      "meaning": "استان، نام، موقعیت جغرافیایی",
+      "data_type": "varchar"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "PaymentStatus",
+      "meaning": "وضعیت پرداخت، عدد صحیح، پرداخت، وضعیت",
+      "data_type": "integer"
+    },
+    {
+      "table_name": "Orders",
+      "column_name": "PayType",
+      "meaning": "نوع پرداخت، کد، عدد صحیح",
+      "data_type": "integer"
+    },
+    {
+      "table_name": "Provinces",
+      "column_name": "Id",
+      "meaning": "شناسه، کلید اصلی، منحصربه‌فرد، عدد صحیح",
+      "data_type": "integer"
+    },
+    {
+      "table_name": "Provinces",
+      "column_name": "Name",
+      "meaning": "نام استان، عنوان، متن، شناسایی",
       "data_type": "varchar"
     },
     {
@@ -424,17 +590,49 @@
     {
       "table_name": "Tokens",
       "column_name": "CreateTime",
-      "meaning": "زمان ایجاد، تاریخ، ساعت، ثبت زمان",
+      "meaning": "زمان ایجاد، تاریخ و ساعت، ثبت وقایع",
       "data_type": "datetime"
     },
     {
       "table_name": "Tokens",
       "column_name": "UserId",
-      "meaning": "شناسه کاربر، مالک توکن، هویت کاربری",
+      "meaning": "شناسه کاربر، هویت، مالکیت، کاربر سیستم",
       "data_type": "varchar"
     }
   ],
   "relations": [
+    {
+      "source_table": "AspNetUserClaims",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "کاربر، شناسه، ارتباط، عضویت"
+    },
+    {
+      "source_table": "AspNetUserLogins",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "کاربر، شناسه، ارتباط، ورود، حساب"
+    },
+    {
+      "source_table": "AspNetUserRoles",
+      "source_column": "RoleId",
+      "target_table": "AspNetRoles",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "نقش، کاربر، ارتباط، شناسایی"
+    },
+    {
+      "source_table": "AspNetUserRoles",
+      "source_column": "UserId",
+      "target_table": "AspNetUsers",
+      "target_column": "Id",
+      "relationship_type": "many-to-one",
+      "join_purpose": "کاربر، نقش، ارتباط، عضویت"
+    },
     {
       "source_table": "OrderDetails",
       "source_column": "BookID",
@@ -452,12 +650,20 @@
       "join_purpose": "سفارش جزئیات، سفارش اصلی، ارتباط، شناسایی سفارش"
     },
     {
+      "source_table": "Orders",
+      "source_column": "OrderID",
+      "target_table": "Orders",
+      "target_column": "OrderID",
+      "relationship_type": "many-to-one",
+      "join_purpose": "شناسایی، ارتباط، سفارش، شناسه، اصلی"
+    },
+    {
       "source_table": "Tokens",
       "source_column": "UserId",
       "target_table": "AspNetUsers",
       "target_column": "Id",
       "relationship_type": "many-to-one",
-      "join_purpose": "کاربر، شناسه، ارتباط، مطابقت"
+      "join_purpose": "کاربر، شناسه، مطابقت، ارتباط"
     }
   ]
 }
