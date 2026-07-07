@@ -1,9 +1,3 @@
-export const enum ServerEventType {
-	Message = "1",
-	Feedback = "2",
-	Search = "4",
-}
-
 export const baseUrl =
 	import.meta.env.MODE === "development" ? "http://localhost:80" : window.location.origin;
 

@@ -1,24 +1,17 @@
 import { createRef } from "lestin/jsx-runtime";
 import { animateSvgFillLoop } from "./animateFill.js";
-import { Marked } from "marked";
 import { IconAiAvatar, IconSend } from "./Icons.js";
 import {
 	AiIsRespondingMessage,
 	AiMessage,
-	SuggestionListItem,
 	UserMessage,
 } from "./Components/Message.js";
-import { baseUrl, GetCurrentTimeString, ServerEventType } from "./enums.js";
+import { baseUrl, GetCurrentTimeString } from "./enums.js";
 import { i18n } from "./i18n.js";
 import { Delay } from "./Utilities.js";
 import { config } from "./config.js";
 import { RenderMarkdown } from "./RenderMarkdown.js";
 
-const marked = new Marked({
-	gfm: true,
-});
-
-let timeout = null;
 let isDialogOpen = false;
 let isFirstOpen = true;
 let isFirstToken = false;
@@ -34,7 +27,6 @@ const dialogWrapperRef = createRef<HTMLDivElement>();
 const chatContentRef = createRef<HTMLDivElement>();
 const userInputRef = createRef<HTMLTextAreaElement>();
 const sendButtonRef = createRef<HTMLButtonElement>();
-const suggestionListRef = createRef<HTMLUListElement>();
 const openDialogButtonRef = createRef<HTMLButtonElement>();
 
 function OpenDialog() {

@@ -20,13 +20,11 @@ from chromadb.utils import embedding_functions
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from openai import AsyncOpenAI
 from ollama import AsyncClient, ChatResponse
-from chromadb.utils import embedding_functions
-from sentence_transformers import SentenceTransformer
-from chromadb.api.types import EmbeddingFunction
 
 
 import app.dotenv as env
 import app.utilities as utils
+from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import SchemaManager
 from app.sql_validator import SQLValidator, SQLFeedbackLoop
 from app.system_prompt import (
@@ -37,7 +35,6 @@ from app.system_prompt import (
 )
 
 OPENAI_API_KEY = env.openai_api_key
-GAPGPT_API_KEY = env.gapgpt_api_key
 USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
@@ -305,32 +302,6 @@ class NL2SQLChain:
 
         return chat_completion
 
-    async def generate_sql_gapgpt(
-        self, messages: List[Dict[str, str]], stream: bool = True
-    ):
-        """
-        Generate SQL using OpenAI LLM
-
-        Args:
-            messages: List of message dicts
-            stream: Whether to stream response
-
-        Returns:
-            OpenAI chat completion stream
-        """
-        openai_client = AsyncOpenAI(
-            base_url="https://api.gapgpt.app/v1", api_key=GAPGPT_API_KEY
-        )
-
-        chat_completion = await openai_client.chat.completions.create(
-            model="gapgpt-qwen-3.5",
-            # model="gemini-2.5-flash",
-            messages=messages,
-            temperature=0.2,
-            stream=stream,
-        )
-
-        return chat_completion
 
 
 def _load_schema_manager_for_collection(collection_name: str) -> SchemaManager:
@@ -463,7 +434,6 @@ async def LoadNL2SQLChain(
                 if getattr(chunk, "done", False):
                     break
         else:
-            # chat_resp = await chain.generate_sql_gapgpt(messages, stream=True)
             chat_resp = await chain.generate_sql_openai(messages, stream=True)
             async for chunk in chat_resp:
                 choice = chunk.choices[0]
@@ -565,27 +535,3 @@ async def LoadNL2SQLChain(
             "latency": latency,
         }
     )
-
-
-class LocalSTEmbeddingFunction(EmbeddingFunction):
-    def __init__(self, model_dir: str, device: str = "cpu"):
-        self._model_dir = model_dir
-        self._device = device
-        self._model = SentenceTransformer(
-            model_dir,
-            local_files_only=True,
-            device=device,
-        )
-        # warm-up forces any lazy loads now (still offline)
-        _ = self._model.encode(["warmup"], normalize_embeddings=True)
-
-    def name(self) -> str:
-        # Must be a METHOD for your Chroma version
-        return f"SentenceTransformer({self._model_dir})"
-
-    def __call__(self, texts):
-        return self._model.encode(
-            texts,
-            normalize_embeddings=True,
-            show_progress_bar=False,
-        ).tolist()

@@ -1,44 +1,4 @@
-import { createRef } from "lestin/jsx-runtime";
 import { i18n } from "./i18n.js";
-
-export function IconClose() {
-	return (
-		<svg
-			width="24px"
-			height="24px"
-			viewBox="0 0 18 18"
-			xmlns="http://www.w3.org/2000/svg"
-		>
-			<g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-				<g fill="#212121" fill-rule="nonzero">
-					<path
-						fill="currentColor"
-						d="m8.244 12.155-4.95-4.947a1 1 0 1 1 1.415-1.415l4.294 4.291 4.293-4.279a.998.998 0 0 1 1.413.003c.39.392.388 1.025-.003 1.415l-5.002 4.986a.998.998 0 0 1-1.46-.054Z"
-					></path>
-				</g>
-			</g>
-		</svg>
-	);
-}
-
-export function IconStop() {
-	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				fill="currentColor"
-				fill-rule="evenodd"
-				d="M2 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10S2 17.523 2 12m7.5-3.5a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1v-5a1 1 0 0 0-1-1z"
-				clip-rule="evenodd"
-			></path>
-		</svg>
-	);
-}
 
 export function IconSend() {
 	return (
@@ -167,68 +127,6 @@ export function IconClipboard() {
 				></path>
 			</svg>
 		</>
-	);
-}
-
-export function IconWarning() {
-	return (
-		<svg
-			version="1.0"
-			xmlns="http://www.w3.org/2000/svg"
-			width="96pt"
-			height="96pt"
-			viewBox="0 0 96 96"
-			preserveAspectRatio="xMidYMid meet"
-		>
-			<g
-				transform="translate(0,96) scale(0.1,-0.1)"
-				fill="#000000"
-				stroke="none"
-			>
-				<path d="M455 829 c-12 -6 -103 -147 -203 -315 -152 -252 -183 -310 -180 -336 5 -56 15 -58 408 -58 393 0 403 2 408 58 3 26 -28 84 -179 336 -121 202 -191 308 -207 315 -12 6 -24 11 -25 10 -1 0 -11 -5 -22 -10z m65 -329 l0 -100 -40 0 -40 0 0 100 0 100 40 0 40 0 0 -100z m0 -220 l0 -40 -40 0 -40 0 0 40 0 40 40 0 40 0 0 -40z" />
-			</g>
-		</svg>
-	);
-}
-
-export function IconError() {
-	return (
-		<svg
-			version="1.0"
-			xmlns="http://www.w3.org/2000/svg"
-			width="620pt"
-			height="609pt"
-			viewBox="0 0 620 609"
-			preserveAspectRatio="xMidYMid meet"
-		>
-			<g
-				transform="translate(0,609) scale(0.1,-0.1)"
-				fill="#000000"
-				stroke="none"
-			>
-				{" "}
-				<path d="M2870 5994 c-438 -51 -727 -135 -1082 -316 -325 -165 -616 -391 -845 -653 -198 -226 -304 -381 -428 -625 -153 -302 -235 -562 -292 -920 -14 -91 -18 -174 -18 -405 0 -308 8 -386 60 -630 126 -588 463 -1162 910 -1552 226 -198 381 -304 625 -428 302 -153 562 -235 920 -292 165 -26 645 -26 810 0 358 57 618 139 920 292 244 124 399 230 625 428 262 229 488 520 653 845 159 312 241 569 299 932 14 91 18 174 18 405 0 308 -8 386 -60 630 -83 388 -269 797 -505 1110 -282 375 -617 659 -1018 863 -307 157 -553 237 -902 294 -98 15 -182 21 -390 23 -146 2 -281 1 -300 -1z m527 -789 c314 -41 597 -143 871 -313 39 -25 72 -46 72 -46 0 -1 -672 -673 -1493 -1494 l-1493 -1493 -45 73 c-221 354 -329 729 -329 1139 0 180 13 305 46 459 86 393 281 757 557 1039 345 351 779 570 1257 635 144 19 412 20 557 1z m1546 -987 c222 -364 327 -731 327 -1143 0 -1087 -799 -1993 -1880 -2130 -178 -23 -462 -17 -635 14 -249 44 -549 159 -764 292 l-83 52 1493 1493 c822 822 1495 1494 1496 1494 1 0 22 -33 46 -72z" />
-			</g>
-		</svg>
-	);
-}
-
-export function IconTick() {
-	return (
-		<svg
-			xmlns="http://www.w3.org/2000/svg"
-			width="24"
-			height="24"
-			fill="none"
-			viewBox="0 0 24 24"
-		>
-			<path
-				fill="currentColor"
-				fill-rule="evenodd"
-				d="M18.063 5.674a1 1 0 0 1 .263 1.39l-7.5 11a1 1 0 0 1-1.533.143l-4.5-4.5a1 1 0 1 1 1.414-1.414l3.647 3.647 6.82-10.003a1 1 0 0 1 1.39-.263"
-				clip-rule="evenodd"
-			></path>
-		</svg>
 	);
 }
 

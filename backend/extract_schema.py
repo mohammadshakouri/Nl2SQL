@@ -4,10 +4,8 @@ Extracts schema information from SQL Server and generates JSON schema file
 """
 
 import pyodbc
-import app.dotenv as dotenv
 import json
 from typing import Dict, List, Any
-from datetime import datetime
 from enrich_schema import enrich_schema
 
 
@@ -248,19 +246,19 @@ class SchemaExtractor:
 def main():
     """Main execution function"""
     # SQL Server connection details
-    # config = {
-    #     'server': '.\Local2022',
-    #     'database': 'Team10BookShop',
-    #     'username': 'sa',
-    #     'password': "1212"
-    # }
-
     config = {
-        'server': '192.168.100.16',
-        'database': 'SimacNashr',
+        'server': '.\Local2022',
+        'database': 'Team10BookShop',
         'username': 'sa',
-        'password': "Aa12345678"
+        'password': "1212"
     }
+
+    # config = {
+    #     'server': '192.168.100.16',
+    #     'database': 'SimacNashr',
+    #     'username': 'sa',
+    #     'password': "Aa12345678"
+    # }
     
     # Output file path
     output_file = 'data_schema/simacnashr_schema.json'

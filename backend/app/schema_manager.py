@@ -141,7 +141,50 @@ class SchemaManager:
                 relationship_type=relation_data["relationship_type"]
             )
             self.relations.append(relation)
-    
+
+    def load_schema_from_dict(self, schema_data: dict) -> None:
+        """
+        Load database schema from a dict (identical structure to the JSON file).
+
+        This is the in-memory counterpart of ``load_schema_from_json`` and is
+        used by the Spider evaluation pipeline, which builds schema dicts
+        programmatically from SQLite PRAGMA queries rather than from files on
+        disk.
+
+        Args:
+            schema_data: Dict matching the JSON schema format documented in
+                         ``load_schema_from_json``.
+        """
+        for table_data in schema_data.get("tables", []):
+            self.tables.append(
+                Table(
+                    name=table_data["name"],
+                    description=table_data["description"],
+                    key_columns=table_data["key_columns"],
+                )
+            )
+
+        for column_data in schema_data.get("columns", []):
+            self.columns.append(
+                Column(
+                    table_name=column_data["table_name"],
+                    column_name=column_data["column_name"],
+                    meaning=column_data["meaning"],
+                    data_type=column_data["data_type"],
+                )
+            )
+
+        for relation_data in schema_data.get("relations", []):
+            self.relations.append(
+                Relation(
+                    source_table=relation_data["source_table"],
+                    source_column=relation_data["source_column"],
+                    target_table=relation_data["target_table"],
+                    target_column=relation_data["target_column"],
+                    relationship_type=relation_data["relationship_type"],
+                )
+            )
+
     def get_all_embedding_texts(self) -> Tuple[List[str], List[str]]:
         """
         Generate all embedding texts and corresponding IDs.
