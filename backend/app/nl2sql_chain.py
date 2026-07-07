@@ -39,8 +39,9 @@ USE_LOCAL_LLM = env.use_local_llm
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 
 OLLAMA_TEMPERATURE: float = 0.1
-OLLAMA_MODEL_NAME: str = "gemma4:e4b".strip().lower()
-OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
+OLLAMA_MODEL_NAME: str = "gemma4:12b".strip().lower()
+# OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
+OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
 # duplicate a small portion of the database configuration that exists in
@@ -272,7 +273,7 @@ class NL2SQLChain:
         ollama_client = AsyncClient(host=OLLAMA_HOST)
 
         chat_completion = await ollama_client.chat(
-            think="low",
+            think=False,
             stream=stream,
             messages=messages,
             model=OLLAMA_MODEL_NAME,
