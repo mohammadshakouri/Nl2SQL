@@ -164,5 +164,5 @@ class LocalSTEmbeddingFunction(EmbeddingFunction):
         return self._model.encode(
             texts,
             normalize_embeddings=True,
-            show_progress_bar=False,
+            show_progress_bar=True,
         ).tolist()
