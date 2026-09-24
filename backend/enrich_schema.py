@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 from ollama import Client
 
 OLLAMA_HOST: str = "http://127.0.0.1:11434"
-OLLAMA_MODEL: str = "gemma4:e4b"
+OLLAMA_MODEL: str = "gemma3:4b"
 OLLAMA_TEMPERATURE: float = 0.1
 
 
