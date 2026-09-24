@@ -7,8 +7,8 @@ Provides SQL syntax validation and execution error handling with feedback loop s
 import re
 import sqlparse
 from typing import Dict, List, Tuple, Optional
-from sqlalchemy import text, MetaData, Table as SQLATable
-from sqlalchemy.ext.asyncio import AsyncEngine, AsyncSession
+from sqlalchemy import text
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.exc import SQLAlchemyError
 
 

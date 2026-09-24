@@ -5,8 +5,6 @@ from app.schema_manager import SchemaManager
 import app.dotenv as env
 from chromadb.utils import embedding_functions
 from tqdm import tqdm
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
 from sentence_transformers import SentenceTransformer
 from chromadb.api.types import EmbeddingFunction
 
@@ -19,31 +17,6 @@ OPENAI_EMBEDDING_MODEL_NAME: str = "text-embedding-3-small"
 CHROMADB_PERSIST_DIRECTORY: str = "./chroma_db"
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
-
-
-async def get_thread_messages(db: AsyncSession, thread_id: str):
-    """Get all messages from a thread for SQL generation history"""
-    stmt = (
-        select(Message)
-        .where(Message.thread_id == thread_id)
-        .order_by(Message.start_time.asc())
-    )
-    result = await db.execute(stmt)
-    messages = result.scalars().all()
-
-    input_messages = [msg.input for msg in messages if msg.input and msg.input.strip()]
-    conversation: list[dict] = []
-    for msg in messages:
-        conversation.append({
-            "role": "user",
-            "content": msg.input.strip() if msg.input else ""
-        })
-        if msg.output:
-            conversation.append({
-                "role": "assistant",
-                "content": msg.output.strip()
-            })
-    return input_messages, conversation
 
 def initialize_schema_vector_stores():
     """Create vector stores for all schemas in data_schema/"""
@@ -191,5 +164,5 @@ class LocalSTEmbeddingFunction(EmbeddingFunction):
         return self._model.encode(
             texts,
             normalize_embeddings=True,
-            show_progress_bar=False,
+            show_progress_bar=True,
         ).tolist()

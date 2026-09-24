@@ -1,27 +1,118 @@
+# Environment
 .env
 !.env.template
-docker-compose.yml
-node_modules
-dist
-build
-temp
 
-# Ignore virtual environments
+# Docker
+docker-compose.yml
+
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Temp files
+temp/
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+
+# Virtual environments
 .venv/
 venv/
 env/
 myenv/
 
-# Python cache files
+# Bytecode / cache
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+*.pdb
+.Python
 
-# chroma_db/
+# Distribution / packaging
+*.egg
+*.egg-info/
+dist/
+eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
 
-# tar file
+# Test & coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+nosetests.xml
+coverage.xml
+*.cover
+
+# Type checkers / linters
+.mypy_cache/
+.ruff_cache/
+
+# ─── Node / Frontend ──────────────────────────────────────────────────────────
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# TypeScript cache
+*.tsbuildinfo
+
+# ─── Databases ────────────────────────────────────────────────────────────────
+
+# SQLite binary databases (large binary files; commit schema/seed scripts instead)
+*.sqlite
+*.sqlite3
+*.db
+
+# ChromaDB vector store
+chroma_db/
+
+# ─── OS & IDE ─────────────────────────────────────────────────────────────────
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+Thumbs.db:encdata
+ehthumbs.db
+Desktop.ini
+
+# Linux
+*~
+
+# VSCode (project-specific settings can be committed; user settings should not)
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/launch.json
+!.vscode/tasks.json
+
+# JetBrains IDEs
+.idea/
+
+# ─── Archives ─────────────────────────────────────────────────────────────────
 *.tar
 *.tgz
 *.zip
 *.rar
+*.7z
+
+# ─── Logs ─────────────────────────────────────────────────────────────────────
+*.log
+logs/
+
+*/spider/

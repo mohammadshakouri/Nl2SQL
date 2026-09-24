@@ -8,6 +8,36 @@
 	],
 	"configurations": [
 		{
+			"name": "Spider Eval (single-pass)",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/backend/cli_spider_eval.py",
+			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}"],
+			"cwd": "${workspaceFolder}/backend",
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "Spider Eval (feedback loop)",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/backend/cli_spider_eval.py",
+			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}", "--feedback"],
+			"cwd": "${workspaceFolder}/backend",
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "Spider Eval (compare modes)",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/backend/cli_spider_eval.py",
+			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}", "--compare"],
+			"cwd": "${workspaceFolder}/backend",
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
 			"name": "Backend",
 			"type": "debugpy",
 			"request": "launch",
@@ -36,5 +66,20 @@
 				"!**/node_modules/**"
 			]
 		}
+	],
+	"inputs": [
+		{
+			"id": "spiderPath",
+			"type": "promptString",
+			"description": "Path to the Spider dataset root directory",
+			"default": "./spider"
+		},
+		{
+			"id": "limit",
+			"type": "promptString",
+			"description": "Number of samples to evaluate (leave blank for all)",
+			"default": "20"
+		}
 	]
 }
+
