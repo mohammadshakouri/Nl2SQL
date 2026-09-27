@@ -2,16 +2,6 @@
 .env
 !.env.template
 
-# Docker
-docker-compose.yml
-
-# Dependencies
-node_modules/
-
-# Build outputs
-dist/
-build/
-
 # Temp files
 temp/
 
@@ -35,6 +25,7 @@ __pycache__/
 *.egg
 *.egg-info/
 dist/
+build/
 eggs/
 parts/
 var/
@@ -56,17 +47,6 @@ coverage.xml
 # Type checkers / linters
 .mypy_cache/
 .ruff_cache/
-
-# ─── Node / Frontend ──────────────────────────────────────────────────────────
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-
-# TypeScript cache
-*.tsbuildinfo
 
 # ─── Databases ────────────────────────────────────────────────────────────────
 
@@ -99,7 +79,6 @@ Desktop.ini
 !.vscode/settings.json
 !.vscode/extensions.json
 !.vscode/launch.json
-!.vscode/tasks.json
 
 # JetBrains IDEs
 .idea/
@@ -115,4 +94,8 @@ Desktop.ini
 *.log
 logs/
 
+# ─── Spider dataset (large, downloaded separately) ───────────────────────────
 */spider/
+
+# ─── Editor build caches ─────────────────────────────────────────────────────
+.vite/

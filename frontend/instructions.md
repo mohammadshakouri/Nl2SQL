@@ -1,2 +1,0 @@
-corepack enable
-npm init

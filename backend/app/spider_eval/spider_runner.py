@@ -184,7 +184,7 @@ async def _infer_sql(
 
 
 # ---------------------------------------------------------------------------
-# Inference WITH feedback/retry loop (mirrors LoadNL2SQLChain without SSE/DB)
+# Inference WITH feedback/retry loop (validation-only; see SQLFeedbackLoop)
 # ---------------------------------------------------------------------------
 
 async def _infer_sql_with_feedback(
@@ -195,8 +195,8 @@ async def _infer_sql_with_feedback(
     verbose: bool = False,
 ) -> Optional[str]:
     """
-    SQL inference with the same validation + feedback retry loop used by the
-    production endpoint, but without SSE streaming or PostgreSQL logging.
+    SQL inference with the same ``SQLFeedbackLoop`` validation + retry loop
+    used elsewhere in this project, without SSE streaming or database logging.
 
     Returns the final (valid) SQL string, or None if all iterations fail.
     """
@@ -267,8 +267,8 @@ async def run_spider_evaluation(
         spider_path: Root path to Spider dataset (contains database/ folder).
         verbose: If True, print per-sample progress to stdout.
         max_samples: Optional cap on the number of samples to evaluate.
-        use_feedback_loop: If True, use the validation + retry loop (same as
-                           the production endpoint). If False, single-pass only.
+        use_feedback_loop: If True, use the validation + retry loop
+                           (SQLFeedbackLoop). If False, single-pass only.
         feedback_max_iterations: Max retry iterations when use_feedback_loop=True.
 
     Returns:

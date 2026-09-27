@@ -1,32 +1,29 @@
 """
 NL2SQL Chain Module - Schema-RAG Implementation
 
-This module orchestrates the complete NL2SQL pipeline:
+Core orchestration class for the Schema-RAG NL2SQL pipeline:
 1. Natural language question input
 2. Schema retrieval via vector similarity
 3. Context enrichment with schema elements
 4. SQL generation via LLM
-5. Validation and feedback loop
+
+This class is consumed by the Spider evaluation harness
+(``app.spider_eval.spider_runner``), which drives retrieval, validation and
+the feedback/retry loop itself.
 """
 
-import os
-import json
-import uuid
-import jdatetime
-from typing import List, Dict, Tuple, Optional, AsyncGenerator
+from typing import List, Dict, Tuple, Optional
 import chromadb
 from chromadb import Collection
 from chromadb.utils import embedding_functions
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 from openai import AsyncOpenAI
 from ollama import AsyncClient, ChatResponse
-
 
 import app.dotenv as env
 import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import SchemaManager
-from app.sql_validator import SQLValidator, SQLFeedbackLoop
+from app.sql_validator import SQLValidator
 from app.system_prompt import (
     SYSTEM_PROMPT_NL2SQL_FA,
     SYSTEM_PROMPT_NL2SQL_EN,
@@ -40,30 +37,8 @@ USE_LOCAL_EMBEDDING = env.use_local_embedding
 
 OLLAMA_TEMPERATURE: float = 0.1
 OLLAMA_MODEL_NAME: str = "gemma4:12b".strip().lower()
-# OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
-OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
+OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
-
-# duplicate a small portion of the database configuration that exists in
-# ``main.py``.  This avoids a circular import while still allowing the
-# streaming pipeline to persist generated messages back into the same
-# database used by the FastAPI application.
-#
-# Execution validation (when requested) uses a separate session that is
-# provided by callers; therefore the two sessions intentionally remain
-# independent.
-
-EXECUTION_DATABASE_URL = env.execution_database_url
-_engineMssql = create_async_engine(EXECUTION_DATABASE_URL)
-ExecutionDB = async_sessionmaker(
-    bind=_engineMssql, class_=AsyncSession, expire_on_commit=False
-)
-
-MAIN_DATABASE_URL = env.main_database_url
-_enginePostgre = create_async_engine(MAIN_DATABASE_URL)
-MainDB = async_sessionmaker(
-    bind=_enginePostgre, class_=AsyncSession, expire_on_commit=False
-)
 
 
 class NL2SQLChain:
@@ -75,7 +50,7 @@ class NL2SQLChain:
     """
 
     def __init__(
-        self, schema_manager: SchemaManager, collection_name: str, culture: str = "fa"
+        self, schema_manager: SchemaManager, collection_name: str, culture: str = "en"
     ):
         """
         Initialize NL2SQL chain
@@ -145,15 +120,8 @@ class NL2SQLChain:
         if not results["documents"] or not results["documents"][0]:
             return [], []
 
-        # Filter by relevance threshold
-        documents = []
-        distances = []
-
-        for doc, dist in zip(results["documents"][0], results["distances"][0]):
-            # Only include highly relevant schema elements
-            # if dist < 1:  # Adjust threshold as needed
-            documents.append(doc)
-            distances.append(dist)
+        documents = list(results["documents"][0])
+        distances = list(results["distances"][0])
 
         return documents, distances
 
@@ -302,237 +270,3 @@ class NL2SQLChain:
         )
 
         return chat_completion
-
-
-
-def _load_schema_manager_for_collection(collection_name: str) -> SchemaManager:
-    """Helper to create a SchemaManager and load the JSON file corresponding to a
-    Chroma collection name.
-
-    The schema files live under ``data_schema`` and are named
-    ``<schema_name>_schema.json``.  The Chroma collection names are of the form
-    ``Schema_<schema_name>`` so we strip the prefix and try to load the
-    matching file.  If the file is missing we return an empty manager (the
-    validator will simply skip schema checks).
-    """
-    manager = SchemaManager()
-    schema_name = collection_name.replace("Schema_", "")
-    schema_path = os.path.join("data_schema", f"{schema_name}_schema.json")
-    if os.path.exists(schema_path):
-        manager.load_schema_from_json(schema_path)
-    return manager
-
-
-async def LoadNL2SQLChain(
-    thread_id: str,
-    question: str,
-    schema_collection_name: str,
-    culture: str = "fa",
-    validate_execution: bool = True,
-    user_semantic_feedback: Optional[str] = None,
-) -> "AsyncGenerator[str, None]":
-    """
-    Extra keyword arg ``user_semantic_feedback`` carries the end-user's natural-
-    language comment explaining a semantic error in the previously generated SQL.
-    When provided it is injected into every prompt so the LLM can fix the
-    semantic mistake the automated validation loop cannot detect.
-    """
-    """
-    1. Vector retrieval of relevant schema elements
-    2. Construction of a schema context string
-    3. A feedback/validation loop (syntax + schema checks and optional
-       execution validation)
-    4. Streaming of generated SQL tokens as Server‑Sent Events
-    5. Logging of the request into the database when the pipeline completes
-
-    Yields
-    ------
-    str
-        Server‑sent‑event formatted strings (``data: {...}\n\n``).  The first
-        event is ``on_start`` and the last is ``on_end`` (or ``on_error`` on
-        failure).
-    """
-
-    # ------------------------------------------------------------------
-    # Event utilities
-    # ------------------------------------------------------------------
-    def sse(data: dict) -> str:
-        return f"data: {json.dumps(data)}\n\n"
-
-    # generate run/thread identifiers
-    run_id = str(uuid.uuid4())
-    if not thread_id or not thread_id.strip():
-        thread_id = str(uuid.uuid4())
-
-    start_time = jdatetime.datetime.now()
-
-    # send start event
-    yield sse(
-        {
-            "event": "on_start",
-            "run_id": run_id,
-            "thread_id": thread_id,
-            "type": "nl2sql",
-        }
-    )
-
-    # sanity check
-    if len(question) > 250:
-        yield sse(
-            {
-                "event": "on_error",
-                "data": "Question is too long. Maximum 250 characters allowed.",
-            }
-        )
-        return
-
-    # prepare chain with schema manager
-    schema_manager = _load_schema_manager_for_collection(schema_collection_name)
-    chain = NL2SQLChain(schema_manager, schema_collection_name, culture)
-
-    # retrieval + context
-    retrieved_elements, distances = chain.retrieve_schema_elements(
-        question, n_results=15
-    )
-    if not retrieved_elements:
-        yield sse(
-            {
-                "event": "on_error",
-                "data": "No relevant schema elements found for this question",
-            }
-        )
-        return
-    schema_context = chain.build_schema_context(retrieved_elements)
-
-    # feedback loop set up
-    feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=4)
-    full_sql = ""
-
-    # iterate until validation succeeds or iterations are exhausted
-    while feedback_loop.should_continue():
-        feedback_prompt = feedback_loop.get_feedback_prompt()
-        user_prompt = chain.build_user_prompt(
-            question, schema_context, feedback_prompt, user_semantic_feedback
-        )
-        system_prompt = chain.get_system_prompt(is_feedback=feedback_prompt is not None)
-        messages = [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt},
-        ]
-
-        # call the appropriate LLM in streaming mode
-        if USE_LOCAL_LLM:
-            chat_resp = await chain.generate_sql_ollama(messages, stream=True)
-            async for chunk in chat_resp:
-                if (
-                    hasattr(chunk, "message")
-                    and chunk.message
-                    and chunk.message.content
-                ):
-                    token = chunk.message.content
-                    full_sql += token
-                    yield sse({"event": "on_stream", "data": token})
-                if getattr(chunk, "done", False):
-                    break
-        else:
-            chat_resp = await chain.generate_sql_openai(messages, stream=True)
-            async for chunk in chat_resp:
-                choice = chunk.choices[0]
-                delta = choice.delta
-                if delta and delta.content:
-                    token = delta.content
-                    full_sql += token
-                    yield sse({"event": "on_stream", "data": token})
-                if choice.finish_reason is not None:
-                    break
-
-        # validation of the attempt
-        clean_sql = (
-            chain.validator.clean_sql_output(full_sql)
-            if hasattr(chain.validator, "clean_sql_output")
-            else full_sql
-        )
-        is_valid, error = chain.validator.validate_query(clean_sql)
-        if not is_valid:
-            # inform client about the validation failure before retrying
-            yield sse(
-                {
-                    "event": "on_retry",
-                    "data": f"Validation failed: {error}. Retrying with feedback...",
-                }
-            )
-            feedback_loop.add_iteration(clean_sql, error, success=False)
-            # prepare for next iteration (clear prior output)
-            full_sql = ""
-            continue
-
-        # optionally execute the query to double-check results
-        if validate_execution:
-            async with ExecutionDB() as db:
-                success, exec_error, _ = await chain.validator.execute_and_validate(
-                    clean_sql, db, fetch_results=False
-                )
-            if not success:
-                yield sse(
-                    {
-                        "event": "on_retry",
-                        "data": f"Execution validation failed: {exec_error}. Retrying...",
-                    }
-                )
-                feedback_loop.add_iteration(clean_sql, exec_error, success=False)
-                full_sql = ""
-                continue
-
-        feedback_loop.add_iteration(clean_sql, None, success=True)
-        break
-
-    # ------------------------------------------------------------------
-    # Guard: if the loop exhausted all iterations without a valid SQL,
-    # report failure and stop — do NOT save an empty/invalid query.
-    # ------------------------------------------------------------------
-    final_result = feedback_loop.get_final_result()
-    if not final_result["success"]:
-        last_error = final_result.get("error") or "Unknown validation error"
-        yield sse(
-            {
-                "event": "on_error",
-                "data": (
-                    f"Failed to generate a valid SQL query after "
-                    f"{feedback_loop.max_iterations} attempt(s). "
-                    f"Last error: {last_error}"
-                ),
-            }
-        )
-        return
-
-    end_time = jdatetime.datetime.now()
-    latency = (end_time - start_time).total_seconds()
-
-    # persist message to database
-    from app.models import Message
-
-    async with MainDB() as db:
-        message = Message(
-            run_id=run_id,
-            thread_id=thread_id,
-            start_time=start_time.isoformat(),
-            latency=latency,
-            input=question,
-            output=full_sql,
-            culture=culture,
-            schema_collection_name=schema_collection_name.replace("Schema_", ""),
-            is_user_authenticated="yes",
-            status="generated",
-            feedback=0,
-        )
-        db.add(message)
-        await db.commit()
-
-    # final event
-    yield sse(
-        {
-            "event": "on_end",
-            "sql": full_sql,
-            "latency": latency,
-        }
-    )
