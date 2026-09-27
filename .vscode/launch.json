@@ -1,11 +1,5 @@
 {
 	"version": "0.2.0",
-	"compounds": [
-		{
-			"name": "Backend/Frontend",
-			"configurations": ["Backend", "Frontend"]
-		}
-	],
 	"configurations": [
 		{
 			"name": "Spider Eval (single-pass)",
@@ -36,35 +30,6 @@
 			"cwd": "${workspaceFolder}/backend",
 			"console": "integratedTerminal",
 			"justMyCode": false
-		},
-		{
-			"name": "Backend",
-			"type": "debugpy",
-			"request": "launch",
-			"module": "uvicorn",
-			"args": ["main:app", "--host", "127.0.0.1", "--port", "80", "--reload"],
-			"jinja": true,
-			"cwd": "${workspaceFolder}/backend",
-			"console": "integratedTerminal",
-			"justMyCode": true,
-			"subProcess": true
-		},
-		{
-			"name": "Frontend",
-			"type": "chrome",
-			"request": "launch",
-			"url": "http://localhost:5173",
-			"webRoot": "${workspaceFolder}/frontend/src",
-			"runtimeArgs": ["--remote-debugging-port=9222"],
-			"sourceMaps": true,
-			"preLaunchTask": "client",
-			"postDebugTask": "terminate-client",
-			"internalConsoleOptions": "neverOpen",
-			"outputCapture": "std",
-			"resolveSourceMapLocations": [
-				"${workspaceFolder}/**",
-				"!**/node_modules/**"
-			]
 		}
 	],
 	"inputs": [
@@ -82,4 +47,3 @@
 		}
 	]
 }
-

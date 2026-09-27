@@ -1,15 +1,14 @@
 """
 SQL Validator Module for NL2SQL RAG System
 
-Provides SQL syntax validation and execution error handling with feedback loop support.
+Provides static SQL syntax/schema validation with feedback-loop support.
+Actual SQLite execution (for Execution Accuracy and any future
+execution-guided feedback) lives in ``app.spider_eval.spider_sqlite_executor``.
 """
 
 import re
 import sqlparse
 from typing import Dict, List, Tuple, Optional
-from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.exc import SQLAlchemyError
 
 
 class SQLValidator:
@@ -134,42 +133,6 @@ class SQLValidator:
             return False, error
         
         return True, None
-    
-    async def execute_and_validate(
-        self, 
-        sql_query: str, 
-        db_session: AsyncSession,
-        fetch_results: bool = False
-    ) -> Tuple[bool, Optional[str], Optional[List[Dict]]]:
-        """
-        Execute SQL query and catch errors for feedback loop
-        
-        Args:
-            sql_query: SQL query to execute
-            db_session: Database session
-            fetch_results: Whether to fetch and return results
-        
-        Returns:
-            Tuple of (success, error_message, results)
-        """
-        try:
-            # Execute query
-            result = await db_session.execute(text(sql_query))
-            
-            if fetch_results:
-                rows = result.fetchall()
-                # Convert to list of dicts
-                columns = result.keys()
-                results = [dict(zip(columns, row)) for row in rows]
-                return True, None, results
-            else:
-                return True, None, None
-            
-        except SQLAlchemyError as e:
-            error_msg = str(e.orig) if hasattr(e, 'orig') else str(e)
-            return False, f"SQL execution error: {error_msg}", None
-        except Exception as e:
-            return False, f"Unexpected error: {str(e)}", None
     
     def extract_error_feedback(self, error_message: str) -> str:
         """

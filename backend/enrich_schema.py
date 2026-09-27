@@ -261,7 +261,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) < 2:
         print("Usage: python enrich_schema.py <schema.json> [output.json]")
-        print("like: python enrich_schema.py data_schema/concert_singer_schema.json")
+        print("e.g.:  python enrich_schema.py /path/to/spider/database/concert_singer/schema.json")
         sys.exit(1)
 
     input_path = sys.argv[1]

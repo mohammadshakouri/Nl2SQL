@@ -1,0 +1,20 @@
+services:
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_DB: aidb
+      POSTGRES_USER: aiuser
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
+  app:
+    image: simac_ai:latest
+    restart: always
+    ports:
+      - "80:80"
+    depends_on:
+      - db
+    env_file:
+      - .env
+  

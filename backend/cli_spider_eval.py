@@ -6,7 +6,7 @@ Usage
     # Single-pass (no feedback loop)
     python cli_spider_eval.py --spider_path ./spider
 
-    # With feedback/retry loop (same as production endpoint)
+    # With feedback/retry loop (validation + retry, same as --feedback)
     python cli_spider_eval.py --spider_path ./spider --feedback
 
     # Compare both modes back-to-back
@@ -61,7 +61,7 @@ def parse_args() -> argparse.Namespace:
         "--feedback",
         action="store_true",
         default=False,
-        help="Enable the validation + retry feedback loop (mirrors production endpoint).",
+        help="Enable the validation + retry feedback loop.",
     )
     parser.add_argument(
         "--compare",
