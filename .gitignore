@@ -13,6 +13,9 @@ venv/
 env/
 myenv/
 
+# Dependencies
+node_modules/
+
 # Bytecode / cache
 __pycache__/
 *.pyc
