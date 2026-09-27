@@ -3,8 +3,8 @@
 *Input for building the 6-month thesis progress presentation. This file is not slides.*
 
 - **Repository:** `mohammadshakouri/Nl2SQL`
-- **Code state inspected:** commit `8cde135` ("Strip chatbot components; keep research/Spider evaluation core only"), 2026-09-27
-- **Scope:** the entire repository (the Spider-research backend, its docs, diagrams) and the relevant git history
+- **Code state inspected:** commit `77dc941` ("Flatten backend/ into repo root; remove stray docker-compose.yml"), 2026-09-27
+- **Scope:** the entire repository (a single flat Python codebase, its docs, diagrams) and the relevant git history
 - **Method:** I followed the call graph from the entry point (`cli_spider_eval.py`) through `app.spider_eval.spider_runner`, `app.nl2sql_chain`, `app.sql_validator` and `app.schema_manager`. I re-ran the schema extractor, the embedding-unit builder, the validator and the prompt builder locally on a synthetic SQLite database to confirm behaviour instead of inferring it, and reinstalled `requirements.txt` and imported every remaining module to confirm nothing was left dangling by the cleanup. **No experiment was run and no accuracy number appears in this report.**
 
 ## Revision note: what changed since the previous version of this report
@@ -23,6 +23,8 @@ The first version of this report (written against commit `6e55aee`) described a 
 | `requirements.txt` | 123 packages | 106 packages | 17 chatbot-only packages removed (FastAPI/uvicorn stack, SQLAlchemy/asyncpg, pyodbc, Persian-calendar libs, unused office-file libs) |
 
 Two of the five modules described in the original Farsi proposal — module 3 ("ماژول بازیابی و غنی‌سازی", partially — the retrieval half stays, only the feedback-adjacent execution piece is gone) and module 5 ("ماژول بازخورد کاربر", the user-feedback module) — now have **no code representation at all** in this repository. That is flagged explicitly throughout this report (§8, §12 C4/C5, §15) rather than glossed over, since a thesis committee will ask why a described component is absent.
+
+**A second, purely structural change followed** (commit `77dc941`): the repository was a `backend/` + `frontend/` split left over from the chatbot-product days, even after the chatbot code itself was removed. Since `frontend/` was already gone and `backend/` was the only thing left, every file under `backend/` was moved up to the repository root and the (now-empty) folder was deleted — `backend/app/` → `app/`, `backend/cli_spider_eval.py` → `cli_spider_eval.py`, and so on for `enrich_schema.py`, `requirements.txt` and `.env.template`. A leftover `backend/docker-compose.yml` (a Postgres + chatbot-app container definition with no corresponding Dockerfile or server left to build) was deleted rather than moved. **No source code changed** — every file path citation in this report has been updated to match, and the pipeline was re-verified end-to-end from the new layout (imports, the CLI, and a full extraction → embedding → validation → prompt-building run) with identical behavior to before the move. The one behavioral note: you now run `python cli_spider_eval.py --spider_path ./spider` from the repository root, not from inside `backend/`.
 
 ## Status legend (used throughout)
 
