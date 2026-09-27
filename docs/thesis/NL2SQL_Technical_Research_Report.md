@@ -5,7 +5,7 @@
 - **Repository:** `mohammadshakouri/Nl2SQL`
 - **Code state inspected:** commit `8cde135` ("Strip chatbot components; keep research/Spider evaluation core only"), 2026-09-27
 - **Scope:** the entire repository (the Spider-research backend, its docs, diagrams) and the relevant git history
-- **Method:** I followed the call graph from the entry point (`backend/cli_spider_eval.py`) through `app.spider_eval.spider_runner`, `app.nl2sql_chain`, `app.sql_validator` and `app.schema_manager`. I re-ran the schema extractor, the embedding-unit builder, the validator and the prompt builder locally on a synthetic SQLite database to confirm behaviour instead of inferring it, and reinstalled `requirements.txt` and imported every remaining module to confirm nothing was left dangling by the cleanup. **No experiment was run and no accuracy number appears in this report.**
+- **Method:** I followed the call graph from the entry point (`cli_spider_eval.py`) through `app.spider_eval.spider_runner`, `app.nl2sql_chain`, `app.sql_validator` and `app.schema_manager`. I re-ran the schema extractor, the embedding-unit builder, the validator and the prompt builder locally on a synthetic SQLite database to confirm behaviour instead of inferring it, and reinstalled `requirements.txt` and imported every remaining module to confirm nothing was left dangling by the cleanup. **No experiment was run and no accuracy number appears in this report.**
 
 ## Revision note: what changed since the previous version of this report
 
@@ -59,7 +59,7 @@ These findings decide what can be shown in the presentation.
 
 ### 1.1 One pipeline, three layers
 
-Unlike the previous version of this repository, there is now exactly one execution path. `backend/cli_spider_eval.py` calls `run_spider_evaluation` (`app/spider_eval/spider_runner.py:254`), which for each Spider question:
+Unlike the previous version of this repository, there is now exactly one execution path. `cli_spider_eval.py` calls `run_spider_evaluation` (`app/spider_eval/spider_runner.py:254`), which for each Spider question:
 
 1. extracts (or reuses a cached) SQLite schema,
 2. builds (or reuses) a Chroma collection of retrieval units for that database,
@@ -68,7 +68,7 @@ Unlike the previous version of this repository, there is now exactly one executi
 5. scores the result with Exact Match and Execution Accuracy (`app/spider_eval/spider_evaluator.py`, `spider_sqlite_executor.py`).
 
 Two components exist in the repository but sit **outside** this call graph, invocable only by hand:
-- `backend/enrich_schema.py` — a standalone CLI (`python enrich_schema.py <schema.json>`) with zero callers elsewhere in the code.
+- `enrich_schema.py` — a standalone CLI (`python enrich_schema.py <schema.json>`) with zero callers elsewhere in the code.
 - `app.utilities.create_schema_vector_store()` — a generic "schema JSON → Chroma collection" builder with zero callers; `spider_runner.py` builds its own collections directly (`_build_collection`) instead of using it.
 
 Both are legitimate, working pieces of the offline layer — they are just not wired into the one pipeline that currently runs.
@@ -104,7 +104,7 @@ NL question ──(no query enhancement)──► embed question (same embedding
 | # | Stage | Input | What happens | Output | Why it exists | Where | Status |
 |---|---|---|---|---|---|---|---|
 | 1 | Schema extraction | `.sqlite` file | `sqlite_master`, `PRAGMA table_info`, `PRAGMA foreign_key_list`; SQLite types mapped to a generic vocabulary; tables without a PK fall back to their first three columns as `key_columns`; every FK is labelled `"many-to-one"` (not inferred) | Schema dict `{tables, columns, relations}` | Turns a Spider SQLite database into a model-independent description | `app/spider_eval/sqlite_schema_extractor.py:154-221` | IMPLEMENTED |
-| 2 | Metadata enrichment | Schema dict/JSON | A local LLM writes short Persian keyword descriptions for tables (from structure), then columns (conditioned on the enriched table description), then relations (`join_purpose`, itself unused downstream) | Enriched schema dict/JSON | Bridges the gap between NL vocabulary and schema identifiers | `backend/enrich_schema.py:193-239` | IMPLEMENTED **as a standalone tool; not called by the Spider pipeline** |
+| 2 | Metadata enrichment | Schema dict/JSON | A local LLM writes short Persian keyword descriptions for tables (from structure), then columns (conditioned on the enriched table description), then relations (`join_purpose`, itself unused downstream) | Enriched schema dict/JSON | Bridges the gap between NL vocabulary and schema identifiers | `enrich_schema.py:193-239` | IMPLEMENTED **as a standalone tool; not called by the Spider pipeline** |
 | 3 | Retrieval-unit construction | Schema dict | One text template per table, column and FK relation | `ids[]`, `documents[]` | Defines what can be retrieved | `app/schema_manager.py:20-69, 188-213` | IMPLEMENTED |
 | 4 | Embedding + indexing | Unit texts | Embeds with a local SentenceTransformer (L2-normalised) or OpenAI `text-embedding-3-small`, upserts into a per-`db_id` Chroma collection in batches of 10, only if empty | Persistent Chroma collection | Makes semantic nearest-neighbour search possible | `app/spider_eval/spider_runner.py:68-110` (production-facing `create_schema_vector_store` in `app/utilities.py:27-91` also exists but is unused) | IMPLEMENTED |
 | 5 | Query enhancement | Question | None. The raw question is embedded directly. | – | – | – | PLANNED (diagram only) |
@@ -520,7 +520,7 @@ The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval 
 ### 10.7 Reproducibility notes — one previously-flagged bug is now fixed
 
 - **Fixed by the cleanup:** the first version of this report flagged that merely *importing* `app.nl2sql_chain` created SQLAlchemy async engines from `EXECUTION_DATABASE_URL`/`MAIN_DATABASE_URL` at import time, even for the Spider CLI, which never used them. Those engines (and the SQLAlchemy dependency itself) are gone; importing `app.nl2sql_chain` now only sets a few module-level constants and defines the `NL2SQLChain` class — verified by a clean import smoke test after the cleanup.
-- **Still true:** the LLM and embedding model identity comes from hard-coded names plus env variables (`.env` — not committed, templated by `backend/.env.template`). Record them manually for every reported run.
+- **Still true:** the LLM and embedding model identity comes from hard-coded names plus env variables (`.env` — not committed, templated by `.env.template`). Record them manually for every reported run.
 
 ---
 
@@ -783,14 +783,14 @@ All of the above are system contributions. Their empirical benefit is **not yet 
 
 | Concern | File(s) |
 |---|---|
-| Entry point | `backend/cli_spider_eval.py` |
-| Spider evaluation | `backend/app/spider_eval/{spider_loader,sqlite_schema_extractor,spider_runner,spider_evaluator,spider_sqlite_executor}.py` |
-| Orchestration, retrieval, prompts, LLM | `backend/app/nl2sql_chain.py`, `backend/app/system_prompt.py` |
-| Retrieval units | `backend/app/schema_manager.py` |
-| Embedding + vector store (partly orphaned, see §1.1/§2.4) | `backend/app/utilities.py` |
-| Validation + feedback loop (validation only) | `backend/app/sql_validator.py` |
-| Metadata enrichment (standalone, disconnected) | `backend/enrich_schema.py` |
-| Config | `backend/app/dotenv.py`, `backend/.env.template`, `backend/requirements.txt` |
+| Entry point | `cli_spider_eval.py` |
+| Spider evaluation | `app/spider_eval/{spider_loader,sqlite_schema_extractor,spider_runner,spider_evaluator,spider_sqlite_executor}.py` |
+| Orchestration, retrieval, prompts, LLM | `app/nl2sql_chain.py`, `app/system_prompt.py` |
+| Retrieval units | `app/schema_manager.py` |
+| Embedding + vector store (partly orphaned, see §1.1/§2.4) | `app/utilities.py` |
+| Validation + feedback loop (validation only) | `app/sql_validator.py` |
+| Metadata enrichment (standalone, disconnected) | `enrich_schema.py` |
+| Config | `app/dotenv.py`, `.env.template`, `requirements.txt` |
 | Design docs (contain planned or illustrative content, not verified results) | `Overall Architecture of the Proposed RAG-based NL2SQL Framework.md`, `docs/diagrams/*.png` |
 | This report | `docs/thesis/NL2SQL_Technical_Research_Report.md` |
 
