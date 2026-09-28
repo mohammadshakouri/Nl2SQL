@@ -98,7 +98,7 @@ Desktop.ini
 logs/
 
 # ─── Spider dataset (large, downloaded separately) ───────────────────────────
-*/spider/
+Spider
 
 # ─── Editor build caches ─────────────────────────────────────────────────────
 .vite/

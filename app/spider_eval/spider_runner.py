@@ -145,7 +145,7 @@ async def _stream_llm(chain: NL2SQLChain, messages: list) -> str:
 # Single-pass inference  (no feedback retries)
 # ---------------------------------------------------------------------------
 
-async def _infer_sql(
+async def _predict_sql(
     chain: NL2SQLChain,
     question: str,
     n_results: int = 15,
@@ -174,7 +174,7 @@ async def _infer_sql(
         full_sql = await _stream_llm(chain, messages)
     except Exception as exc:
         if verbose:
-            print(f"      [debug] LLM call failed: {exc}")
+            print(f"[debug] LLM call failed: {exc}")
         return None
 
     if hasattr(chain.validator, "clean_sql_output"):
@@ -187,7 +187,7 @@ async def _infer_sql(
 # Inference WITH feedback/retry loop (validation-only; see SQLFeedbackLoop)
 # ---------------------------------------------------------------------------
 
-async def _infer_sql_with_feedback(
+async def _predict_sql_with_feedback(
     chain: NL2SQLChain,
     question: str,
     n_results: int = 15,
@@ -338,13 +338,13 @@ async def run_spider_evaluation(
 
         # Run inference — single-pass or with feedback/retry loop
         if use_feedback_loop:
-            pred_sql = await _infer_sql_with_feedback(
+            pred_sql = await _predict_sql_with_feedback(
                 chain, sample.question,
                 max_iterations=feedback_max_iterations,
                 verbose=verbose,
             )
         else:
-            pred_sql = await _infer_sql(chain, sample.question, verbose=verbose)
+            pred_sql = await _predict_sql(chain, sample.question, verbose=verbose)
 
         if not pred_sql:
             total += 1

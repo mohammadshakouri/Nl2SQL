@@ -37,7 +37,7 @@ USE_LOCAL_EMBEDDING = env.use_local_embedding
 
 OLLAMA_TEMPERATURE: float = 0.1
 OLLAMA_MODEL_NAME: str = "gemma4:12b".strip().lower()
-OLLAMA_HOST: str = "http://127.0.0.1:11434".strip().lower()
+OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
 
