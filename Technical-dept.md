@@ -30,3 +30,26 @@ Mode:                Feedback loop
 Total Samples:       550
 Exact Match:         18.73%
 Execution Accuracy:  72.55%
+
+
+Spider Evaluation Results for 60 samples
+=========================
+Mode:                Single-pass
+Retrieval K:         15
+Total Samples:       60
+Exact Match:         23.33%
+Execution Accuracy:  91.67%
+Inference failures:  0
+Skipped samples:     0
+LLM calls:           60
+
+
+[55/60] FAIL   db=pets_1 | Q: How many dog pets are raised by female students?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(T1.PetID) FROM Has_Pet AS T1 JOIN Student AS T2 ON T1.StuID = T2.StuID JOIN Pets AS T3 ON T1.PetID = T3.PetID WHERE T2.Sex = 'Female' AND T3.PetType = 'Dog';
+
+         [581/600] FAIL   db=student_transcripts_tracking | Q: What other details can you tell me about students in reverse
+         reason: Result mismatch: predicted 15 row(s), gold 15 row(s)
+         pred:   SELECT * FROM Students ORDER BY first_name DESC, last_name DESC;
+
+        
