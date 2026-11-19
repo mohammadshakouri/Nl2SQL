@@ -6,8 +6,11 @@ Usage
     # Single-pass (no feedback loop)
     python cli_spider_eval.py --spider_path ./spider
 
-    # With feedback/retry loop (validation + retry, same as --feedback)
+    # With feedback/retry loop (static validation only)
     python cli_spider_eval.py --spider_path ./spider --feedback
+
+    # With feedback/retry loop (static validation + SQLite execution errors)
+    python cli_spider_eval.py --spider_path ./spider --exec-feedback
 
     # Compare both modes back-to-back
     python cli_spider_eval.py --spider_path ./spider --compare
@@ -15,10 +18,12 @@ Usage
 Optional flags
 --------------
     --limit N        Evaluate only the first N samples (default: all)
+    --k K            Number of schema retrieval units (Top-K) (default: 15)
     --quiet          Suppress per-sample progress output
     --feedback       Enable validation + retry feedback loop
-    --compare        Run both modes sequentially and print a comparison table
-    --max-iter N     Max retry iterations when feedback is enabled (default: 4)
+    --exec-feedback  Also retry on SQLite execution errors (implies --feedback)
+    --compare        Run single-pass and feedback modes and print a comparison table
+    --max-iter N     Total attempts per question in feedback mode (default: 4)
 """
 
 import argparse
@@ -52,6 +57,13 @@ def parse_args() -> argparse.Namespace:
         help="Evaluate only the first N samples (default: all).",
     )
     parser.add_argument(
+        "--k",
+        type=_positive_int,
+        default=15,
+        metavar="K",
+        help="Number of schema retrieval units (Top-K) retrieved per question (default: 15).",
+    )
+    parser.add_argument(
         "--quiet",
         action="store_true",
         default=False,
@@ -64,6 +76,15 @@ def parse_args() -> argparse.Namespace:
         help="Enable the validation + retry feedback loop.",
     )
     parser.add_argument(
+        "--exec-feedback",
+        action="store_true",
+        default=False,
+        dest="exec_feedback",
+        help="In the feedback loop, also execute each predicted query on the "
+             "sample's SQLite database and retry on execution errors "
+             "(implies --feedback).",
+    )
+    parser.add_argument(
         "--compare",
         action="store_true",
         default=False,
@@ -71,21 +92,67 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument(
         "--max-iter",
-        type=int,
+        type=_positive_int,
         default=4,
         metavar="N",
         dest="max_iter",
-        help="Max retry iterations when --feedback is enabled (default: 4).",
+        help="Total attempts per question in feedback mode, i.e. 1 initial "
+             "attempt + N-1 retries (default: 4).",
     )
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.exec_feedback:
+        args.feedback = True
+    return args
+
+
+def _positive_int(value: str) -> int:
+    number = int(value)
+    if number < 1:
+        raise argparse.ArgumentTypeError(f"must be >= 1, got {value}")
+    return number
+
+
+def _mode_label(metrics: dict) -> str:
+    if metrics["mode"] != "feedback":
+        return "Single-pass"
+    if metrics["execution_feedback"]:
+        return "Feedback loop (static validation + SQLite execution)"
+    return "Feedback loop (static validation)"
+
+
+def _format_failures(metrics: dict) -> str:
+    reasons = ", ".join(f"{kind}: {n}" for kind, n in metrics["failure_reasons"].items())
+    return f"{metrics['inference_failures']}" + (f"  ({reasons})" if reasons else "")
 
 
 def _print_results(metrics: dict) -> None:
-    mode_label = "Feedback loop" if metrics["mode"] == "feedback" else "Single-pass"
-    print(f"Mode:                {mode_label}")
+    print(f"Mode:                {_mode_label(metrics)}")
+    print(f"Retrieval K:         {metrics['k']}")
+    if metrics["mode"] == "feedback":
+        print(f"Max attempts:        {metrics['max_attempts']}")
     print(f"Total Samples:       {metrics['total']}")
     print(f"Exact Match:         {metrics['exact_match']:.2f}%")
     print(f"Execution Accuracy:  {metrics['execution_accuracy']:.2f}%")
+    print(f"Inference failures:  {_format_failures(metrics)}")
+    print(f"Skipped samples:     {metrics['skipped']}")
+    print(f"LLM calls:           {metrics['llm_calls']}")
+    if metrics["mode"] == "feedback":
+        _print_feedback_diagnostics(metrics)
+
+
+def _print_feedback_diagnostics(metrics: dict) -> None:
+    fb = metrics["feedback"]
+    em_delta = metrics["exact_match"] - fb["first_attempt_exact_match"]
+    ex_delta = metrics["execution_accuracy"] - fb["first_attempt_execution_accuracy"]
+    total = metrics["total"] or 1
+    print()
+    print("Feedback diagnostics (paired, same run)")
+    print(f"  First-attempt EM / EX:  {fb['first_attempt_exact_match']:.2f}% / "
+          f"{fb['first_attempt_execution_accuracy']:.2f}%  (= single-pass answer)")
+    print(f"  Change from feedback:   {em_delta:+.2f} / {ex_delta:+.2f}")
+    print(f"  Samples retried:        {fb['retried']} ({fb['retried'] / total:.2%})")
+    print(f"    recovered:            {fb['recovered']}  (a retry passed the checks)")
+    print(f"    exhausted:            {fb['exhausted']}  (no attempt passed the checks)")
 
 
 async def main() -> None:
@@ -101,6 +168,7 @@ async def main() -> None:
     print(f"Loaded {len(samples)} samples.")
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
+    print(f"Retrieving Top-{args.k} schema units per question.")
     print()
 
     if args.compare:
@@ -113,20 +181,23 @@ async def main() -> None:
             spider_path=spider_path,
             verbose=not args.quiet,
             max_samples=args.limit,
+            k=args.k,
             use_feedback_loop=False,
         )
 
         print()
         print("=" * 50)
-        print("  Mode: Feedback loop")
+        print("  Mode: Feedback loop" + (" + execution feedback" if args.exec_feedback else ""))
         print("=" * 50)
         metrics_fb = await run_spider_evaluation(
             samples=samples,
             spider_path=spider_path,
             verbose=not args.quiet,
             max_samples=args.limit,
+            k=args.k,
             use_feedback_loop=True,
             feedback_max_iterations=args.max_iter,
+            execution_feedback=args.exec_feedback,
         )
 
         # Side-by-side comparison
@@ -138,6 +209,8 @@ async def main() -> None:
         print(f"{'Total Samples':<26} {metrics_sp['total']:>12} {metrics_fb['total']:>12}")
         print(f"{'Exact Match (%)':<26} {metrics_sp['exact_match']:>12.2f} {metrics_fb['exact_match']:>12.2f}")
         print(f"{'Execution Accuracy (%)':<26} {metrics_sp['execution_accuracy']:>12.2f} {metrics_fb['execution_accuracy']:>12.2f}")
+        print(f"{'Inference failures':<26} {metrics_sp['inference_failures']:>12} {metrics_fb['inference_failures']:>12}")
+        print(f"{'LLM calls':<26} {metrics_sp['llm_calls']:>12} {metrics_fb['llm_calls']:>12}")
         print("=" * 50)
 
         em_delta = metrics_fb["exact_match"] - metrics_sp["exact_match"]
@@ -145,6 +218,8 @@ async def main() -> None:
         sign = lambda v: f"+{v:.2f}" if v >= 0 else f"{v:.2f}"
         print(f"{'EM delta (feedback - single)':<26} {sign(em_delta):>25}")
         print(f"{'EX delta (feedback - single)':<26} {sign(ex_delta):>25}")
+        print("(the deltas above compare two separate LLM runs and include sampling noise)")
+        _print_feedback_diagnostics(metrics_fb)
 
     else:
         metrics = await run_spider_evaluation(
@@ -152,8 +227,10 @@ async def main() -> None:
             spider_path=spider_path,
             verbose=not args.quiet,
             max_samples=args.limit,
+            k=args.k,
             use_feedback_loop=args.feedback,
             feedback_max_iterations=args.max_iter,
+            execution_feedback=args.exec_feedback,
         )
 
         print()

@@ -7,7 +7,14 @@ result sets for execution accuracy evaluation.
 
 import sqlite3
 import os
+import time
+from contextlib import closing
 from typing import Optional, Tuple, List, Any
+from urllib.parse import quote
+
+# Queries running longer than this are interrupted (e.g. a JOIN without an
+# ON clause producing a huge cartesian product).
+DEFAULT_TIMEOUT_SECONDS = 30.0
 
 
 def _execute_sql(conn: sqlite3.Connection, sql: str) -> Tuple[bool, Optional[str], Optional[List[tuple]]]:
@@ -26,6 +33,10 @@ def _execute_sql(conn: sqlite3.Connection, sql: str) -> Tuple[bool, Optional[str
         cursor.execute(sql)
         rows = cursor.fetchall()
         return True, None, rows
+    except sqlite3.OperationalError as e:
+        if str(e) == "interrupted":
+            return False, "query timed out (check for a missing JOIN condition)", None
+        return False, str(e), None
     except Exception as e:
         return False, str(e), None
 
@@ -56,12 +67,16 @@ def _normalize_results(rows: List[tuple]) -> List[tuple]:
 class SpiderSQLiteExecutor:
     """
     Executes and compares SQL queries against a Spider SQLite database.
+
+    A SQLite database is a single file, so the executor is bound to one
+    ``db_id`` by the path it is constructed with; queries need no db_id.
     """
 
-    def __init__(self, sqlite_path: str):
+    def __init__(self, sqlite_path: str, timeout: float = DEFAULT_TIMEOUT_SECONDS):
         """
         Args:
             sqlite_path: Full path to the .sqlite database file.
+            timeout: Seconds after which a running query is interrupted.
 
         Raises:
             FileNotFoundError: If the database file does not exist.
@@ -69,10 +84,15 @@ class SpiderSQLiteExecutor:
         if not os.path.exists(sqlite_path):
             raise FileNotFoundError(f"SQLite database not found: {sqlite_path}")
         self.sqlite_path = sqlite_path
+        self.timeout = timeout
 
     def _open_connection(self) -> sqlite3.Connection:
-        conn = sqlite3.connect(self.sqlite_path)
-        conn.execute("PRAGMA journal_mode=WAL;")
+        # Read-only: predicted SQL must never modify the benchmark database
+        # (a committed DELETE/DROP would corrupt every later sample).
+        uri = f"file:{quote(os.path.abspath(self.sqlite_path))}?mode=ro"
+        conn = sqlite3.connect(uri, uri=True)
+        deadline = time.monotonic() + self.timeout
+        conn.set_progress_handler(lambda: time.monotonic() > deadline, 10_000)
         return conn
 
     def execute(self, sql: str) -> Tuple[bool, Optional[str], Optional[List[tuple]]]:
@@ -85,7 +105,7 @@ class SpiderSQLiteExecutor:
         Returns:
             (success, error_message, rows)
         """
-        with self._open_connection() as conn:
+        with closing(self._open_connection()) as conn:
             return _execute_sql(conn, sql)
 
     def compare(
@@ -109,8 +129,9 @@ class SpiderSQLiteExecutor:
         Returns:
             (match: bool, error_description: Optional[str])
         """
-        with self._open_connection() as conn:
+        with closing(self._open_connection()) as conn:
             pred_ok, pred_err, pred_rows = _execute_sql(conn, pred_sql)
+        with closing(self._open_connection()) as conn:
             gold_ok, gold_err, gold_rows = _execute_sql(conn, gold_sql)
 
         if not gold_ok:

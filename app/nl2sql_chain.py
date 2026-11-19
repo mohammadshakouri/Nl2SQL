@@ -24,12 +24,7 @@ import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import SchemaManager
 from app.sql_validator import SQLValidator
-from app.system_prompt import (
-    SYSTEM_PROMPT_NL2SQL_FA,
-    SYSTEM_PROMPT_NL2SQL_EN,
-    SYSTEM_PROMPT_NL2SQL_FEEDBACK_FA,
-    SYSTEM_PROMPT_NL2SQL_FEEDBACK_EN,
-)
+from app.system_prompt import SYSTEM_PROMPT_NL2SQL, SYSTEM_PROMPT_NL2SQL_FEEDBACK
 
 OPENAI_API_KEY = env.openai_api_key
 USE_LOCAL_LLM = env.use_local_llm
@@ -49,20 +44,16 @@ class NL2SQLChain:
     User Question → Schema Retrieval → Context Assembly → SQL Generation → Validation
     """
 
-    def __init__(
-        self, schema_manager: SchemaManager, collection_name: str, culture: str = "en"
-    ):
+    def __init__(self, schema_manager: SchemaManager, collection_name: str):
         """
         Initialize NL2SQL chain
 
         Args:
             schema_manager: SchemaManager instance with loaded schema
             collection_name: Name of ChromaDB collection for schema embeddings
-            culture: Language/culture code (fa or en)
         """
         self.schema_manager = schema_manager
         self.collection_name = collection_name
-        self.culture = culture
         self.validator = SQLValidator(schema_manager)
 
         # Initialize embedding function
@@ -80,22 +71,11 @@ class NL2SQLChain:
         self.chroma_client = chromadb.PersistentClient(utils.CHROMADB_PERSIST_DIRECTORY)
 
     def get_system_prompt(self, is_feedback: bool = False) -> str:
-        """Get appropriate system prompt based on culture and context"""
-        if is_feedback:
-            return (
-                SYSTEM_PROMPT_NL2SQL_FEEDBACK_FA
-                if self.culture == "fa"
-                else SYSTEM_PROMPT_NL2SQL_FEEDBACK_EN
-            )
-        else:
-            return (
-                SYSTEM_PROMPT_NL2SQL_FA
-                if self.culture == "fa"
-                else SYSTEM_PROMPT_NL2SQL_EN
-            )
+        """Get the system prompt for a first attempt or a feedback retry"""
+        return SYSTEM_PROMPT_NL2SQL_FEEDBACK if is_feedback else SYSTEM_PROMPT_NL2SQL
 
     def retrieve_schema_elements(
-        self, question: str, n_results: int = 10
+        self, question: str, n_results: int
     ) -> Tuple[List[str], List[float]]:
         """
         Stage 3: Schema Linking via Vector Retrieval
@@ -181,7 +161,6 @@ class NL2SQLChain:
         question: str,
         schema_context: str,
         feedback: Optional[str] = None,
-        user_semantic_feedback: Optional[str] = None,
     ) -> str:
         """
         Build complete user prompt with question and schema context
@@ -189,39 +168,23 @@ class NL2SQLChain:
         Args:
             question: User's natural language question
             schema_context: Retrieved schema context
-            feedback: Optional feedback from previous SQL error (validation loop)
-            user_semantic_feedback: Optional end-user comment describing a semantic error
+            feedback: Optional description of previous failed attempts
+                      (from ``SQLFeedbackLoop.get_feedback_prompt``)
 
         Returns:
             Complete user prompt string
         """
-        if feedback:
-            # Feedback iteration prompt (validation / syntax error)
-            prompt = f"Syntax error you should fix: {feedback}\n\n"
-            if user_semantic_feedback:
-                prompt += f"User feedback that you should fix it: {user_semantic_feedback}\n\n"
-            prompt += f"User Question:\n{question}\n\n"
-            prompt += f"{schema_context}\n"
-            prompt += "Generate corrected SQL query:\n"
-        else:
-            prompt = ""
-            if user_semantic_feedback:
-                prompt += f"User feedback that you should fix it: {user_semantic_feedback}\n\n"
-            prompt += f"User Question:\n{question}\n\n"
-            prompt += f"{schema_context}\n"
+        prompt = f"User Question:\n{question}\n\n"
+        prompt += f"{schema_context}\n"
 
-            if self.culture == "fa":
-                prompt += "قوانین:\n"
-                prompt += "- فقط از Schema ارائه شده استفاده کنید\n"
-                prompt += "- جدول یا ستون جدید اختراع نکنید\n"
-                prompt += "- فقط SQL خروجی دهید\n\n"
-                prompt += "SQL Query:\n"
-            else:
-                prompt += "Rules:\n"
-                prompt += "- Use only provided schema\n"
-                prompt += "- Do not invent tables or columns\n"
-                prompt += "- Output SQL only\n\n"
-                prompt += "SQL Query:\n"
+        if feedback:
+            prompt += f"{feedback.rstrip()}\n\n"
+
+        prompt += "Rules:\n"
+        prompt += "- Use only provided schema\n"
+        prompt += "- Do not invent tables or columns\n"
+        prompt += "- Output SQL only\n\n"
+        prompt += "Corrected SQL Query:\n" if feedback else "SQL Query:\n"
 
         return prompt
 

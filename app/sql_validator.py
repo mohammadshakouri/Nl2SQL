@@ -2,8 +2,9 @@
 SQL Validator Module for NL2SQL RAG System
 
 Provides static SQL syntax/schema validation with feedback-loop support.
-Actual SQLite execution (for Execution Accuracy and any future
-execution-guided feedback) lives in ``app.spider_eval.spider_sqlite_executor``.
+Actual SQLite execution (used for Execution Accuracy and, with
+``--exec-feedback``, as an extra error signal in the feedback loop) lives in
+``app.spider_eval.spider_sqlite_executor``.
 """
 
 import re
@@ -49,25 +50,36 @@ class SQLValidator:
         Returns:
             Tuple of (is_valid, error_message)
         """
-        if not sql_query or not sql_query.strip():
+        # clean_sql_output() turns an empty LLM response into ";"
+        if not sql_query or not sql_query.strip().strip(';').strip():
             return False, "Empty SQL query"
-        
+
         try:
             # Parse SQL
-            parsed = sqlparse.parse(sql_query)
-            
+            parsed = [s for s in sqlparse.parse(sql_query) if s.value.strip().strip(';').strip()]
+
             if not parsed:
                 return False, "Unable to parse SQL query"
-            
+
+            if len(parsed) > 1:
+                return False, "Multiple SQL statements; return exactly one SELECT query"
+
             # Check if it's a valid statement
             statement = parsed[0]
-            
-            # Must be a SELECT statement for read-only queries
+
+            # Must be a SELECT statement (optionally with a CTE) for read-only queries
             first_token = statement.token_first(skip_ws=True, skip_cm=True)
-            if first_token and first_token.ttype is sqlparse.tokens.Keyword.DML:
+            if first_token is None:
+                return False, "Unable to parse SQL query"
+            if first_token.ttype is sqlparse.tokens.Keyword.DML:
                 if first_token.value.upper() != 'SELECT':
                     return False, "Only SELECT queries are allowed"
-            
+            elif first_token.ttype is not sqlparse.tokens.Keyword.CTE:
+                return False, (
+                    f"Query must start with SELECT, found '{first_token.value[:30]}'; "
+                    "do not write any text before the SQL"
+                )
+
             return True, None
             
         except Exception as e:
@@ -87,29 +99,24 @@ class SQLValidator:
             # Skip validation if no schema manager
             return True, None
         
-        sql_lower = sql_query.lower()
-        
+        # Blank out string literals so words inside them ('... from X') are ignored
+        sql_lower = re.sub(r"'(?:[^']|'')*'", "''", sql_query.lower())
+
+        # CTE names are legal FROM/JOIN targets even though they are not tables
+        cte_names = set(re.findall(r'(?:\bwith(?:\s+recursive)?|,)\s+([a-z_][a-z0-9_]*)\s+as\s*\(', sql_lower))
+
         # Extract table names (basic pattern matching)
         # Look for FROM and JOIN clauses
-        table_pattern = r'(?:from|join)\s+([a-z_][a-z0-9_]*)'
+        table_pattern = r'\b(?:from|join)\s+["`\[]?([a-z_][a-z0-9_]*)'
         found_tables = re.findall(table_pattern, sql_lower)
-        
+
         # Check if tables exist
         for table in found_tables:
-            if table not in self.valid_tables:
+            if table not in self.valid_tables and table not in cte_names:
                 return False, f"Table '{table}' does not exist in schema"
-        
-        # Extract column names (basic pattern matching)
-        # This is simplified - in production use SQL parser
-        column_pattern = r'([a-z_][a-z0-9_]*)\s*\.'
-        found_columns_with_table = re.findall(column_pattern, sql_lower)
-        
-        # Validate columns belong to tables
-        for table_name in found_columns_with_table:
-            if table_name not in self.valid_tables:
-                # Might be an alias, skip
-                continue
-        
+
+        # Column names are not checked here; use execution feedback
+        # (SpiderSQLiteExecutor) to catch "no such column" errors.
         return True, None
     
     def validate_query(self, sql_query: str) -> Tuple[bool, Optional[str]]:
@@ -136,31 +143,35 @@ class SQLValidator:
     
     def extract_error_feedback(self, error_message: str) -> str:
         """
-        Convert SQL error into natural language feedback for LLM
-        
+        Convert a validation or SQLite execution error into feedback for the LLM
+
         Args:
-            error_message: Raw error message from database
-        
+            error_message: Error from validate_query() or from executing the SQL
+
         Returns:
             Formatted feedback string for LLM
         """
-        feedback = "SQL execution failed:\n\n"
-        feedback += f"Error: {error_message}\n\n"
-        feedback += "Please regenerate the SQL query fixing the following:\n"
-        
-        # Parse common error types
-        if "does not exist" in error_message.lower():
+        feedback = f"Error: {error_message}\n"
+        feedback += "Fix:\n"
+
+        # Parse common error types (static validator and SQLite messages)
+        error_lower = error_message.lower()
+        if any(s in error_lower for s in ("does not exist", "no such table", "no such column")):
             feedback += "- Check table and column names\n"
             feedback += "- Verify spelling matches schema exactly\n"
-        elif "syntax error" in error_message.lower():
-            feedback += "- Fix SQL syntax\n"
-            feedback += "- Check JOIN conditions and WHERE clauses\n"
-        elif "ambiguous" in error_message.lower():
+        elif "ambiguous" in error_lower:
             feedback += "- Use table aliases to qualify column names\n"
             feedback += "- Ensure column references are unambiguous\n"
+        elif "no such function" in error_lower:
+            feedback += "- Use only functions supported by SQLite\n"
+        elif "empty sql" in error_lower or "must start with select" in error_lower:
+            feedback += "- Output only the SQL query, starting with SELECT, with no other text\n"
+        elif "syntax error" in error_lower or "incomplete input" in error_lower:
+            feedback += "- Fix SQL syntax (the query runs on SQLite)\n"
+            feedback += "- Check JOIN conditions and WHERE clauses\n"
         else:
             feedback += "- Review the error and adjust the query accordingly\n"
-        
+
         return feedback
     
     def clean_sql_output(self, llm_output: str) -> str:
@@ -231,16 +242,20 @@ class SQLFeedbackLoop:
         if not self.iteration_history:
             return None
 
-        last_iteration = self.iteration_history[-1]
-
-        if last_iteration["success"]:
+        if self.iteration_history[-1]["success"]:
             return None
 
-        feedback = f"\nPrevious attempt failed (Iteration {last_iteration['iteration']}):\n\n"
-        feedback += f"SQL: {last_iteration['sql']}\n\n"
-        feedback += self.validator.extract_error_feedback(last_iteration['error'])
-        feedback += "\nGenerate corrected SQL query:\n"
-        
+        # Show every failed attempt, not just the last one, so the model does
+        # not oscillate back to a query that was already rejected.
+        feedback = "Previous attempts failed:\n\n"
+        for iteration in self.iteration_history:
+            if iteration["success"]:
+                continue
+            feedback += f"Attempt {iteration['iteration']}:\n"
+            feedback += f"SQL: {iteration['sql']}\n"
+            feedback += self.validator.extract_error_feedback(iteration['error'])
+            feedback += "\n"
+
         return feedback
     
     def should_continue(self) -> bool:
