@@ -1,0 +1,160 @@
+{
+  "schema_version": 2,
+  "run_id": "20261120T164326Z_feedback_gpt-6-luna_k15_all_samples",
+  "created_at": "2026-11-20T16:43:27.243+00:00",
+  "sessions": [
+    {
+      "session": 1,
+      "started_at": "2026-11-20T16:43:27.243+00:00",
+      "ended_at": "2026-11-20T17:30:12.610+00:00",
+      "status": "complete",
+      "resumed": false,
+      "argv": [
+        "cli_spider_eval.py",
+        "--spider_path",
+        "./spider",
+        "--model",
+        "gpt-6-luna",
+        "--exec-feedback",
+        "--tag",
+        "all_samples"
+      ],
+      "limit": null,
+      "code": {
+        "commit": "b8354d4035ac5d362c9bc4700509559eadb7cbc3",
+        "branch": "main",
+        "dirty": false
+      },
+      "environment": {
+        "python": "3.12.10",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "sqlite": "3.49.1",
+        "packages": {
+          "openai": "2.14.0",
+          "ollama": "0.6.1",
+          "chromadb": "1.3.7",
+          "sentence-transformers": "5.2.0",
+          "sqlparse": "0.5.3",
+          "numpy": "2.3.5"
+        }
+      },
+      "wall_seconds": 2805.4
+    }
+  ],
+  "config": {
+    "mode": "feedback",
+    "k": 15,
+    "max_attempts": 4,
+    "execution_feedback": true
+  },
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "temperature": 1,
+    "host": "api.openai.com (SDK default)",
+    "timeout_s": 120.0,
+    "max_retries": 5,
+    "reasoning_effort": "low",
+    "stream": true,
+    "api_key_set": true
+  },
+  "embedding": {
+    "provider": "local",
+    "model": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+    "function": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+  },
+  "prompts": {
+    "system_first": "[ROLE]\nYou are an expert SQL generator responsible for producing valid, executable SQL queries.\n\n[INPUT]\nInputs include a user question in natural language and a database Schema.\n\n[CRITICAL RULES]\n2. Use ONLY tables, columns, and relations provided in the Schema\n3. Do NOT invent any tables, columns, or relationships\n4. Use Schema information to infer correct JOINs\n5. SQL must be standard and executable\n6. Use appropriate aggregate functions (SUM, COUNT, AVG, MAX, MIN)\n7. Implement WHERE conditions and filters correctly\n8. Use appropriate DATE functions for temporal queries\n\n[OUTPUT FORMAT]\nYour output must be exactly in this format:\nSELECT ...\nFROM ...\nWHERE ...\n\nDo not write any explanation before or after the SQL.\n",
+    "system_feedback": "[ROLE]\nYou are an expert SQL developer correcting a previous query.\n\n[CONTEXT]\nYour previous query encountered an error. You must fix it.\n\n[CRITICAL RULES]\n1. Read the previous error carefully\n2. Generate ONLY corrected SQL - no explanations\n3. Use the provided Schema\n4. Check spelling of tables and columns\n5. Verify JOIN conditions\n6. Qualify ambiguous column names with aliases\n\n[OUTPUT]\nOnly the corrected SQL:\n",
+    "system_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "de619e1d1b1ca4cb2d90f75069aedae4a1d02a88e02c47a9440811481e02e273"
+  },
+  "retrieval_units": {
+    "templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8"
+  },
+  "dataset": {
+    "dev_json": "dev.json",
+    "sha256": "30d64a3fccde493226df79687aed9e4a1c0129525baf44f29c0573d914d758a4",
+    "n_samples": 1034
+  },
+  "code": {
+    "commit": "b8354d4035ac5d362c9bc4700509559eadb7cbc3",
+    "branch": "main",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "sqlite": "3.49.1",
+    "packages": {
+      "openai": "2.14.0",
+      "ollama": "0.6.1",
+      "chromadb": "1.3.7",
+      "sentence-transformers": "5.2.0",
+      "sqlparse": "0.5.3",
+      "numpy": "2.3.5"
+    }
+  },
+  "fingerprint": {
+    "mode": "feedback",
+    "k": 15,
+    "max_attempts": 4,
+    "execution_feedback": true,
+    "llm": {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "temperature": 1,
+      "reasoning_effort": "low"
+    },
+    "embedding": {
+      "provider": "local",
+      "model": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+    },
+    "prompts_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "de619e1d1b1ca4cb2d90f75069aedae4a1d02a88e02c47a9440811481e02e273",
+    "unit_templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8",
+    "dataset_sha256": "30d64a3fccde493226df79687aed9e4a1c0129525baf44f29c0573d914d758a4"
+  },
+  "status": "complete",
+  "progress": {
+    "done": 1025,
+    "of": 1034,
+    "updated_at": "2026-11-20T17:29:50.708+00:00"
+  },
+  "results": {
+    "metrics": {
+      "total": 1034,
+      "exact_match": 10.15,
+      "execution_accuracy": 69.63,
+      "mode": "feedback",
+      "k": 15,
+      "skipped": 0,
+      "inference_failures": 0,
+      "failure_reasons": {},
+      "llm_calls": 1154,
+      "max_attempts": 4,
+      "execution_feedback": true,
+      "feedback": {
+        "retried": 115,
+        "recovered": 115,
+        "exhausted": 0,
+        "first_attempt_exact_match": 9.67,
+        "first_attempt_execution_accuracy": 64.41
+      }
+    },
+    "tokens": {
+      "prompt_tokens": 579795,
+      "completion_tokens": 150610,
+      "total_tokens": 730405,
+      "reasoning_tokens": 99371,
+      "cached_tokens": 0,
+      "samples_without_usage": 0
+    },
+    "status_counts": {
+      "scored": 1034
+    },
+    "n_samples_logged": 1034,
+    "of": 1034,
+    "finished_at": "2026-11-20T17:30:12.610+00:00"
+  }
+}
