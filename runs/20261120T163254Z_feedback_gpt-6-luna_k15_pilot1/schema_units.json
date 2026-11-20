@@ -1,0 +1,252 @@
+{
+  "concert_singer": {
+    "db_id": "concert_singer",
+    "summary": {
+      "tables": 4,
+      "columns": 21,
+      "relations": 3,
+      "total_units": 28
+    },
+    "collection": {
+      "name": "Schema_spider_concert_singer",
+      "reused": true,
+      "rebuilt_stale": false,
+      "n_units_expected": 28,
+      "n_units_stored": 28
+    },
+    "units": [
+      {
+        "id": "table_0",
+        "kind": "table",
+        "table": "concert",
+        "key_columns": [
+          "concert_ID"
+        ],
+        "text": "concert Table: Table concert. Includes columns concert_ID. "
+      },
+      {
+        "id": "table_1",
+        "kind": "table",
+        "table": "singer",
+        "key_columns": [
+          "Singer_ID"
+        ],
+        "text": "singer Table: Table singer. Includes columns Singer_ID. "
+      },
+      {
+        "id": "table_2",
+        "kind": "table",
+        "table": "singer_in_concert",
+        "key_columns": [
+          "concert_ID",
+          "Singer_ID"
+        ],
+        "text": "singer_in_concert Table: Table singer_in_concert. Includes columns concert_ID, Singer_ID. "
+      },
+      {
+        "id": "table_3",
+        "kind": "table",
+        "table": "stadium",
+        "key_columns": [
+          "Stadium_ID"
+        ],
+        "text": "stadium Table: Table stadium. Includes columns Stadium_ID. "
+      },
+      {
+        "id": "column_0",
+        "kind": "column",
+        "table": "concert",
+        "column": "concert_ID",
+        "data_type": "integer",
+        "text": "concert.concert_ID Column: Column concert_ID of table concert, data type integer."
+      },
+      {
+        "id": "column_1",
+        "kind": "column",
+        "table": "concert",
+        "column": "concert_Name",
+        "data_type": "varchar",
+        "text": "concert.concert_Name Column: Column concert_Name of table concert, data type varchar."
+      },
+      {
+        "id": "column_2",
+        "kind": "column",
+        "table": "concert",
+        "column": "Theme",
+        "data_type": "varchar",
+        "text": "concert.Theme Column: Column Theme of table concert, data type varchar."
+      },
+      {
+        "id": "column_3",
+        "kind": "column",
+        "table": "concert",
+        "column": "Stadium_ID",
+        "data_type": "varchar",
+        "text": "concert.Stadium_ID Column: Column Stadium_ID of table concert, data type varchar."
+      },
+      {
+        "id": "column_4",
+        "kind": "column",
+        "table": "concert",
+        "column": "Year",
+        "data_type": "varchar",
+        "text": "concert.Year Column: Column Year of table concert, data type varchar."
+      },
+      {
+        "id": "column_5",
+        "kind": "column",
+        "table": "singer",
+        "column": "Singer_ID",
+        "data_type": "integer",
+        "text": "singer.Singer_ID Column: Column Singer_ID of table singer, data type integer."
+      },
+      {
+        "id": "column_6",
+        "kind": "column",
+        "table": "singer",
+        "column": "Name",
+        "data_type": "varchar",
+        "text": "singer.Name Column: Column Name of table singer, data type varchar."
+      },
+      {
+        "id": "column_7",
+        "kind": "column",
+        "table": "singer",
+        "column": "Country",
+        "data_type": "varchar",
+        "text": "singer.Country Column: Column Country of table singer, data type varchar."
+      },
+      {
+        "id": "column_8",
+        "kind": "column",
+        "table": "singer",
+        "column": "Song_Name",
+        "data_type": "varchar",
+        "text": "singer.Song_Name Column: Column Song_Name of table singer, data type varchar."
+      },
+      {
+        "id": "column_9",
+        "kind": "column",
+        "table": "singer",
+        "column": "Song_release_year",
+        "data_type": "varchar",
+        "text": "singer.Song_release_year Column: Column Song_release_year of table singer, data type varchar."
+      },
+      {
+        "id": "column_10",
+        "kind": "column",
+        "table": "singer",
+        "column": "Age",
+        "data_type": "integer",
+        "text": "singer.Age Column: Column Age of table singer, data type integer."
+      },
+      {
+        "id": "column_11",
+        "kind": "column",
+        "table": "singer",
+        "column": "Is_male",
+        "data_type": "boolean",
+        "text": "singer.Is_male Column: Column Is_male of table singer, data type boolean."
+      },
+      {
+        "id": "column_12",
+        "kind": "column",
+        "table": "singer_in_concert",
+        "column": "concert_ID",
+        "data_type": "integer",
+        "text": "singer_in_concert.concert_ID Column: Column concert_ID of table singer_in_concert, data type integer."
+      },
+      {
+        "id": "column_13",
+        "kind": "column",
+        "table": "singer_in_concert",
+        "column": "Singer_ID",
+        "data_type": "varchar",
+        "text": "singer_in_concert.Singer_ID Column: Column Singer_ID of table singer_in_concert, data type varchar."
+      },
+      {
+        "id": "column_14",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Stadium_ID",
+        "data_type": "integer",
+        "text": "stadium.Stadium_ID Column: Column Stadium_ID of table stadium, data type integer."
+      },
+      {
+        "id": "column_15",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Location",
+        "data_type": "varchar",
+        "text": "stadium.Location Column: Column Location of table stadium, data type varchar."
+      },
+      {
+        "id": "column_16",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Name",
+        "data_type": "varchar",
+        "text": "stadium.Name Column: Column Name of table stadium, data type varchar."
+      },
+      {
+        "id": "column_17",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Capacity",
+        "data_type": "integer",
+        "text": "stadium.Capacity Column: Column Capacity of table stadium, data type integer."
+      },
+      {
+        "id": "column_18",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Highest",
+        "data_type": "integer",
+        "text": "stadium.Highest Column: Column Highest of table stadium, data type integer."
+      },
+      {
+        "id": "column_19",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Lowest",
+        "data_type": "integer",
+        "text": "stadium.Lowest Column: Column Lowest of table stadium, data type integer."
+      },
+      {
+        "id": "column_20",
+        "kind": "column",
+        "table": "stadium",
+        "column": "Average",
+        "data_type": "integer",
+        "text": "stadium.Average Column: Column Average of table stadium, data type integer."
+      },
+      {
+        "id": "relation_0",
+        "kind": "relation",
+        "source_table": "concert",
+        "source_column": "Stadium_ID",
+        "target_table": "stadium",
+        "target_column": "Stadium_ID",
+        "text": "Relation: concert.Stadium_ID ↔ stadium.Stadium_ID. Relationship type many-to-one. "
+      },
+      {
+        "id": "relation_1",
+        "kind": "relation",
+        "source_table": "singer_in_concert",
+        "source_column": "Singer_ID",
+        "target_table": "singer",
+        "target_column": "Singer_ID",
+        "text": "Relation: singer_in_concert.Singer_ID ↔ singer.Singer_ID. Relationship type many-to-one. "
+      },
+      {
+        "id": "relation_2",
+        "kind": "relation",
+        "source_table": "singer_in_concert",
+        "source_column": "concert_ID",
+        "target_table": "concert",
+        "target_column": "concert_ID",
+        "text": "Relation: singer_in_concert.concert_ID ↔ concert.concert_ID. Relationship type many-to-one. "
+      }
+    ]
+  }
+}
