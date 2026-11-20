@@ -42,7 +42,7 @@ EMBEDDING_MODEL_DIR = env.embedding_model_dir
 # OpenAI path defaults. The model/temperature can be overridden per run with
 # configure_llm() (cli_spider_eval.py --model / --temperature), and the effective
 # values are written to the run manifest.
-OPENAI_MODEL_NAME: str = "gpt6-luna"
+OPENAI_MODEL_NAME: str = "gpt-6-luna"
 OPENAI_TEMPERATURE: float = 0.1
 # Explicit so the values are recorded rather than inherited from SDK defaults:
 # a hung request must not stall a paid run for the SDK's 10-minute default, and
@@ -343,7 +343,7 @@ class NL2SQLChain:
             OpenAI chat completion stream
         """
         settings = get_llm_settings()
-        request = {"model": settings.model, "messages": messages, "stream": stream}
+        request = {"model": settings.model, "messages": messages, "stream": stream, "reasoning_effort":"low"}
         if settings.temperature is not None:
             request["temperature"] = settings.temperature
         if stream and include_usage:
