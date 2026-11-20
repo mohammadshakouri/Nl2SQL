@@ -20,12 +20,12 @@ class Table:
     def to_embedding_text(self) -> str:
         """
         Convert table to embedding text format:
-        <TableName> Table: <semantic description>. شامل ستون های <key columns>.
+        <TableName> Table: <semantic description>. Includes columns <key columns>.
         """
         key_cols = ", ".join(self.key_columns)
         return (
             f"{self.name} Table: {self.description}. "
-            f"شامل ستون های {key_cols}. "
+            f"Includes columns {key_cols}. "
         )
 
 
@@ -40,11 +40,11 @@ class Column:
     def to_embedding_text(self) -> str:
         """
         Convert column to embedding text format:
-        <TableName>.<ColumnName> Column: <meaning>, نوع داده {self.data_type}.
+        <TableName>.<ColumnName> Column: <meaning>, data type <data_type>.
         """
         return (
             f"{self.table_name}.{self.column_name} Column: {self.meaning}, "
-            f"نوع داده {self.data_type}."
+            f"data type {self.data_type}."
         )
 
 
@@ -60,12 +60,12 @@ class Relation:
     def to_embedding_text(self) -> str:
         """
         Convert relation to embedding text format:
-        Relation: <TableA>.<Column> ↔ <TableB>.<Column>. Relationship type {self.relationship_type}. استفاده برای {self.join_purpose}.
+        Relation: <TableA>.<Column> ↔ <TableB>.<Column>. Relationship type <relationship_type>.
         """
         return (
             f"Relation: {self.source_table}.{self.source_column} ↔ "
             f"{self.target_table}.{self.target_column}. "
-            f"نوع رابطه {self.relationship_type}. "
+            f"Relationship type {self.relationship_type}. "
         )
 
 
@@ -86,7 +86,7 @@ class SchemaManager:
             "tables": [
                 {
                     "name": "Customers",
-                    "description": "اطلاعات مشتریان",
+                    "description": "Customer information",
                     "key_columns": ["CustomerID", "Name", "JoinDate"]
                 }
             ],
@@ -94,7 +94,7 @@ class SchemaManager:
                 {
                     "table_name": "Customers",
                     "column_name": "CustomerID",
-                    "meaning": "شناسه یکتای مشتری",
+                    "meaning": "Unique customer identifier",
                     "data_type": "integer",
                 }
             ],

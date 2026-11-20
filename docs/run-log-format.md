@@ -6,7 +6,7 @@ Every `cli_spider_eval.py` run writes one directory, `runs/<UTC timestamp>_<mode
 |---|---|
 | `samples.jsonl` | **The source of truth.** One JSON line per sample with everything observed for it. Append-only; each line is flushed and fsync'ed when the sample finishes. |
 | `manifest.json` | What was run (settings, model, prompts, code version, dataset hash, environment), the sessions that wrote the log, and the final results. |
-| `schema_units.json` | For each database: every retrieval unit (`id`, `kind`, `text`) that was indexed, plus how its Chroma collection was built. |
+| `schema_units.json` | For each database: every retrieval unit (`id`, `kind`, `text`) that was indexed, plus how its Chroma collection was built (`reused`, `rebuilt_stale`). |
 | `console.txt` | A copy of everything printed to the terminal, including the output before the run started (settings, preflight). |
 
 The metrics (EM, EX, failures, tokens) are **recomputed from `samples.jsonl`**, never accumulated separately, so the log can always be re-aggregated or re-scored offline from the stored SQL.
@@ -27,9 +27,9 @@ python cli_spider_eval.py --spider_path ./spider --resume runs/<run_dir>
 * A run that stops for any reason (Ctrl-C, SIGTERM, crash, network loss) leaves a valid log; `--resume` continues it.
   `--limit` is not remembered: without it a resumed run goes on to the whole dev set.
 * On resume, samples that failed on **infrastructure** (`llm_error`, `retrieval_error`, `internal_error`, `schema_build_failed`) are re-run; their old records stay in the file and the newer record supersedes them. Model failures such as an empty response are kept as the model's answer.
-* `--resume` takes model, temperature, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the embedding model or `dev.json` changed (the *fingerprint* in the manifest).
+* `--resume` takes model, temperature, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the retrieval-unit text templates, the embedding model or `dev.json` changed (the *fingerprint* in the manifest).
 * A feedback-mode run also contains the single-pass answer: attempt 1 uses the single-pass prompt, and `scoring.first_attempt_*` scores it, so one run gives both numbers, paired.
-* Reused Chroma collections from earlier runs may hold vectors from another embedding model. `schema_units.json` records `collection.reused` and `collection.docs_match`; the run prints a WARNING when stored units differ from the current schema. Use `--rebuild-index` to re-embed everything (a paid run with OpenAI embeddings should do this once).
+* Chroma collections left by earlier runs are reused only if they hold exactly the units the current code produces; a collection with outdated units (e.g. from an older text template) is rebuilt automatically and the run prints a note. `schema_units.json` records `collection.reused` / `collection.rebuilt_stale`. The collection does not record which embedding *model* made its vectors, so after changing the embedding model use `--rebuild-index` once.
 * The run directory is not git-ignored. Estimate: roughly 10–20 MB of `samples.jsonl` for the full 1,034 samples (check the pilot's file size and scale it).
 
 ## `samples.jsonl` records

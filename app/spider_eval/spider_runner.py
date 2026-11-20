@@ -29,7 +29,7 @@ import chromadb
 import app.dotenv as env
 import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
-from app.schema_manager import SchemaManager
+from app.schema_manager import Column, Relation, SchemaManager, Table
 from app.nl2sql_chain import NL2SQLChain, get_llm_settings
 from app.sql_validator import SQLFeedbackLoop
 from app.system_prompt import SYSTEM_PROMPT_NL2SQL, SYSTEM_PROMPT_NL2SQL_FEEDBACK
@@ -105,10 +105,12 @@ def _build_collection(
 
     Returns:
         (collection name, info). ``info["reused"]`` is True when the collection
-        already held units from an earlier run, and ``info["docs_match"]`` says
-        whether those units are identical to the ones the current schema
-        produces. Reused vectors were made by whatever embedding model was
-        active then, which the collection itself does not record.
+        already held exactly the units the current schema produces (kept from an
+        earlier run); ``info["rebuilt_stale"]`` is True when it held different
+        units (e.g. an older text template) and was replaced. A reused
+        collection keeps the vectors made by whatever embedding model was active
+        then, which the collection itself does not record: pass ``rebuild=True``
+        after changing the embedding model.
     """
     collection_name = f"Schema_spider_{db_id}"
 
@@ -132,24 +134,33 @@ def _build_collection(
     # because multiple questions share one database).
     stored_count = collection.count()
     reused = stored_count > 0
+    rebuilt_stale = False
     if reused:
         stored = collection.get(ids=ids)
         stored_docs = dict(zip(stored["ids"], stored["documents"]))
-        docs_match = stored_count == len(ids) and all(
+        current = stored_count == len(ids) and all(
             stored_docs.get(unit_id) == doc for unit_id, doc in zip(ids, documents)
         )
-    else:
+        if not current:
+            # Left over from an older text template or schema: retrieving from
+            # it would silently use units this code no longer produces.
+            chroma_client.delete_collection(collection_name)
+            collection = chroma_client.get_or_create_collection(
+                name=collection_name,
+                embedding_function=embedding_fn,
+            )
+            reused, rebuilt_stale = False, True
+    if not reused:
         for i in range(0, len(ids), batch_size):
             collection.upsert(
                 ids=ids[i : i + batch_size],
                 documents=documents[i : i + batch_size],
             )
-        docs_match = True
 
     info = {
         "name": collection_name,
         "reused": reused,
-        "docs_match": docs_match,
+        "rebuilt_stale": rebuilt_stale,
         "n_units_expected": len(ids),
         "n_units_stored": collection.count(),
     }
@@ -653,6 +664,10 @@ def _run_meta(
         + inspect.getsource(NL2SQLChain.build_schema_context)
     )
     prompts_sha = sha256_text(prompts["system_first"] + "\0" + prompts["system_feedback"])
+    # The text of every retrieval unit comes from these templates.
+    units_sha = sha256_text(
+        "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
+    )
     dev_json = os.path.join(spider_path, "dev.json")
     dataset = {"dev_json": "dev.json", "sha256": sha256_file(dev_json), "n_samples": n_samples}
     embedding = _embedding_description(embedding_fn)
@@ -661,6 +676,7 @@ def _run_meta(
         "llm": {**llm, "stream": True, "api_key_set": bool(env.openai_api_key)},
         "embedding": {**embedding, "function": _safe_name(embedding_fn)},
         "prompts": {**prompts, "system_sha256": prompts_sha, "user_builder_sha256": builder_sha},
+        "retrieval_units": {"templates_sha256": units_sha},
         "dataset": dataset,
         "code": git_info(_REPO_DIR),
         "environment": environment_info(),
@@ -670,6 +686,7 @@ def _run_meta(
             "embedding": embedding,
             "prompts_sha256": prompts_sha,
             "user_builder_sha256": builder_sha,
+            "unit_templates_sha256": units_sha,
             "dataset_sha256": dataset["sha256"],
         },
     }
@@ -818,10 +835,9 @@ async def run_spider_evaluation(
                         chroma_client, embedding_fn, db_id, schema_dict,
                         rebuild=rebuild_index,
                     )
-                    if collection_info["reused"] and not collection_info["docs_match"]:
-                        print(f"WARNING: db={db_id}: the existing Chroma collection differs from "
-                              "the current schema units (stale index from an earlier run); "
-                              "re-run with --rebuild-index")
+                    if collection_info["rebuilt_stale"]:
+                        print(f"note: db={db_id}: the existing Chroma collection held outdated "
+                              "schema units (from an earlier run); it was rebuilt")
 
                     schema_manager = SchemaManager()
                     schema_manager.load_schema_from_dict(schema_dict)

@@ -159,20 +159,20 @@ Only one extractor exists now: **`SQLiteSchemaExtractor`** (`app/spider_eval/sql
 
 ### 2.3 Retrieval unit design
 
-*(unchanged by the cleanup — `SchemaManager`'s embedding-text templates were not touched)*
+*(the templates' wording changed after this report's first revisions: the Persian glue words were replaced by English — see the note at the end of this section)*
 
 A **retrieval unit** is one schema element rendered as one sentence-like string. There are three unit types, stored as three kinds of document in the same Chroma collection:
 
 | Unit type | Template (`schema_manager.py`) | Real example (Spider `singer`/`concert`, raw — the only kind that currently exists in this pipeline) |
 |---|---|---|
-| **Table** (`table_i`) | `"{name} Table: {description}. شامل ستون های {key_columns}. "` ("includes columns …") | `singer Table: Table singer. شامل ستون های Singer_ID.` |
-| **Column** (`column_i`) | `"{table}.{column} Column: {meaning}, نوع داده {data_type}."` ("data type …") | `singer.Name Column: Column Name of table singer, نوع داده varchar.` |
-| **Relation** (`relation_i`) | `"Relation: {src}.{col} ↔ {tgt}.{col}. نوع رابطه {type}. "` ("relationship type …") | `Relation: singer_in_concert.Singer_ID ↔ singer.Singer_ID. نوع رابطه many-to-one.` |
+| **Table** (`table_i`) | `"{name} Table: {description}. Includes columns {key_columns}. "` | `singer Table: Table singer. Includes columns Singer_ID.` |
+| **Column** (`column_i`) | `"{table}.{column} Column: {meaning}, data type {data_type}."` | `singer.Name Column: Column Name of table singer, data type varchar.` |
+| **Relation** (`relation_i`) | `"Relation: {src}.{col} ↔ {tgt}.{col}. Relationship type {type}. "` | `Relation: singer_in_concert.Singer_ID ↔ singer.Singer_ID. Relationship type many-to-one.` |
 
 Properties that matter for the research:
 - **Granularity:** fine-grained, one unit per column. A table unit lists only its *key* columns, not all of them.
 - **Units are independent.** Retrieving a column does not bring in its table, and retrieving a table does not bring in its non-key columns. There is no FK-graph expansion to add missing join paths or bridge tables.
-- **The glue words are always Persian** (`شامل ستون های`, `نوع داده`, `نوع رابطه`), **even though every unit the current pipeline ever builds is otherwise in English** (placeholder descriptions from the SQLite extractor, English Spider questions). This mixed-language template is a direct, measurable leftover of the design being built for a Persian production system; it has not been adapted now that the only running data source is English.
+- **The glue words used to be Persian — now English.** Until this change the templates contained `شامل ستون های` ("includes columns"), `نوع داده` ("data type") and `نوع رابطه` ("relationship type") inside otherwise-English units, a leftover of the Persian production chatbot. They are now `Includes columns`, `data type` and `Relationship type`; the structure and whitespace are unchanged, so this is a pure language swap. **Every retrieval result, EM/EX figure and error analysis produced before this change (including `execution-log.md` and the numbers in `Technical-dept.md`) was obtained with the Persian wording and is not directly comparable with runs made after it.** Collections cached under `./chroma_db/spider_eval/` from before the change are detected as outdated and rebuilt automatically; the run manifest records a hash of the templates, so a run cannot be resumed across a template change.
 - **Relation units carry almost no semantics:** identifiers plus "many-to-one". The LLM-generated `join_purpose` is dropped (present in the schema dict, never read by `SchemaManager`).
 - **No cell values or example values** are indexed.
 - **No Chroma metadata** is stored (documents and ids only). Unit type and parent table can only be recovered by string matching, so metadata filters such as "only columns of table X" are impossible.
@@ -321,15 +321,15 @@ The architecture approximates S_q by the top-K nearest units to q. Each mismatch
 *Illustrative rendering* (produced by running the real `build_schema_context` / `build_user_prompt` on a synthetic two-table `singer`/`concert` SQLite database, with a **hand-picked** subset standing in for a partial retrieval — I re-ran this after the cleanup and the output is unchanged, since none of this code was touched):
 ```
 Tables:
-  - concert Table: Table concert. شامل ستون های concert_ID.
-  - singer Table: Table singer. شامل ستون های Singer_ID.
+  - concert Table: Table concert. Includes columns concert_ID.
+  - singer Table: Table singer. Includes columns Singer_ID.
 Columns:
-  - concert.concert_ID Column: Column concert_ID of table concert, نوع داده integer.
-  - concert.concert_Name Column: Column concert_Name of table concert, نوع داده varchar.
-  - concert.Stadium_ID Column: Column Stadium_ID of table concert, نوع داده integer.
-  - singer.Singer_ID Column: Column Singer_ID of table singer, نوع داده integer.
-  - singer.Name Column: Column Name of table singer, نوع داده varchar.
-  - singer.Country Column: Column Country of table singer, نوع داده varchar.
+  - concert.concert_ID Column: Column concert_ID of table concert, data type integer.
+  - concert.concert_Name Column: Column concert_Name of table concert, data type varchar.
+  - concert.Stadium_ID Column: Column Stadium_ID of table concert, data type integer.
+  - singer.Singer_ID Column: Column Singer_ID of table singer, data type integer.
+  - singer.Name Column: Column Name of table singer, data type varchar.
+  - singer.Country Column: Column Country of table singer, data type varchar.
 ```
 A question needing a `singer ↔ singer_in_concert ↔ concert` join would have no relation unit at all here (this toy schema has none), which is the sharpest possible illustration of "missing schema context forces the LLM to guess a join it was never shown." This failure mode is architectural, which makes it a good slide, **as long as it is labelled as illustrative until measured.**
 
@@ -383,7 +383,7 @@ Rules:
 
 SQL Query:
 ```
-Feedback iterations use a different layout (§8). The retrieved units are pasted verbatim, including the Persian glue words (§2.3) inside otherwise-English units, and data types. **Distances, full column lists, sample values and DDL formatting are absent.**
+Feedback iterations use a different layout (§8). The retrieved units are pasted verbatim (English glue words since the template change, §2.3), with their data types. **Distances, full column lists, sample values and DDL formatting are absent.**
 
 ### 7.3 Output handling
 
@@ -623,7 +623,7 @@ Evidence-based means the gap follows directly from the code. Hypothesis means it
 | G4 | **Lexical retrieval would fail cross-lingually** (Persian question vs English identifiers) unless units contain Persian text | Hypothesis | Motivates the combination of enrichment and BM25 | BM25 on raw vs enriched units with Persian questions |
 | G5 | **Fixed K ignores schema size** (~54% of a small Spider DB retrieved at K=15) | Evidence-based | K=15 constant | K sweep; relative K or a score threshold |
 | G6 | **Too many units add noise; too few lose recall** | Hypothesis | K | Plot EX vs K together with recall@K |
-| G7 | **Mixed-language unit templates** (Persian glue words in otherwise-English units — now the *only* kind of unit this pipeline ever builds, since enrichment is disconnected) | Evidence-based (template) + hypothesis (small effect) | `schema_manager.py` | Language-matched templates, ablation |
+| G7 | ~~Mixed-language unit templates~~ (Persian glue words in otherwise-English units) | **Resolved** by switching the templates to English; the effect on retrieval was never measured (no run exists with both wordings under the same logging) | `schema_manager.py` | — |
 | G8 | **No value grounding** (no cell values or examples indexed) | Evidence-based | Offline layer | Add sampled distinct values to column units |
 | G9 | **Validator misses most errors and has false positives** | Evidence-based (empirical probe) | `sql_validator.py` | Replace with `sqlglot` parsing, SQLite `EXPLAIN`, or execution |
 | G10 | **Feedback cannot repair retrieval misses** (context is fixed across iterations) | Evidence-based | Loop design | Error-conditioned re-retrieval |
@@ -710,10 +710,10 @@ Online: question → dense retrieval (Top-K units) → typed schema context → 
 **OFFLINE PIPELINE**
 - `SQLiteSchemaExtractor`: SQLite `sqlite_master` + PRAGMAs, generic type mapping, placeholder descriptions, tables without a PK fall back to their first three columns, all FKs labelled many-to-one.
 - `enrich_schema.py`: Ollama `gemma3:4b`, temperature 0.1, zero-shot, Persian keyword descriptions, hierarchical (tables → columns). Works correctly and is compatible with the SQLite extractor's dict shape, but **nothing currently calls it**.
-- `SchemaManager`: three unit types (unchanged templates):
-  - Table: `"{T} Table: {desc}. شامل ستون های {keys}."`
-  - Column: `"{T}.{C} Column: {meaning}, نوع داده {type}."`
-  - Relation: `"Relation: {T1}.{c} ↔ {T2}.{c}. نوع رابطه many-to-one."`
+- `SchemaManager`: three unit types (English templates since the language swap):
+  - Table: `"{T} Table: {desc}. Includes columns {keys}. "`
+  - Column: `"{T}.{C} Column: {meaning}, data type {type}."`
+  - Relation: `"Relation: {T1}.{c} ↔ {T2}.{c}. Relationship type many-to-one. "`
 - Embeds via a local SentenceTransformer (unrecorded model identity, normalised, CPU) or OpenAI `text-embedding-3-small`, into per-`db_id` Chroma collections cached under `./chroma_db/spider_eval/`.
 
 **ONLINE PIPELINE**
