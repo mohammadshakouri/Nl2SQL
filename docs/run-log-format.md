@@ -37,10 +37,21 @@ python -m app.spider_eval.run_log prompt runs/<run_dir> <sample_index> [attempt]
 * A run that stops for any reason (Ctrl-C, SIGTERM, crash, network loss) leaves a valid log; `--resume` continues it.
   `--limit` is not remembered: without it a resumed run goes on to the whole dev set.
 * On resume, samples that failed on **infrastructure** (`llm_error`, `retrieval_error`, `internal_error`, `schema_build_failed`) are re-run; their old records stay in the file and the newer record supersedes them. Model failures such as an empty response are kept as the model's answer.
-* `--resume` takes model, temperature, reasoning effort, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the retrieval-unit text templates, the embedding model or `dev.json` changed (the *fingerprint* in the manifest), or if the log was written in another format version.
+* `--resume` takes model, temperature, reasoning effort, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the retrieval-unit text templates, the embedding model, the scorer or `dev.json` changed (the *fingerprint* in the manifest), or if the log was written in another format version.
 * A feedback-mode run also contains the single-pass answer: attempt 1 uses the single-pass prompt, and `scoring.first_*` scores it, so one run gives both numbers, paired.
 * Chroma collections left by earlier runs are reused only if they hold exactly the units the current code produces; a collection with outdated units (e.g. from an older text template) is rebuilt automatically and the run prints a note. `schema_units.json` records `collection.reused` / `collection.rebuilt_stale`. The collection does not record which embedding *model* made its vectors, so after changing the embedding model use `--rebuild-index` once.
 * `check` warns when `code.dirty` is true: the run used uncommitted changes to tracked or new source files (the `runs/` directory itself is not counted). Commit before a run you intend to report.
+
+## How a prediction is scored
+
+`EX` compares the result of the predicted SQL with the result of the gold SQL, both executed on the SQLite database (`app/spider_eval/spider_sqlite_executor.py`, `results_match`):
+
+* rows are compared as a multiset: their order does not matter, duplicates do;
+* values are compared as trimmed, lower-case text, NULL as the empty string;
+* **the order of the columns does not matter** (Spider's own `result_eq` does the same), but every gold column must appear exactly once;
+* TEXT values with invalid UTF-8 are decoded with the bad bytes dropped (also what Spider's test-suite does), so a gold query over such a database (e.g. `wta_1`) can run; the same decoding applies to the executions of the feedback loop.
+
+Not handled: ties at `ORDER BY ... LIMIT 1` (gold and prediction may legitimately pick different rows) and gold queries that are themselves wrong. `EM` is a normalised SQL **string** match, not Spider's exact set match: do not report it as Spider EM.
 
 ## `samples.jsonl` records
 
@@ -67,12 +78,12 @@ for line in open("runs/<run_dir>/samples.jsonl", encoding="utf-8"):
 | `final_sql` | the SQL that was scored |
 | `final_attempt` | which attempt it came from (1-based); `fallback` is true when no attempt passed the checks and attempt 1 was kept |
 | `recovered` | a retry passed the checks after attempt 1 was rejected |
-| `scoring` | `em`, `ex`, `kind`, `first_em`, `first_ex` |
+| `scoring` | `em`, `ex`, `kind`, `first_em`, `first_ex`, `permuted` |
 | `results` | `gold`, `final`, `first`: execution snapshots (below); `first` only when attempt 1 differs from the final SQL |
 | `ms` | wall time for the sample |
 | `session` | which process invocation wrote the record |
 
-`scoring.kind` is `null` on a match, otherwise `gold_failed`, `pred_failed` or `result_mismatch` (the categories of the earlier log analysis). The text of the reason (e.g. `Result mismatch: predicted 5 row(s), gold 5 row(s)`) is rebuilt from `kind` and `results` by `run_log.describe_outcome`.
+`scoring.permuted` is true when the final SQL matched the gold result only after its columns were reordered (the scorer ignores column order, see below); the end-of-run summary counts these. `scoring.kind` is `null` on a match, otherwise `gold_failed`, `pred_failed` or `result_mismatch` (the categories of the earlier log analysis). The text of the reason (e.g. `Result mismatch: predicted 5 row(s), gold 5 row(s)`) is rebuilt from `kind` and `results` by `run_log.describe_outcome`.
 
 **`attempts[]`** (position + 1 is the attempt number): `sql` (cleaned), `raw_output` (exactly what the model returned), `prompt_sha` (12 hex chars of the user prompt sent), `tokens` (`{prompt, completion[, reasoning][, cached]}` as reported by the provider, `null` if not reported), `ms` (call latency), `rejected` (`null`, or `{stage: "static"|"execution", error}` when the checks of the feedback loop refused the SQL), `exec_rows` (rows returned when the query was executed during `--exec-feedback`). Optional keys: `finish` (only when the finish reason is not `stop`, e.g. `length`), `error` (the LLM call failed; the other fields are then empty).
 
@@ -92,7 +103,7 @@ It is what makes the per-sample records small, and it is the universe needed for
 
 ## `manifest.json`
 
-`config` (mode, k, max_attempts, execution_feedback), `llm` (provider, model, temperature, reasoning_effort, host, timeout, retries; never the API key), `embedding`, `prompts` (full system prompts + hashes), `retrieval_units` (hash of the unit text templates), `dataset` (`dev.json` sha256, sample count), `code` (git commit, branch, `dirty`), `environment` (Python, SQLite, package versions), `fingerprint` (what must match to resume), `sessions[]` (one per process: argv, limit, start/end, status `complete` / `interrupted` / `failed`, wall time, code version), and `results` (metrics, token totals, status counts).
+`config` (mode, k, max_attempts, execution_feedback), `llm` (provider, model, temperature, reasoning_effort, host, timeout, retries; never the API key), `embedding`, `prompts` (full system prompts + hashes), `retrieval_units` (hash of the unit text templates), `scorer` (hash of the comparison code), `dataset` (`dev.json` sha256, sample count), `code` (git commit, branch, `dirty`), `environment` (Python, SQLite, package versions), `fingerprint` (what must match to resume), `sessions[]` (one per process: argv, limit, start/end, status `complete` / `interrupted` / `failed`, wall time, code version), and `results` (metrics, token totals, status counts).
 
 ## Error analysis of a finished run
 

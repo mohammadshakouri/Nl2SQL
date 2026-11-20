@@ -52,6 +52,7 @@ from app.spider_eval.run_log import (
 from app.spider_eval.spider_loader import SpiderSample, get_sqlite_path
 from app.spider_eval.sqlite_schema_extractor import SQLiteSchemaExtractor
 from app.spider_eval.spider_sqlite_executor import CompareResult, QueryRun, SpiderSQLiteExecutor
+from app.spider_eval import spider_evaluator, spider_sqlite_executor
 from app.spider_eval.spider_evaluator import exact_match
 from chromadb.utils import embedding_functions
 
@@ -497,6 +498,7 @@ def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: st
         "kind": final.kind,
         "first_em": first_em,
         "first_ex": bool(first and first.match),
+        "permuted": final.permuted,
     }
     results = {
         "gold": result_snapshot(final.gold),
@@ -662,6 +664,22 @@ def _run_meta(
     units_sha = sha256_text(
         "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
     )
+    # The scorer decides EX/EM: a run must not be resumed after it has changed.
+    scorer_sha = sha256_text(
+        "".join(
+            inspect.getsource(f)
+            for f in (
+                spider_sqlite_executor.results_match,
+                spider_sqlite_executor._normalize_results,
+                spider_sqlite_executor._column_orders,
+                spider_sqlite_executor._decode_text,
+                SpiderSQLiteExecutor._open_connection,
+                SpiderSQLiteExecutor.compare_detailed,
+                spider_evaluator.normalize_sql,
+                spider_evaluator.exact_match,
+            )
+        )
+    )
     dev_json = os.path.join(spider_path, "dev.json")
     dataset = {"dev_json": "dev.json", "sha256": sha256_file(dev_json), "n_samples": n_samples}
     embedding = _embedding_description(embedding_fn)
@@ -671,6 +689,7 @@ def _run_meta(
         "embedding": {**embedding, "function": _safe_name(embedding_fn)},
         "prompts": {**prompts, "system_sha256": prompts_sha, "user_builder_sha256": builder_sha},
         "retrieval_units": {"templates_sha256": units_sha},
+        "scorer": {"sha256": scorer_sha},
         "dataset": dataset,
         "code": git_info(_REPO_DIR, exclude_dir=out_dir),
         "environment": environment_info(),
@@ -681,6 +700,7 @@ def _run_meta(
             "prompts_sha256": prompts_sha,
             "user_builder_sha256": builder_sha,
             "unit_templates_sha256": units_sha,
+            "scorer_sha256": scorer_sha,
             "dataset_sha256": dataset["sha256"],
         },
     }

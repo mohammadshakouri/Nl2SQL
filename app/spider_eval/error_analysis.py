@@ -33,7 +33,6 @@ Usage::
 
 import argparse
 import csv
-import itertools
 import json
 import os
 import re
@@ -43,12 +42,12 @@ from collections import Counter, defaultdict
 from typing import Dict, List, Optional, Set, Tuple
 
 from app.spider_eval.run_log import latest_by_index, read_records
-from app.spider_eval.spider_sqlite_executor import _normalize_results
+from app.spider_eval.spider_sqlite_executor import results_match
 
 # category -> subtype -> what it means
 TAXONOMY: Dict[str, Dict[str, str]] = {
     "H": {
-        "column_order": "same rows, columns in another order (the scorer compares columns by position)",
+        "column_order": "same rows, columns in another order (rejected by the scorer used before results_match ignored column order)",
         "gold_unreadable": "the gold query cannot be run by the harness (invalid UTF-8 in the database)",
     },
     "G": {
@@ -113,29 +112,28 @@ def load_labels(path: str) -> Dict[int, dict]:
 
 def column_order_check(record: dict) -> str:
     """
-    Would a column-order-tolerant comparison accept this sample?
+    Would a column-order-tolerant comparison (the scorer's ``results_match``)
+    accept this sample's stored results?
 
     ``"full"``         yes, checked on the complete stored results
     ``"partial"``      the results have more than 20 rows and the first 20 rows match
-                       under a column permutation (necessary, not sufficient)
+                       under a column reordering (necessary, not sufficient)
     ``"undetermined"`` more than 20 rows and the stored rows do not match: the rows
                        are only the first 20 in query order, so a different group
                        order alone can explain it
-    ``"no_match"``     the complete results are not a column permutation of gold
+    ``"no_match"``     the complete results do not match, even with columns reordered
     """
     gold, pred = record["results"]["gold"], record["results"]["final"]
     if not (gold.get("ok") and pred.get("ok")):
         return "no_match"
-    if gold["n_rows"] != pred["n_rows"] or gold["n_cols"] != pred["n_cols"] or not gold["n_cols"]:
-        return "no_match"
-    if gold["n_cols"] > 7:
-        return "no_match"
     truncated = bool(gold.get("truncated") or pred.get("truncated"))
-    target = _normalize_results([tuple(r) for r in gold["rows"]])
-    for perm in itertools.permutations(range(pred["n_cols"])):
-        permuted = [tuple(row[j] for j in perm) for row in pred["rows"]]
-        if _normalize_results(permuted) == target:
-            return "partial" if truncated else "full"
+    if gold["n_rows"] != pred["n_rows"] or gold["n_cols"] != pred["n_cols"]:
+        return "no_match"
+    match, permuted = results_match(
+        [tuple(r) for r in pred["rows"]], [tuple(r) for r in gold["rows"]]
+    )
+    if match and permuted:
+        return "partial" if truncated else "full"
     return "undetermined" if truncated else "no_match"
 
 

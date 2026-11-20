@@ -235,8 +235,9 @@ def _print_results(metrics: dict) -> None:
     if metrics["mode"] == "feedback":
         print(f"Max attempts:        {metrics['max_attempts']}")
     print(f"Total Samples:       {metrics['total']}")
-    print(f"Exact Match:         {metrics['exact_match']:.2f}%")
-    print(f"Execution Accuracy:  {metrics['execution_accuracy']:.2f}%")
+    print(f"Exact Match:         {metrics['exact_match']:.2f}%  (normalised SQL string match, not Spider's exact set match)")
+    print(f"Execution Accuracy:  {metrics['execution_accuracy']:.2f}%"
+          f"  ({metrics.get('ex_column_reordered', 0)} matched only after reordering columns)")
     print(f"Inference failures:  {_format_failures(metrics)}")
     print(f"Skipped samples:     {metrics['skipped']}")
     print(f"LLM calls:           {metrics['llm_calls']}")

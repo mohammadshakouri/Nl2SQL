@@ -343,6 +343,10 @@ def summarize_records(
     metrics["inference_failures"] = sum(failure_reasons.values())
     metrics["failure_reasons"] = dict(failure_reasons)
     metrics["llm_calls"] = sum(len(r["attempts"]) for r in processed)
+    # EX passes that needed the columns reordered (scorer tolerance, see results_match)
+    metrics["ex_column_reordered"] = sum(
+        1 for r in scored if r["scoring"]["ex"] and r["scoring"].get("permuted")
+    )
 
     if mode == "feedback":
         retried = sum(1 for r in processed if len(r["attempts"]) > 1)
@@ -714,7 +718,9 @@ def check_run(run_dir: str) -> int:
         print(f"recomputed: EM {metrics['exact_match']}%  EX {metrics['execution_accuracy']}%  "
               f"over {metrics['total']} samples, {metrics['llm_calls']} LLM calls")
         stored = (manifest.get("results") or {}).get("metrics")
-        if stored and stored != metrics:
+        # Compare the metrics the manifest has: a log written before a metric was
+        # added (e.g. ex_column_reordered) must still pass.
+        if stored and any(metrics.get(key, object()) != value for key, value in stored.items()):
             problems.append("manifest results differ from metrics recomputed from samples.jsonl")
         tokens = token_totals(latest)
         print(f"tokens:     {tokens}")

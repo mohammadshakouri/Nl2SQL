@@ -3,6 +3,11 @@ Spider SQLite Executor
 
 Executes SQL queries against Spider's SQLite databases and compares
 result sets for execution accuracy evaluation.
+
+Result comparison (``results_match``) ignores row order, letter case and the
+order of the columns: a query that returns the right columns in another order
+is correct. Spider's own execution check (test-suite ``result_eq``) works the
+same way for column order.
 """
 
 import sqlite3
@@ -10,12 +15,16 @@ import os
 import time
 from contextlib import closing
 from dataclasses import dataclass
-from typing import Optional, Tuple, List, Any
+from typing import Iterator, Optional, Tuple, List, Any
 from urllib.parse import quote
 
 # Queries running longer than this are interrupted (e.g. a JOIN without an
 # ON clause producing a huge cartesian product).
 DEFAULT_TIMEOUT_SECONDS = 30.0
+
+# Upper bound on column orders tried when two results have several identical
+# columns (practically never reached; a result needing more is scored a mismatch).
+MAX_COLUMN_ORDERS = 10_000
 
 
 def _execute_sql(conn: sqlite3.Connection, sql: str) -> Tuple[bool, Optional[str], Optional[List[tuple]]]:
@@ -60,6 +69,8 @@ class CompareResult:
     """None on a match, else ``gold_failed``, ``pred_failed`` or ``result_mismatch``."""
     pred: QueryRun
     gold: QueryRun
+    permuted: bool = False
+    """True when the results match only after reordering the columns."""
 
 
 def _normalize_results(rows: List[tuple]) -> List[tuple]:
@@ -83,6 +94,77 @@ def _normalize_results(rows: List[tuple]) -> List[tuple]:
         )
         normalized.append(normalized_row)
     return sorted(normalized)
+
+
+def _column_orders(candidates: List[List[int]]) -> Iterator[Tuple[int, ...]]:
+    """Every way to give each gold column a different predicted column from its candidates."""
+    order: List[int] = []
+
+    def extend(position: int) -> Iterator[Tuple[int, ...]]:
+        if position == len(candidates):
+            yield tuple(order)
+            return
+        for column in candidates[position]:
+            if column not in order:
+                order.append(column)
+                yield from extend(position + 1)
+                order.pop()
+
+    yield from extend(0)
+
+
+def results_match(
+    pred_rows: List[tuple], gold_rows: List[tuple]
+) -> Tuple[bool, bool]:
+    """
+    Do two query results hold the same data?
+
+    Rows are compared as a multiset (order and duplicates count, order of the
+    rows does not), values by ``_normalize_results`` (text, trimmed, lower
+    case, NULL as empty). The columns may come in any order, but every column
+    must be present exactly once.
+
+    Returns:
+        ``(match, permuted)``; ``permuted`` is True when the match needed the
+        predicted columns reordered.
+    """
+    pred = _normalize_results(pred_rows)
+    gold = _normalize_results(gold_rows)
+    if pred == gold:
+        return True, False
+    if len(pred) != len(gold) or not gold:
+        return False, False
+    width = len(gold[0])
+    if len(pred[0]) != width or width < 2:
+        return False, False
+
+    # A predicted column can stand for a gold column only if both hold the same values.
+    gold_columns = [sorted(column) for column in zip(*gold)]
+    pred_columns = [sorted(column) for column in zip(*pred)]
+    candidates = [
+        [j for j in range(width) if pred_columns[j] == gold_column]
+        for gold_column in gold_columns
+    ]
+    if not all(candidates):
+        return False, False
+
+    for tried, order in enumerate(_column_orders(candidates)):
+        if tried >= MAX_COLUMN_ORDERS:
+            break
+        if sorted(tuple(row[j] for j in order) for row in pred) == gold:
+            return True, True
+    return False, False
+
+
+def _decode_text(raw: bytes) -> str:
+    """
+    Decode TEXT values as UTF-8, dropping invalid bytes.
+
+    Some Spider databases (e.g. ``wta_1``) hold bytes that are not UTF-8; with
+    sqlite3's strict default even the gold query fails on them. Dropping the
+    bytes is what Spider's own test-suite evaluation does.
+    """
+    return raw.decode("utf-8", errors="ignore")
 
 
 class SpiderSQLiteExecutor:
@@ -112,6 +194,7 @@ class SpiderSQLiteExecutor:
         # (a committed DELETE/DROP would corrupt every later sample).
         uri = f"file:{quote(os.path.abspath(self.sqlite_path))}?mode=ro"
         conn = sqlite3.connect(uri, uri=True)
+        conn.text_factory = _decode_text
         deadline = time.monotonic() + self.timeout
         conn.set_progress_handler(lambda: time.monotonic() > deadline, 10_000)
         return conn
@@ -135,8 +218,8 @@ class SpiderSQLiteExecutor:
         """
         Execute both predicted and gold SQL and compare result sets.
 
-        Comparison is:
-        - Order-independent (rows are sorted before comparison)
+        Comparison is (see ``results_match``):
+        - Order-independent for rows and for columns
         - Case-insensitive for string values
         - If *both* queries fail, returns False
         - If *gold* fails, returns False (benchmark data issue)
@@ -167,15 +250,13 @@ class SpiderSQLiteExecutor:
         if not pred.ok:
             return CompareResult(False, f"Predicted SQL failed: {pred.error}", "pred_failed", pred, gold)
 
-        pred_norm = _normalize_results(pred.rows)
-        gold_norm = _normalize_results(gold.rows)
-
-        if pred_norm == gold_norm:
-            return CompareResult(True, None, None, pred, gold)
+        match, permuted = results_match(pred.rows, gold.rows)
+        if match:
+            return CompareResult(True, None, None, pred, gold, permuted)
         return CompareResult(
             False,
-            f"Result mismatch: predicted {len(pred_norm)} row(s), "
-            f"gold {len(gold_norm)} row(s)",
+            f"Result mismatch: predicted {len(pred.rows)} row(s), "
+            f"gold {len(gold.rows)} row(s)",
             "result_mismatch",
             pred,
             gold,

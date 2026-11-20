@@ -334,7 +334,7 @@
     ]
    },
    "H/column_order": {
-    "description": "same rows, columns in another order (the scorer compares columns by position)",
+    "description": "same rows, columns in another order (rejected by the scorer used before results_match ignored column order)",
     "count": 45,
     "arguable": 0,
     "pct_of_all": 4.35,
