@@ -12,6 +12,10 @@ This class is consumed by the Spider evaluation harness
 the feedback/retry loop itself.
 """
 
+import asyncio
+import os
+from dataclasses import dataclass
+from urllib.parse import urlparse
 from typing import List, Dict, Tuple, Optional
 import chromadb
 from chromadb import Collection
@@ -34,6 +38,91 @@ OLLAMA_TEMPERATURE: float = 0.1
 OLLAMA_MODEL_NAME: str = "gemma4:12b".strip().lower()
 OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
+
+# OpenAI path defaults. The model/temperature can be overridden per run with
+# configure_llm() (cli_spider_eval.py --model / --temperature), and the effective
+# values are written to the run manifest.
+OPENAI_MODEL_NAME: str = "gpt-4o-mini"
+OPENAI_TEMPERATURE: float = 0.1
+# Explicit so the values are recorded rather than inherited from SDK defaults:
+# a hung request must not stall a paid run for the SDK's 10-minute default, and
+# transient errors (429/5xx/connection) are retried by the SDK before a sample
+# is ever scored as an inference failure.
+OPENAI_TIMEOUT_SECONDS: float = 120.0
+OPENAI_MAX_RETRIES: int = 5
+
+_UNSET = object()
+
+
+@dataclass
+class LLMSettings:
+    """The generation settings in effect for this process."""
+    provider: str
+    model: str
+    temperature: Optional[float]
+    host: Optional[str]
+    timeout_s: Optional[float] = None
+    max_retries: Optional[int] = None
+
+
+_model_override: Optional[str] = None
+_temperature_override = _UNSET
+
+
+def configure_llm(model: Optional[str] = None, temperature=_UNSET) -> None:
+    """
+    Override the model and/or temperature for the active provider.
+
+    ``temperature=None`` omits the parameter from the request entirely, for
+    models that only accept their default.
+    """
+    global _model_override, _temperature_override
+    if model:
+        _model_override = model
+    if temperature is not _UNSET:
+        _temperature_override = temperature
+
+
+def get_llm_settings() -> LLMSettings:
+    """The effective settings for the provider selected by USE_LOCAL_LLM."""
+    if USE_LOCAL_LLM:
+        temperature = OLLAMA_TEMPERATURE if _temperature_override is _UNSET else _temperature_override
+        return LLMSettings(
+            provider="ollama",
+            model=_model_override or OLLAMA_MODEL_NAME,
+            temperature=temperature,
+            host=OLLAMA_HOST,
+        )
+    temperature = OPENAI_TEMPERATURE if _temperature_override is _UNSET else _temperature_override
+    base_url = os.getenv("OPENAI_BASE_URL")
+    host = (urlparse(base_url).hostname or base_url) if base_url else "api.openai.com (SDK default)"
+    return LLMSettings(
+        provider="openai",
+        model=_model_override or OPENAI_MODEL_NAME,
+        temperature=temperature,
+        host=host,
+        timeout_s=OPENAI_TIMEOUT_SECONDS,
+        max_retries=OPENAI_MAX_RETRIES,
+    )
+
+
+_openai_client_cache: Optional[Tuple[object, AsyncOpenAI]] = None
+
+
+def _openai_client() -> AsyncOpenAI:
+    """One AsyncOpenAI client per event loop (not one per call)."""
+    global _openai_client_cache
+    loop = asyncio.get_running_loop()
+    if _openai_client_cache is None or _openai_client_cache[0] is not loop:
+        _openai_client_cache = (
+            loop,
+            AsyncOpenAI(
+                api_key=OPENAI_API_KEY,
+                timeout=OPENAI_TIMEOUT_SECONDS,
+                max_retries=OPENAI_MAX_RETRIES,
+            ),
+        )
+    return _openai_client_cache[1]
 
 
 class NL2SQLChain:
@@ -74,36 +163,52 @@ class NL2SQLChain:
         """Get the system prompt for a first attempt or a feedback retry"""
         return SYSTEM_PROMPT_NL2SQL_FEEDBACK if is_feedback else SYSTEM_PROMPT_NL2SQL
 
-    def retrieve_schema_elements(
-        self, question: str, n_results: int
-    ) -> Tuple[List[str], List[float]]:
+    def retrieve_schema_units(self, question: str, n_results: int) -> List[Dict]:
         """
         Stage 3: Schema Linking via Vector Retrieval
 
-        Retrieves relevant schema elements (tables, columns, relations) based on question.
+        Retrieves the Top-K schema units (tables, columns, relations) for the
+        question, keeping each unit's collection id and distance so the
+        retrieval can be analysed afterwards (e.g. Recall@K).
 
         Args:
             question: User's natural language question
-            n_results: Number of schema elements to retrieve
+            n_results: Number of schema units to retrieve
 
         Returns:
-            Tuple of (retrieved_documents, distances)
+            List of {"rank", "id", "text", "distance"} dicts, best first.
         """
-        # Get collection
         collection: Collection = self.chroma_client.get_collection(
             name=self.collection_name, embedding_function=self.embedding_fn
         )
 
-        # Query for relevant schema elements
         results = collection.query(query_texts=[question], n_results=n_results)
 
         if not results["documents"] or not results["documents"][0]:
-            return [], []
+            return []
 
         documents = list(results["documents"][0])
         distances = list(results["distances"][0])
+        ids = list(results["ids"][0])
 
-        return documents, distances
+        return [
+            {"rank": rank, "id": unit_id, "text": text, "distance": float(distance)}
+            for rank, (unit_id, text, distance) in enumerate(
+                zip(ids, documents, distances), start=1
+            )
+        ]
+
+    def retrieve_schema_elements(
+        self, question: str, n_results: int
+    ) -> Tuple[List[str], List[float]]:
+        """
+        Same retrieval as :meth:`retrieve_schema_units`, as parallel lists.
+
+        Returns:
+            Tuple of (retrieved_documents, distances)
+        """
+        units = self.retrieve_schema_units(question, n_results)
+        return [u["text"] for u in units], [u["distance"] for u in units]
 
     def build_schema_context(self, retrieved_elements: List[str]) -> str:
         """
@@ -188,8 +293,9 @@ class NL2SQLChain:
 
         return prompt
 
+    @staticmethod
     async def generate_sql_ollama(
-        self, messages: List[Dict[str, str]], stream: bool = True
+        messages: List[Dict[str, str]], stream: bool = True
     ) -> ChatResponse:
         """
         Generate SQL using local Ollama LLM
@@ -201,35 +307,46 @@ class NL2SQLChain:
         Returns:
             ChatResponse from Ollama
         """
+        settings = get_llm_settings()
         ollama_client = AsyncClient(host=OLLAMA_HOST)
+
+        options = {}
+        if settings.temperature is not None:
+            options["temperature"] = settings.temperature
 
         chat_completion = await ollama_client.chat(
             think=False,
             stream=stream,
             messages=messages,
-            model=OLLAMA_MODEL_NAME,
-            options={"temperature": OLLAMA_TEMPERATURE},
+            model=settings.model,
+            options=options,
         )
 
         return chat_completion
 
+    @staticmethod
     async def generate_sql_openai(
-        self, messages: List[Dict[str, str]], stream: bool = True
+        messages: List[Dict[str, str]],
+        stream: bool = True,
+        include_usage: bool = True,
     ):
         """
-        Generate SQL using OpenAI LLM
+        Generate SQL using the OpenAI chat completions API
 
         Args:
             messages: List of message dicts
             stream: Whether to stream response
+            include_usage: Ask the API to send token usage in a final stream
+                           chunk (needed to tally the cost of a run)
 
         Returns:
             OpenAI chat completion stream
         """
-        openai_client = AsyncOpenAI(api_key=OPENAI_API_KEY)
+        settings = get_llm_settings()
+        request = {"model": settings.model, "messages": messages, "stream": stream}
+        if settings.temperature is not None:
+            request["temperature"] = settings.temperature
+        if stream and include_usage:
+            request["stream_options"] = {"include_usage": True}
 
-        chat_completion = await openai_client.chat.completions.create(
-            model="gpt-4o-mini", messages=messages, temperature=0.1, stream=stream
-        )
-
-        return chat_completion
+        return await _openai_client().chat.completions.create(**request)

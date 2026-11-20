@@ -15,6 +15,10 @@ Usage
     # Compare both modes back-to-back
     python cli_spider_eval.py --spider_path ./spider --compare
 
+    # A paid run: pick the model, then continue it if it is interrupted
+    python cli_spider_eval.py --spider_path ./spider --model MODEL --tag full
+    python cli_spider_eval.py --spider_path ./spider --resume runs/<run_dir>
+
 Optional flags
 --------------
     --limit N        Evaluate only the first N samples (default: all)
@@ -24,17 +28,40 @@ Optional flags
     --exec-feedback  Also retry on SQLite execution errors (implies --feedback)
     --compare        Run single-pass and feedback modes and print a comparison table
     --max-iter N     Total attempts per question in feedback mode (default: 4)
+
+Model and logging flags
+-----------------------
+    --model NAME     Model for the active provider (OpenAI, or Ollama if USE_LOCAL_LLM)
+    --temperature T  Sampling temperature, or "default" to omit it (for models
+                     that reject the parameter)
+    --out-dir DIR    Where run directories are created (default: runs)
+    --tag TEXT       Suffix for the run directory name
+    --resume DIR     Continue the run in DIR: finished samples are kept, samples
+                     that failed on infrastructure errors are re-run. Settings
+                     are taken from the run's manifest.
+    --rebuild-index  Re-embed all schema units instead of reusing Chroma
+                     collections from earlier runs
+    --no-preflight   Skip the one-call check of the model/credentials
+
+Every run writes runs/<run_dir>/ (manifest.json, samples.jsonl, schema_units.json,
+console.txt); see docs/run-log-format.md. Verify a run with:
+    python -m app.spider_eval.run_log check runs/<run_dir>
 """
 
 import argparse
 import asyncio
+import json
 import os
+import signal
 import sys
 
 _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
+from app.nl2sql_chain import configure_llm, get_llm_settings
+from app.spider_eval.llm_io import preflight
+from app.spider_eval.run_log import RunLog, StdoutCapture
 from app.spider_eval.spider_loader import load_spider_dev
 from app.spider_eval.spider_runner import run_spider_evaluation
 
@@ -59,7 +86,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--k",
         type=_positive_int,
-        default=15,
+        default=None,
         metavar="K",
         help="Number of schema retrieval units (Top-K) retrieved per question (default: 15).",
     )
@@ -93,16 +120,71 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--max-iter",
         type=_positive_int,
-        default=4,
+        default=None,
         metavar="N",
         dest="max_iter",
         help="Total attempts per question in feedback mode, i.e. 1 initial "
              "attempt + N-1 retries (default: 4).",
     )
+    parser.add_argument(
+        "--model",
+        default=None,
+        metavar="NAME",
+        help="Model name for the active provider (default: the one in nl2sql_chain.py).",
+    )
+    parser.add_argument(
+        "--temperature",
+        type=_temperature,
+        default=_NOT_GIVEN,
+        metavar="T",
+        help='Sampling temperature, or "default" to omit the parameter.',
+    )
+    parser.add_argument(
+        "--out-dir",
+        default="runs",
+        metavar="DIR",
+        dest="out_dir",
+        help="Directory in which run directories are created (default: runs).",
+    )
+    parser.add_argument(
+        "--tag",
+        default=None,
+        metavar="TEXT",
+        help="Suffix for the run directory name.",
+    )
+    parser.add_argument(
+        "--resume",
+        default=None,
+        metavar="RUN_DIR",
+        help="Continue the run in RUN_DIR (settings are taken from its manifest).",
+    )
+    parser.add_argument(
+        "--rebuild-index",
+        action="store_true",
+        default=False,
+        dest="rebuild_index",
+        help="Re-embed all schema units instead of reusing existing Chroma collections.",
+    )
+    parser.add_argument(
+        "--no-preflight",
+        action="store_true",
+        default=False,
+        dest="no_preflight",
+        help="Skip the single test call made to the LLM before the run.",
+    )
     args = parser.parse_args()
     if args.exec_feedback:
         args.feedback = True
     return args
+
+
+_NOT_GIVEN = object()
+
+
+def _temperature(value: str):
+    if value.lower() == "default":
+        return None
+    return float(value)
 
 
 def _positive_int(value: str) -> int:
@@ -136,8 +218,20 @@ def _print_results(metrics: dict) -> None:
     print(f"Inference failures:  {_format_failures(metrics)}")
     print(f"Skipped samples:     {metrics['skipped']}")
     print(f"LLM calls:           {metrics['llm_calls']}")
+    print(f"Tokens:              {_format_tokens(metrics['tokens'])}")
     if metrics["mode"] == "feedback":
         _print_feedback_diagnostics(metrics)
+    print(f"Run log:             {metrics['run_dir']}")
+
+
+def _format_tokens(tokens: dict) -> str:
+    parts = [f"{name.replace('_tokens', '')}: {tokens[name]:,}"
+             for name in ("prompt_tokens", "completion_tokens", "reasoning_tokens", "cached_tokens", "total_tokens")
+             if name in tokens]
+    missing = tokens.get("samples_without_usage", 0)
+    if missing:
+        parts.append(f"(no usage reported for {missing} samples)")
+    return ", ".join(parts) if parts else "not reported by the provider"
 
 
 def _print_feedback_diagnostics(metrics: dict) -> None:
@@ -155,8 +249,118 @@ def _print_feedback_diagnostics(metrics: dict) -> None:
     print(f"    exhausted:            {fb['exhausted']}  (no attempt passed the checks)")
 
 
+def _apply_resume_settings(args: argparse.Namespace) -> None:
+    """With --resume, the run's own manifest decides the settings."""
+    manifest_path = os.path.join(args.resume, "manifest.json")
+    if not os.path.isfile(manifest_path):
+        print(f"ERROR: not a run directory (no manifest.json): {args.resume}")
+        sys.exit(1)
+    with open(manifest_path, encoding="utf-8") as f:
+        manifest = json.load(f)
+    config, llm = manifest["config"], manifest["llm"]
+
+    saved = {
+        "k": config["k"],
+        "feedback": config["mode"] == "feedback",
+        "exec_feedback": bool(config.get("execution_feedback")),
+        "max_iter": config.get("max_attempts"),
+        "model": llm["model"],
+    }
+    given = {
+        "k": args.k, "model": args.model,
+        "max_iter": args.max_iter if saved["feedback"] else None,
+        "feedback": args.feedback or None, "exec_feedback": args.exec_feedback or None,
+    }
+    for name, value in given.items():
+        if value is not None and value != saved[name]:
+            print(f"ERROR: --{name.replace('_', '-')} {value!r} contradicts the run being resumed "
+                  f"({saved[name]!r}). Omit it: --resume takes its settings from the manifest.")
+            sys.exit(1)
+    if args.temperature is not _NOT_GIVEN and args.temperature != llm["temperature"]:
+        print(f"ERROR: --temperature contradicts the run being resumed ({llm['temperature']!r}).")
+        sys.exit(1)
+
+    args.k = saved["k"]
+    args.feedback = saved["feedback"]
+    args.exec_feedback = saved["exec_feedback"]
+    args.max_iter = saved["max_iter"]
+    args.model = saved["model"]
+    args.temperature = llm["temperature"]
+
+
+async def _run_one(
+    args: argparse.Namespace, samples, spider_path: str, feedback: bool, prelude: str
+) -> dict:
+    """One logged run (a new run directory, or the one being resumed)."""
+    mode = "feedback" if feedback else "single-pass"
+    if args.resume:
+        run_log = RunLog.resume(args.resume, prelude=prelude)
+    else:
+        run_log = RunLog.create(
+            args.out_dir, mode, get_llm_settings().model, args.k, args.tag, prelude=prelude
+        )
+    try:
+        metrics = await run_spider_evaluation(
+            samples=samples,
+            spider_path=spider_path,
+            verbose=not args.quiet,
+            max_samples=args.limit,
+            k=args.k,
+            use_feedback_loop=feedback,
+            feedback_max_iterations=args.max_iter,
+            execution_feedback=args.exec_feedback if feedback else False,
+            run_log=run_log,
+            resume=bool(args.resume),
+            rebuild_index=args.rebuild_index,
+            argv=sys.argv,
+        )
+        print()
+        print("Spider Evaluation Results")
+        print("=========================")
+        _print_results(metrics)
+        _warn_infrastructure_failures(metrics)
+        return metrics
+    finally:
+        run_log.close()
+
+
+def _warn_infrastructure_failures(metrics: dict) -> None:
+    infra = sum(metrics["failure_reasons"].get(kind, 0)
+                for kind in ("llm_error", "retrieval_error", "internal_error"))
+    if infra or metrics["skipped"]:
+        print()
+        print(f"WARNING: {infra} sample(s) failed on infrastructure errors and {metrics['skipped']} "
+              "were skipped; they count against the metrics above.")
+        print(f"         Re-run only those with:  python cli_spider_eval.py --spider_path <path> "
+              f"--resume {metrics['run_dir']}")
+
+
 async def main() -> None:
+    capture = StdoutCapture()   # so the run's console.txt also holds the output printed before it exists
+    try:
+        args, samples, spider_path = await _prepare()
+    finally:
+        prelude = capture.stop()
+    await _run(args, samples, spider_path, prelude)
+
+
+async def _prepare():
+    """Parse arguments, configure the LLM, load the dataset and run the preflight call."""
     args = parse_args()
+
+    if args.resume and args.compare:
+        print("ERROR: --resume cannot be combined with --compare.")
+        sys.exit(1)
+    if args.resume:
+        _apply_resume_settings(args)
+    args.k = args.k or 15
+    args.max_iter = args.max_iter or 4
+
+    configure_llm(
+        model=args.model,
+        **({} if args.temperature is _NOT_GIVEN else {"temperature": args.temperature}),
+    )
+    llm = get_llm_settings()
 
     spider_path = os.path.abspath(args.spider_path)
     if not os.path.isdir(spider_path):
@@ -169,36 +373,37 @@ async def main() -> None:
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
     print(f"Retrieving Top-{args.k} schema units per question.")
-    print()
+    print(f"LLM: {llm.provider} / {llm.model}  temperature={llm.temperature}")
 
+    if not args.no_preflight:
+        call = await preflight()
+        if call.error:
+            print(f"ERROR: preflight call to {llm.provider} / {llm.model} failed: {call.error}")
+            print("       Nothing was run. Fix the model name / credentials / parameters, "
+                  "or pass --no-preflight to skip this check.")
+            sys.exit(1)
+        print(f"Preflight OK: {call.latency_ms:.0f} ms, reply {call.text.strip()[:40]!r}, "
+              f"usage {call.usage}")
+        if llm.provider == "openai" and not call.usage:
+            print("WARNING: the endpoint reported no token usage, so the run log cannot show "
+                  "token counts or cost.")
+    print()
+    return args, samples, spider_path
+
+
+async def _run(args: argparse.Namespace, samples, spider_path: str, prelude: str) -> None:
     if args.compare:
         # --- Single-pass run ---
         print("=" * 50)
         print("  Mode: Single-pass (no feedback)")
         print("=" * 50)
-        metrics_sp = await run_spider_evaluation(
-            samples=samples,
-            spider_path=spider_path,
-            verbose=not args.quiet,
-            max_samples=args.limit,
-            k=args.k,
-            use_feedback_loop=False,
-        )
+        metrics_sp = await _run_one(args, samples, spider_path, False, prelude)
 
         print()
         print("=" * 50)
         print("  Mode: Feedback loop" + (" + execution feedback" if args.exec_feedback else ""))
         print("=" * 50)
-        metrics_fb = await run_spider_evaluation(
-            samples=samples,
-            spider_path=spider_path,
-            verbose=not args.quiet,
-            max_samples=args.limit,
-            k=args.k,
-            use_feedback_loop=True,
-            feedback_max_iterations=args.max_iter,
-            execution_feedback=args.exec_feedback,
-        )
+        metrics_fb = await _run_one(args, samples, spider_path, True, prelude)
 
         # Side-by-side comparison
         print()
@@ -222,22 +427,21 @@ async def main() -> None:
         _print_feedback_diagnostics(metrics_fb)
 
     else:
-        metrics = await run_spider_evaluation(
-            samples=samples,
-            spider_path=spider_path,
-            verbose=not args.quiet,
-            max_samples=args.limit,
-            k=args.k,
-            use_feedback_loop=args.feedback,
-            feedback_max_iterations=args.max_iter,
-            execution_feedback=args.exec_feedback,
-        )
+        await _run_one(args, samples, spider_path, args.feedback, prelude)
 
-        print()
-        print("Spider Evaluation Results")
-        print("=========================")
-        _print_results(metrics)
+
+def _terminate_as_interrupt(signum, frame) -> None:
+    raise KeyboardInterrupt
 
 
 if __name__ == "__main__":
-    asyncio.run(main())
+    # Treat SIGTERM like Ctrl-C so an interrupted run still closes its log cleanly.
+    try:
+        signal.signal(signal.SIGTERM, _terminate_as_interrupt)
+    except (ValueError, OSError):
+        pass
+    try:
+        asyncio.run(main())
+    except KeyboardInterrupt:
+        print("\nInterrupted. The run log is intact; continue it with --resume <run_dir>.")
+        sys.exit(130)
