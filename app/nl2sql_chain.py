@@ -43,7 +43,7 @@ EMBEDDING_MODEL_DIR = env.embedding_model_dir
 # configure_llm() (cli_spider_eval.py --model / --temperature), and the effective
 # values are written to the run manifest.
 OPENAI_MODEL_NAME: str = "gpt-6-luna"
-OPENAI_TEMPERATURE: float = 0.1
+OPENAI_TEMPERATURE: float = 1
 # Explicit so the values are recorded rather than inherited from SDK defaults:
 # a hung request must not stall a paid run for the SDK's 10-minute default, and
 # transient errors (429/5xx/connection) are retried by the SDK before a sample

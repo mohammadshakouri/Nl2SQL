@@ -1,0 +1,273 @@
+{
+  "concert_singer": {
+    "db_id": "concert_singer",
+    "summary": {
+      "tables": 4,
+      "columns": 21,
+      "relations": 3,
+      "total_units": 28
+    },
+    "collection": {
+      "name": "Schema_spider_concert_singer",
+      "reused": false,
+      "rebuilt_stale": true,
+      "n_units_expected": 28,
+      "n_units_stored": 28
+    },
+    "units": [
+      {
+        "id": "table_0",
+        "kind": "table",
+        "text": "concert Table: Table concert. Includes columns concert_ID. "
+      },
+      {
+        "id": "table_1",
+        "kind": "table",
+        "text": "singer Table: Table singer. Includes columns Singer_ID. "
+      },
+      {
+        "id": "table_2",
+        "kind": "table",
+        "text": "singer_in_concert Table: Table singer_in_concert. Includes columns concert_ID, Singer_ID. "
+      },
+      {
+        "id": "table_3",
+        "kind": "table",
+        "text": "stadium Table: Table stadium. Includes columns Stadium_ID. "
+      },
+      {
+        "id": "column_0",
+        "kind": "column",
+        "text": "concert.concert_ID Column: Column concert_ID of table concert, data type integer."
+      },
+      {
+        "id": "column_1",
+        "kind": "column",
+        "text": "concert.concert_Name Column: Column concert_Name of table concert, data type varchar."
+      },
+      {
+        "id": "column_2",
+        "kind": "column",
+        "text": "concert.Theme Column: Column Theme of table concert, data type varchar."
+      },
+      {
+        "id": "column_3",
+        "kind": "column",
+        "text": "concert.Stadium_ID Column: Column Stadium_ID of table concert, data type varchar."
+      },
+      {
+        "id": "column_4",
+        "kind": "column",
+        "text": "concert.Year Column: Column Year of table concert, data type varchar."
+      },
+      {
+        "id": "column_5",
+        "kind": "column",
+        "text": "singer.Singer_ID Column: Column Singer_ID of table singer, data type integer."
+      },
+      {
+        "id": "column_6",
+        "kind": "column",
+        "text": "singer.Name Column: Column Name of table singer, data type varchar."
+      },
+      {
+        "id": "column_7",
+        "kind": "column",
+        "text": "singer.Country Column: Column Country of table singer, data type varchar."
+      },
+      {
+        "id": "column_8",
+        "kind": "column",
+        "text": "singer.Song_Name Column: Column Song_Name of table singer, data type varchar."
+      },
+      {
+        "id": "column_9",
+        "kind": "column",
+        "text": "singer.Song_release_year Column: Column Song_release_year of table singer, data type varchar."
+      },
+      {
+        "id": "column_10",
+        "kind": "column",
+        "text": "singer.Age Column: Column Age of table singer, data type integer."
+      },
+      {
+        "id": "column_11",
+        "kind": "column",
+        "text": "singer.Is_male Column: Column Is_male of table singer, data type boolean."
+      },
+      {
+        "id": "column_12",
+        "kind": "column",
+        "text": "singer_in_concert.concert_ID Column: Column concert_ID of table singer_in_concert, data type integer."
+      },
+      {
+        "id": "column_13",
+        "kind": "column",
+        "text": "singer_in_concert.Singer_ID Column: Column Singer_ID of table singer_in_concert, data type varchar."
+      },
+      {
+        "id": "column_14",
+        "kind": "column",
+        "text": "stadium.Stadium_ID Column: Column Stadium_ID of table stadium, data type integer."
+      },
+      {
+        "id": "column_15",
+        "kind": "column",
+        "text": "stadium.Location Column: Column Location of table stadium, data type varchar."
+      },
+      {
+        "id": "column_16",
+        "kind": "column",
+        "text": "stadium.Name Column: Column Name of table stadium, data type varchar."
+      },
+      {
+        "id": "column_17",
+        "kind": "column",
+        "text": "stadium.Capacity Column: Column Capacity of table stadium, data type integer."
+      },
+      {
+        "id": "column_18",
+        "kind": "column",
+        "text": "stadium.Highest Column: Column Highest of table stadium, data type integer."
+      },
+      {
+        "id": "column_19",
+        "kind": "column",
+        "text": "stadium.Lowest Column: Column Lowest of table stadium, data type integer."
+      },
+      {
+        "id": "column_20",
+        "kind": "column",
+        "text": "stadium.Average Column: Column Average of table stadium, data type integer."
+      },
+      {
+        "id": "relation_0",
+        "kind": "relation",
+        "text": "Relation: concert.Stadium_ID ↔ stadium.Stadium_ID. Relationship type many-to-one. "
+      },
+      {
+        "id": "relation_1",
+        "kind": "relation",
+        "text": "Relation: singer_in_concert.Singer_ID ↔ singer.Singer_ID. Relationship type many-to-one. "
+      },
+      {
+        "id": "relation_2",
+        "kind": "relation",
+        "text": "Relation: singer_in_concert.concert_ID ↔ concert.concert_ID. Relationship type many-to-one. "
+      }
+    ]
+  },
+  "pets_1": {
+    "db_id": "pets_1",
+    "summary": {
+      "tables": 3,
+      "columns": 14,
+      "relations": 2,
+      "total_units": 19
+    },
+    "collection": {
+      "name": "Schema_spider_pets_1",
+      "reused": false,
+      "rebuilt_stale": true,
+      "n_units_expected": 19,
+      "n_units_stored": 19
+    },
+    "units": [
+      {
+        "id": "table_0",
+        "kind": "table",
+        "text": "Has_Pet Table: Table Has_Pet. Includes columns StuID, PetID. "
+      },
+      {
+        "id": "table_1",
+        "kind": "table",
+        "text": "Pets Table: Table Pets. Includes columns PetID. "
+      },
+      {
+        "id": "table_2",
+        "kind": "table",
+        "text": "Student Table: Table Student. Includes columns StuID. "
+      },
+      {
+        "id": "column_0",
+        "kind": "column",
+        "text": "Has_Pet.StuID Column: Column StuID of table Has_Pet, data type integer."
+      },
+      {
+        "id": "column_1",
+        "kind": "column",
+        "text": "Has_Pet.PetID Column: Column PetID of table Has_Pet, data type integer."
+      },
+      {
+        "id": "column_2",
+        "kind": "column",
+        "text": "Pets.PetID Column: Column PetID of table Pets, data type integer."
+      },
+      {
+        "id": "column_3",
+        "kind": "column",
+        "text": "Pets.PetType Column: Column PetType of table Pets, data type varchar."
+      },
+      {
+        "id": "column_4",
+        "kind": "column",
+        "text": "Pets.pet_age Column: Column pet_age of table Pets, data type integer."
+      },
+      {
+        "id": "column_5",
+        "kind": "column",
+        "text": "Pets.weight Column: Column weight of table Pets, data type decimal."
+      },
+      {
+        "id": "column_6",
+        "kind": "column",
+        "text": "Student.StuID Column: Column StuID of table Student, data type integer."
+      },
+      {
+        "id": "column_7",
+        "kind": "column",
+        "text": "Student.LName Column: Column LName of table Student, data type varchar."
+      },
+      {
+        "id": "column_8",
+        "kind": "column",
+        "text": "Student.Fname Column: Column Fname of table Student, data type varchar."
+      },
+      {
+        "id": "column_9",
+        "kind": "column",
+        "text": "Student.Age Column: Column Age of table Student, data type integer."
+      },
+      {
+        "id": "column_10",
+        "kind": "column",
+        "text": "Student.Sex Column: Column Sex of table Student, data type varchar."
+      },
+      {
+        "id": "column_11",
+        "kind": "column",
+        "text": "Student.Major Column: Column Major of table Student, data type integer."
+      },
+      {
+        "id": "column_12",
+        "kind": "column",
+        "text": "Student.Advisor Column: Column Advisor of table Student, data type integer."
+      },
+      {
+        "id": "column_13",
+        "kind": "column",
+        "text": "Student.city_code Column: Column city_code of table Student, data type varchar."
+      },
+      {
+        "id": "relation_0",
+        "kind": "relation",
+        "text": "Relation: Has_Pet.StuID ↔ Student.StuID. Relationship type many-to-one. "
+      },
+      {
+        "id": "relation_1",
+        "kind": "relation",
+        "text": "Relation: Has_Pet.PetID ↔ Pets.PetID. Relationship type many-to-one. "
+      }
+    ]
+  }
+}
