@@ -1,0 +1,1052 @@
+{
+ "run": "20261120T164326Z_feedback_gpt-6-luna_k15_all_samples",
+ "n_samples": 1034,
+ "label_problems": [],
+ "overview": {
+  "ex": 720,
+  "ex_pct": 69.63,
+  "single_pass_ex": 666,
+  "single_pass_ex_pct": 64.41,
+  "em_pct": 10.15,
+  "failing": 314
+ },
+ "loop": {
+  "attempts_distribution": {
+   "1": 919,
+   "2": 111,
+   "3": 3,
+   "4": 1
+  },
+  "llm_calls": 1154,
+  "samples_retried": 115,
+  "recovered": 115,
+  "fallback_to_attempt_1": 0,
+  "rejections_by_stage": {
+   "execution": 117,
+   "static": 3
+  },
+  "first_attempt_rejection_kinds": {
+   "dialect: FETCH FIRST/NEXT n ROWS (not SQLite)": {
+    "samples": 89,
+    "final_ex": 45
+   },
+   "dialect: ALL/ANY/SOME subquery comparison (not SQLite)": {
+    "samples": 15,
+    "final_ex": 8
+   },
+   "harness: UTF-8 decode error of the database": {
+    "samples": 4,
+    "final_ex": 0
+   },
+   "dialect: ANSI function with FROM (EXTRACT/SUBSTRING/POSITION/TRIM)": {
+    "samples": 3,
+    "final_ex": 1
+   },
+   "static validator: table not found": {
+    "samples": 2,
+    "final_ex": 0
+   },
+   "no such column": {
+    "samples": 1,
+    "final_ex": 0
+   },
+   "syntax error (other)": {
+    "samples": 1,
+    "final_ex": 0
+   }
+  },
+  "single_pass_wrong_final_right": 54,
+  "single_pass_right_final_wrong": 0,
+  "failing_samples_whose_sql_ran": 314
+ },
+ "taxonomy": {
+  "categories": {
+   "H": {
+    "count": 47,
+    "pct_of_all": 4.55,
+    "arguable": 0
+   },
+   "G": {
+    "count": 135,
+    "pct_of_all": 13.06,
+    "arguable": 82
+   },
+   "M": {
+    "count": 132,
+    "pct_of_all": 12.77,
+    "arguable": 8
+   }
+  },
+  "subtypes": {
+   "G/zero_count_groups": {
+    "description": "LEFT JOIN keeps groups with count 0, gold uses an inner join",
+    "count": 25,
+    "arguable": 25,
+    "pct_of_all": 2.42,
+    "samples": [
+     22,
+     35,
+     287,
+     288,
+     309,
+     341,
+     342,
+     367,
+     369,
+     370,
+     375,
+     376,
+     405,
+     406,
+     470,
+     472,
+     525,
+     573,
+     574,
+     882,
+     883,
+     884,
+     885,
+     902,
+     1025
+    ]
+   },
+   "G/ambiguous_question": {
+    "description": "the question admits more than one reading; the prediction is a defensible one",
+    "count": 23,
+    "arguable": 23,
+    "pct_of_all": 2.22,
+    "samples": [
+     419,
+     529,
+     530,
+     531,
+     642,
+     698,
+     756,
+     772,
+     773,
+     778,
+     779,
+     894,
+     895,
+     896,
+     897,
+     904,
+     905,
+     906,
+     907,
+     909,
+     916,
+     917,
+     925
+    ]
+   },
+   "G/ties_limit": {
+    "description": "tie for the top value; gold LIMIT 1 and the prediction pick different rows",
+    "count": 18,
+    "arguable": 0,
+    "pct_of_all": 1.74,
+    "samples": [
+     229,
+     230,
+     231,
+     232,
+     311,
+     312,
+     541,
+     542,
+     547,
+     548,
+     695,
+     740,
+     741,
+     789,
+     844,
+     845,
+     879,
+     954
+    ]
+   },
+   "G/gold_incorrect": {
+    "description": "the gold query does not answer the question as asked",
+    "count": 16,
+    "arguable": 6,
+    "pct_of_all": 1.55,
+    "samples": [
+     161,
+     162,
+     500,
+     526,
+     578,
+     641,
+     687,
+     818,
+     819,
+     820,
+     821,
+     943,
+     944,
+     945,
+     960,
+     961
+    ]
+   },
+   "G/gold_text_column_quirk": {
+    "description": "gold relies on string comparison/ordering of a numeric-looking TEXT column",
+    "count": 13,
+    "arguable": 3,
+    "pct_of_all": 1.26,
+    "samples": [
+     125,
+     126,
+     131,
+     132,
+     134,
+     159,
+     160,
+     165,
+     166,
+     167,
+     168,
+     169,
+     170
+    ]
+   },
+   "G/gold_literal_case": {
+    "description": "gold compares with a lower-case literal, so it matches nothing (or everything)",
+    "count": 7,
+    "arguable": 0,
+    "pct_of_all": 0.68,
+    "samples": [
+     387,
+     388,
+     554,
+     754,
+     786,
+     810,
+     811
+    ]
+   },
+   "G/ambiguous_projection": {
+    "description": "the wording does not fix which or how many columns to return",
+    "count": 7,
+    "arguable": 7,
+    "pct_of_all": 0.68,
+    "samples": [
+     507,
+     566,
+     579,
+     580,
+     581,
+     996,
+     997
+    ]
+   },
+   "G/ambiguous_column": {
+    "description": "several columns fit the wording (e.g. Maker vs FullName)",
+    "count": 6,
+    "arguable": 6,
+    "pct_of_all": 0.58,
+    "samples": [
+     16,
+     100,
+     121,
+     122,
+     150,
+     630
+    ]
+   },
+   "G/gold_empty_result": {
+    "description": "gold returns 0 rows because of a data quirk (whitespace)",
+    "count": 6,
+    "arguable": 0,
+    "pct_of_all": 0.58,
+    "samples": [
+     197,
+     198,
+     225,
+     226,
+     227,
+     228
+    ]
+   },
+   "G/gold_extra_projection": {
+    "description": "gold returns columns the question does not ask for",
+    "count": 5,
+    "arguable": 4,
+    "pct_of_all": 0.48,
+    "samples": [
+     66,
+     755,
+     761,
+     816,
+     817
+    ]
+   },
+   "G/distinct_duplicates": {
+    "description": "gold keeps duplicate rows, the prediction uses DISTINCT",
+    "count": 4,
+    "arguable": 4,
+    "pct_of_all": 0.39,
+    "samples": [
+     37,
+     38,
+     65,
+     645
+    ]
+   },
+   "G/gold_grain_quirk": {
+    "description": "gold groups at another grain than the question states",
+    "count": 2,
+    "arguable": 2,
+    "pct_of_all": 0.19,
+    "samples": [
+     469,
+     471
+    ]
+   },
+   "G/projection_format": {
+    "description": "one concatenated column versus separate columns",
+    "count": 1,
+    "arguable": 1,
+    "pct_of_all": 0.1,
+    "samples": [
+     458
+    ]
+   },
+   "G/gold_nondeterministic": {
+    "description": "gold returns an arbitrary value (bare column in GROUP BY)",
+    "count": 1,
+    "arguable": 1,
+    "pct_of_all": 0.1,
+    "samples": [
+     464
+    ]
+   },
+   "G/gold_missing_projection": {
+    "description": "gold omits a column the question asks for",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.1,
+    "samples": [
+     493
+    ]
+   },
+   "H/column_order": {
+    "description": "same rows, columns in another order (the scorer compares columns by position)",
+    "count": 45,
+    "arguable": 0,
+    "pct_of_all": 4.35,
+    "samples": [
+     49,
+     50,
+     71,
+     72,
+     73,
+     74,
+     79,
+     80,
+     127,
+     128,
+     139,
+     140,
+     263,
+     264,
+     267,
+     268,
+     292,
+     417,
+     452,
+     459,
+     460,
+     467,
+     473,
+     474,
+     479,
+     480,
+     481,
+     482,
+     489,
+     490,
+     571,
+     617,
+     627,
+     628,
+     716,
+     717,
+     788,
+     790,
+     792,
+     793,
+     794,
+     795,
+     796,
+     798,
+     799
+    ]
+   },
+   "H/gold_unreadable": {
+    "description": "the gold query cannot be run by the harness (invalid UTF-8 in the database)",
+    "count": 2,
+    "arguable": 0,
+    "pct_of_all": 0.19,
+    "samples": [
+     455,
+     456
+    ]
+   },
+   "M/extra_projection": {
+    "description": "returns a column the question does not ask for",
+    "count": 23,
+    "arguable": 0,
+    "pct_of_all": 2.22,
+    "samples": [
+     26,
+     242,
+     243,
+     258,
+     462,
+     496,
+     537,
+     614,
+     615,
+     649,
+     650,
+     651,
+     652,
+     675,
+     742,
+     850,
+     851,
+     853,
+     867,
+     992,
+     993,
+     995,
+     1015
+    ]
+   },
+   "M/wrong_column": {
+    "description": "a different column than the question needs",
+    "count": 22,
+    "arguable": 0,
+    "pct_of_all": 2.13,
+    "samples": [
+     23,
+     41,
+     105,
+     123,
+     124,
+     152,
+     354,
+     468,
+     505,
+     540,
+     559,
+     572,
+     612,
+     710,
+     724,
+     777,
+     955,
+     956,
+     989,
+     998,
+     999,
+     1033
+    ]
+   },
+   "M/wrong_join_path": {
+    "description": "wrong tables or join keys, missing join condition",
+    "count": 18,
+    "arguable": 0,
+    "pct_of_all": 1.74,
+    "samples": [
+     94,
+     96,
+     102,
+     109,
+     110,
+     133,
+     137,
+     142,
+     149,
+     157,
+     158,
+     171,
+     172,
+     175,
+     176,
+     447,
+     448,
+     487
+    ]
+   },
+   "M/value_mismatch": {
+    "description": "literal differs from the stored value (case, punctuation, abbreviation, LIKE vs =)",
+    "count": 18,
+    "arguable": 8,
+    "pct_of_all": 1.74,
+    "samples": [
+     112,
+     180,
+     182,
+     214,
+     361,
+     362,
+     403,
+     511,
+     610,
+     631,
+     632,
+     704,
+     705,
+     725,
+     731,
+     758,
+     783,
+     1007
+    ]
+   },
+   "M/missing_condition": {
+    "description": "a condition of the question is dropped",
+    "count": 14,
+    "arguable": 0,
+    "pct_of_all": 1.35,
+    "samples": [
+     53,
+     61,
+     62,
+     63,
+     64,
+     129,
+     151,
+     466,
+     485,
+     486,
+     550,
+     770,
+     784,
+     785
+    ]
+   },
+   "M/missing_projection": {
+    "description": "omits a column the question asks for",
+    "count": 8,
+    "arguable": 0,
+    "pct_of_all": 0.77,
+    "samples": [
+     534,
+     637,
+     638,
+     928,
+     929,
+     932,
+     936,
+     937
+    ]
+   },
+   "M/fk_not_followed": {
+    "description": "uses a foreign-key id where the referenced table's name/attribute is needed",
+    "count": 7,
+    "arguable": 0,
+    "pct_of_all": 0.68,
+    "samples": [
+     108,
+     113,
+     114,
+     115,
+     116,
+     130,
+     177
+    ]
+   },
+   "M/degenerate_sql": {
+    "description": "an always-empty query (WHERE 1 = 0, LIMIT 0)",
+    "count": 5,
+    "arguable": 0,
+    "pct_of_all": 0.48,
+    "samples": [
+     95,
+     99,
+     536,
+     549,
+     941
+    ]
+   },
+   "M/set_logic": {
+    "description": "INTERSECT / EXCEPT / NOT IN / both-and logic is wrong",
+    "count": 5,
+    "arguable": 0,
+    "pct_of_all": 0.48,
+    "samples": [
+     345,
+     575,
+     576,
+     635,
+     636
+    ]
+   },
+   "M/superlative_logic": {
+    "description": "wrong direction or missing top-1 restriction",
+    "count": 3,
+    "arguable": 0,
+    "pct_of_all": 0.29,
+    "samples": [
+     6,
+     396,
+     940
+    ]
+   },
+   "M/aggregation_grain": {
+    "description": "aggregates at the wrong grain",
+    "count": 3,
+    "arguable": 0,
+    "pct_of_all": 0.29,
+    "samples": [
+     463,
+     533,
+     759
+    ]
+   },
+   "M/unnecessary_cast": {
+    "description": "a CAST changes the returned values",
+    "count": 2,
+    "arguable": 0,
+    "pct_of_all": 0.19,
+    "samples": [
+     832,
+     833
+    ]
+   },
+   "M/domain_knowledge": {
+    "description": "needs domain knowledge (e.g. highest rank = smallest number)",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.1,
+    "samples": [
+     439
+    ]
+   },
+   "M/missing_distinct": {
+    "description": "duplicates of the same entity are returned",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.1,
+    "samples": [
+     535
+    ]
+   },
+   "M/other": {
+    "description": "none of the above",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.1,
+    "samples": [
+     629
+    ]
+   },
+   "M/extra_condition": {
+    "description": "an unrequested condition is added",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.1,
+    "samples": [
+     797
+    ]
+   }
+  },
+  "column_order_verification": {
+   "full": 37,
+   "partial": 6,
+   "undetermined": 2
+  }
+ },
+ "adjusted_ex": {
+  "reported": 69.63,
+  "scorer_fixed (+H)": 74.18,
+  "plus_certain_gold_issues (+H +G not arguable)": 79.3,
+  "plus_all_G (+H +G)": 87.23,
+  "model_error_rate (M only)": 12.77
+ },
+ "by_hardness": {
+  "easy": {
+   "n": 248,
+   "ex_pct": 89.11,
+   "single_pass_ex_pct": 89.11,
+   "H": 1,
+   "G": 11,
+   "M": 15
+  },
+  "medium": {
+   "n": 446,
+   "ex_pct": 68.61,
+   "single_pass_ex_pct": 66.14,
+   "H": 40,
+   "G": 53,
+   "M": 47
+  },
+  "hard": {
+   "n": 174,
+   "ex_pct": 66.67,
+   "single_pass_ex_pct": 56.32,
+   "H": 3,
+   "G": 22,
+   "M": 33
+  },
+  "extra": {
+   "n": 166,
+   "ex_pct": 46.39,
+   "single_pass_ex_pct": 31.33,
+   "H": 3,
+   "G": 49,
+   "M": 37
+  }
+ },
+ "retrieval": {
+  "k": 15,
+  "column_recall_pct": {
+   "5": 58.81,
+   "10": 80.44,
+   "15": 91.73
+  },
+  "samples_with_all_gold_columns_pct": {
+   "5": 47.1,
+   "10": 67.41,
+   "15": 84.72
+  },
+  "table_coverage_pct": 98.34,
+  "column_recall_by_role_at_15_pct": {
+   "filter": 88.77,
+   "group": 97.47,
+   "join": 85.97,
+   "order": 97.81,
+   "select": 96.5
+  },
+  "complete_samples": 876,
+  "incomplete_samples": 158,
+  "ex_pct_when_complete": 74.09,
+  "ex_pct_when_incomplete": 44.94,
+  "model_error_pct_when_complete": 6.74,
+  "model_error_pct_when_incomplete": 46.2,
+  "m_errors_with_incomplete_retrieval": 73,
+  "m_errors_with_complete_retrieval": 59,
+  "avg_units_per_database": 33.0,
+  "samples_where_k_covers_whole_schema": 171,
+  "gold_columns_not_in_units": 0,
+  "m_subtype_with_incomplete_retrieval": {
+   "aggregation_grain": [
+    1,
+    3
+   ],
+   "degenerate_sql": [
+    4,
+    5
+   ],
+   "domain_knowledge": [
+    0,
+    1
+   ],
+   "extra_condition": [
+    0,
+    1
+   ],
+   "extra_projection": [
+    0,
+    23
+   ],
+   "fk_not_followed": [
+    7,
+    7
+   ],
+   "missing_condition": [
+    14,
+    14
+   ],
+   "missing_distinct": [
+    1,
+    1
+   ],
+   "missing_projection": [
+    8,
+    8
+   ],
+   "other": [
+    0,
+    1
+   ],
+   "set_logic": [
+    4,
+    5
+   ],
+   "superlative_logic": [
+    1,
+    3
+   ],
+   "unnecessary_cast": [
+    0,
+    2
+   ],
+   "value_mismatch": [
+    1,
+    18
+   ],
+   "wrong_column": [
+    19,
+    22
+   ],
+   "wrong_join_path": [
+    13,
+    18
+   ]
+  }
+ },
+ "by_database": {
+  "battle_death": {
+   "n": 16,
+   "ex_pct": 75.0,
+   "single_pass_ex_pct": 75.0,
+   "H": 0,
+   "G": 2,
+   "M": 2,
+   "complete_retrieval_pct": 87.5,
+   "units": 23
+  },
+  "car_1": {
+   "n": 92,
+   "ex_pct": 41.3,
+   "single_pass_ex_pct": 38.04,
+   "H": 4,
+   "G": 19,
+   "M": 31,
+   "complete_retrieval_pct": 60.87,
+   "units": 34
+  },
+  "concert_singer": {
+   "n": 45,
+   "ex_pct": 80.0,
+   "single_pass_ex_pct": 71.11,
+   "H": 0,
+   "G": 5,
+   "M": 4,
+   "complete_retrieval_pct": 86.67,
+   "units": 28
+  },
+  "course_teach": {
+   "n": 30,
+   "ex_pct": 80.0,
+   "single_pass_ex_pct": 76.67,
+   "H": 0,
+   "G": 4,
+   "M": 2,
+   "complete_retrieval_pct": 100.0,
+   "units": 15
+  },
+  "cre_Doc_Template_Mgt": {
+   "n": 84,
+   "ex_pct": 83.33,
+   "single_pass_ex_pct": 76.19,
+   "H": 0,
+   "G": 10,
+   "M": 4,
+   "complete_retrieval_pct": 96.43,
+   "units": 24
+  },
+  "dog_kennels": {
+   "n": 82,
+   "ex_pct": 70.73,
+   "single_pass_ex_pct": 63.41,
+   "H": 0,
+   "G": 9,
+   "M": 15,
+   "complete_retrieval_pct": 78.05,
+   "units": 64
+  },
+  "employee_hire_evaluation": {
+   "n": 38,
+   "ex_pct": 81.58,
+   "single_pass_ex_pct": 76.32,
+   "H": 5,
+   "G": 2,
+   "M": 0,
+   "complete_retrieval_pct": 100.0,
+   "units": 24
+  },
+  "flight_2": {
+   "n": 80,
+   "ex_pct": 80.0,
+   "single_pass_ex_pct": 78.75,
+   "H": 0,
+   "G": 10,
+   "M": 6,
+   "complete_retrieval_pct": 81.25,
+   "units": 18
+  },
+  "museum_visit": {
+   "n": 18,
+   "ex_pct": 88.89,
+   "single_pass_ex_pct": 83.33,
+   "H": 1,
+   "G": 1,
+   "M": 0,
+   "complete_retrieval_pct": 100.0,
+   "units": 17
+  },
+  "network_1": {
+   "n": 56,
+   "ex_pct": 67.86,
+   "single_pass_ex_pct": 62.5,
+   "H": 0,
+   "G": 17,
+   "M": 1,
+   "complete_retrieval_pct": 100.0,
+   "units": 14
+  },
+  "orchestra": {
+   "n": 40,
+   "ex_pct": 82.5,
+   "single_pass_ex_pct": 80.0,
+   "H": 0,
+   "G": 2,
+   "M": 5,
+   "complete_retrieval_pct": 100.0,
+   "units": 30
+  },
+  "pets_1": {
+   "n": 42,
+   "ex_pct": 64.29,
+   "single_pass_ex_pct": 64.29,
+   "H": 8,
+   "G": 2,
+   "M": 5,
+   "complete_retrieval_pct": 61.9,
+   "units": 19
+  },
+  "poker_player": {
+   "n": 40,
+   "ex_pct": 87.5,
+   "single_pass_ex_pct": 80.0,
+   "H": 0,
+   "G": 0,
+   "M": 5,
+   "complete_retrieval_pct": 100.0,
+   "units": 14
+  },
+  "real_estate_properties": {
+   "n": 4,
+   "ex_pct": 75.0,
+   "single_pass_ex_pct": 75.0,
+   "H": 0,
+   "G": 0,
+   "M": 1,
+   "complete_retrieval_pct": 75.0,
+   "units": 46
+  },
+  "singer": {
+   "n": 30,
+   "ex_pct": 90.0,
+   "single_pass_ex_pct": 86.67,
+   "H": 0,
+   "G": 1,
+   "M": 2,
+   "complete_retrieval_pct": 100.0,
+   "units": 13
+  },
+  "student_transcripts_tracking": {
+   "n": 78,
+   "ex_pct": 58.97,
+   "single_pass_ex_pct": 50.0,
+   "H": 1,
+   "G": 18,
+   "M": 13,
+   "complete_retrieval_pct": 83.33,
+   "units": 78
+  },
+  "tvshow": {
+   "n": 62,
+   "ex_pct": 70.97,
+   "single_pass_ex_pct": 66.13,
+   "H": 3,
+   "G": 4,
+   "M": 11,
+   "complete_retrieval_pct": 80.65,
+   "units": 30
+  },
+  "voter_1": {
+   "n": 15,
+   "ex_pct": 80.0,
+   "single_pass_ex_pct": 80.0,
+   "H": 0,
+   "G": 3,
+   "M": 0,
+   "complete_retrieval_pct": 100.0,
+   "units": 14
+  },
+  "world_1": {
+   "n": 120,
+   "ex_pct": 61.67,
+   "single_pass_ex_pct": 55.83,
+   "H": 11,
+   "G": 20,
+   "M": 15,
+   "complete_retrieval_pct": 78.33,
+   "units": 32
+  },
+  "wta_1": {
+   "n": 62,
+   "ex_pct": 51.61,
+   "single_pass_ex_pct": 43.55,
+   "H": 14,
+   "G": 6,
+   "M": 10,
+   "complete_retrieval_pct": 83.87,
+   "units": 49
+  }
+ },
+ "signals": {
+  "empty_result": {
+   "samples": 72,
+   "wrong": 33,
+   "precision_pct": 45.83,
+   "m_errors_caught": 24,
+   "gold_also_empty_and_correct": 39
+  },
+  "degenerate_sql (WHERE 1 = 0 / LIMIT 0)": {
+   "samples": 5,
+   "wrong": 5,
+   "ids": [
+    95,
+    99,
+    536,
+    549,
+    941
+   ]
+  },
+  "NULL AS placeholder column": {
+   "samples": 2,
+   "wrong": 2,
+   "ids": [
+    487,
+    937
+   ]
+  }
+ },
+ "cost": {
+  "tokens": {
+   "prompt": 579795,
+   "completion": 150610,
+   "reasoning": 99371,
+   "cached": 0
+  },
+  "tokens_per_sample": {
+   "prompt": 561,
+   "completion": 146,
+   "reasoning": 96,
+   "cached": 0
+  },
+  "reasoning_share_of_completion_pct": 65.98,
+  "mean_call_latency_ms": 2346,
+  "p95_call_latency_ms": 4487
+ }
+}

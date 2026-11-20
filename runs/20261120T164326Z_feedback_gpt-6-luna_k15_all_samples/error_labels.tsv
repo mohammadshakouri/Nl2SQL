@@ -1,0 +1,315 @@
+sample_index	category	subtype	arguable	also	note
+6	M	superlative_logic	0		youngest -> MAX(Age)
+16	G	ambiguous_column	1		stadium has a column named Average; model computed AVG(Capacity)
+22	G	zero_count_groups	1		LEFT JOIN keeps stadiums with 0 concerts; gold uses inner join
+23	M	wrong_column	0		selects Stadium_ID instead of stadium name (also LEFT JOIN)
+26	M	extra_projection	0		returns year and count, question asks which year
+35	G	zero_count_groups	1		LEFT JOIN keeps singers with 0 concerts
+37	G	distinct_duplicates	1		gold keeps a duplicate row, pred DISTINCT
+38	G	distinct_duplicates	1		gold keeps a duplicate row, pred DISTINCT
+41	M	wrong_column	0		Stadium_ID instead of name
+49	H	column_order	0		
+50	H	column_order	0		
+53	M	missing_condition	0		dog filter dropped
+61	M	missing_condition	0		NOT EXISTS any pet instead of cat pet
+62	M	missing_condition	0		NOT EXISTS any pet instead of cat pet
+63	M	missing_condition	0		NOT EXISTS any pet instead of cat pet
+64	M	missing_condition	0		NOT EXISTS any pet instead of cat pet
+65	G	distinct_duplicates	1		gold keeps duplicate (Tracy,19)x2, pred DISTINCT
+66	G	gold_extra_projection	0		gold returns fname+age and duplicates; question asks first name only
+71	H	column_order	0		
+72	H	column_order	0		
+73	H	column_order	0		
+74	H	column_order	0		
+79	H	column_order	0		
+80	H	column_order	0		
+94	M	wrong_join_path	0		car_names.MakeId = car_makers.Id; gold joins model_list.Maker
+95	M	degenerate_sql	0		LIMIT 0
+96	M	wrong_join_path	0		CROSS JOIN without join condition
+99	M	degenerate_sql	0		WHERE 1 = 0
+100	G	ambiguous_column	1		FullName vs Maker both are names of the maker
+102	M	wrong_join_path	0		cn.MakeId = cm.Id wrong key; LIMIT 1 ignores ties
+105	M	wrong_column	0		ContId instead of continent name
+108	M	fk_not_followed	0		returns Country FK id instead of CountryName (attempt 2 after exec error)
+109	M	wrong_join_path	0		counts via car_names instead of model_list
+110	M	wrong_join_path	0		counts via car_names instead of model_list
+112	M	value_mismatch	0		Make split into Make='amc' AND Model=...
+113	M	fk_not_followed	0		Country='France' on FK id column
+114	M	fk_not_followed	0		Country='France' on FK id column
+115	M	fk_not_followed	0		Country='usa' on FK id column
+116	M	fk_not_followed	0		Country='USA' on FK id column
+121	G	ambiguous_column	1		gold returns Maker id, pred returns FullName
+122	G	ambiguous_column	1		gold returns Maker id (MODEL_LIST.Maker), pred returns names
+123	M	wrong_column	0		selects FK id columns instead of CountryName
+124	M	wrong_column	0		selects FK id columns instead of CountryName
+125	G	gold_text_column_quirk	0		horsepower stored as TEXT; gold string compare, pred numeric CAST is the intended meaning
+126	G	gold_text_column_quirk	0		horsepower stored as TEXT; gold string compare, pred numeric CAST is the intended meaning
+127	H	column_order	0		
+128	H	column_order	0		
+129	M	missing_condition	0	wrong_column	europe filter dropped; returns country ids
+130	M	fk_not_followed	0		filters Continent = 1 (guessed id) instead of joining continents
+131	G	gold_text_column_quirk	0		ORDER BY text horsepower DESC; pred numeric CAST
+132	G	gold_text_column_quirk	0		ORDER BY text horsepower DESC; pred numeric CAST
+133	M	wrong_join_path	0		cars_data.Id = model_list.ModelId; empty result
+134	G	gold_text_column_quirk	0		ORDER BY text mpg DESC; pred numeric CAST
+137	M	wrong_join_path	0		EXISTS(model_list.Model='volvo') is not correlated with cars_data
+139	H	column_order	0		
+140	H	column_order	0		
+142	M	wrong_join_path	0		counts versions in model_list instead of car_names; extra projection
+149	M	wrong_join_path	0		car_names.MakeId = car_makers.Id wrong key; empty
+150	G	ambiguous_column	1		Maker vs FullName for 'names'; also column order
+151	M	missing_condition	0		OR weight > 3500 dropped
+152	M	wrong_column	0	wrong_join_path	cm.Maker = 'General Motors' (stored 'gm'); uncorrelated EXISTS
+157	M	wrong_join_path	0		cars_data.Id = model_list.ModelId; Make = 'volvo'
+158	M	wrong_join_path	0		cars_data.Id = model_list.ModelId; Make = 'volvo'
+159	G	gold_text_column_quirk	1		text ORDER BY horsepower in gold
+160	G	gold_text_column_quirk	0		text ORDER BY horsepower in gold
+161	G	gold_incorrect	0		gold has no outer COUNT: returns per-country counts, not the number of countries
+162	G	gold_incorrect	0		gold has no outer COUNT: returns per-country counts, not the number of countries
+165	G	gold_text_column_quirk	0		ORDER BY text horsepower DESC; pred numeric CAST
+166	G	gold_text_column_quirk	0		ORDER BY text horsepower DESC; pred numeric CAST
+167	G	gold_text_column_quirk	1		text comparison with MIN(horsepower) in gold; pred numeric
+168	G	gold_text_column_quirk	1		text comparison with MIN(horsepower) in gold; pred numeric
+169	G	gold_text_column_quirk	0		MAX(text mpg) = 'null' in gold; pred numeric
+170	G	gold_text_column_quirk	0		MAX(text mpg) = 'null' in gold; pred numeric
+171	M	wrong_join_path	0		model_list.ModelId = cars_data.Id wrong key
+172	M	wrong_join_path	0		model_list.ModelId = cars_data.Id wrong key
+175	M	wrong_join_path	0	set_logic	wrong keys; uncorrelated COUNT(*) > 3; empty
+176	M	wrong_join_path	0		car_names.MakeId = cm.Id wrong keys; empty
+177	M	fk_not_followed	0		returns Country FK id; CAST join; misses UNION branch
+180	M	value_mismatch	0		'Jetblue Airways' vs stored 'JetBlue Airways'
+182	M	value_mismatch	0		'Jetblue Airways' vs stored 'JetBlue Airways'
+197	G	gold_empty_result	0		"gold WHERE AirportName = ""Alton"" returns 0 rows (stored value has trailing space); pred LIKE finds it"
+198	G	gold_empty_result	0		same as 197
+214	M	value_mismatch	0		'Jetblue Airways' vs stored 'JetBlue Airways'
+225	G	gold_empty_result	0		gold joins on codes with whitespace mismatch, returns 0 rows
+226	G	gold_empty_result	0		same as 225
+227	G	gold_empty_result	0		same as 225
+228	G	gold_empty_result	0		same as 225
+229	G	ties_limit	0		same semantics as gold; all airlines have 100 flights, tie broken differently
+230	G	ties_limit	0		same semantics as gold; tie broken differently
+231	G	ties_limit	0		same semantics as gold; tie broken differently
+232	G	ties_limit	0		tie broken differently (LEFT JOIN irrelevant)
+242	M	extra_projection	0		adds the flight count column
+243	M	extra_projection	0		adds the flight count column
+258	M	extra_projection	0		returns code and name, question asks airport names
+263	H	column_order	0		
+264	H	column_order	0		
+267	H	column_order	0		
+268	H	column_order	0		
+287	G	zero_count_groups	1		LEFT JOIN keeps shops without hires
+288	G	zero_count_groups	1		LEFT JOIN keeps shops without hires
+292	H	column_order	0		SELECT * vs explicit columns in another order
+309	G	zero_count_groups	1		'all template ids' - pred includes unused templates
+311	G	ties_limit	0		same semantics as gold; tie broken differently
+312	G	ties_limit	0		same semantics as gold; tie broken differently
+341	G	zero_count_groups	1		LEFT JOIN keeps type with 0 documents
+342	G	zero_count_groups	1		LEFT JOIN keeps type with 0 documents
+345	M	set_logic	0		row-level IS NULL after LEFT JOIN instead of type-level anti-join
+354	M	wrong_column	0	wrong_join_path	Template_Details instead of Ref_Template_Types description
+361	M	value_mismatch	1	extra_projection	question literal 'Korea ' has a trailing space; stored value has none
+362	M	value_mismatch	1	extra_projection	question literal 'Korea ' has a trailing space; stored value has none
+367	G	zero_count_groups	1		'all document ids' includes documents without paragraphs
+369	G	zero_count_groups	1		LEFT JOIN keeps documents without paragraphs
+370	G	zero_count_groups	1		LEFT JOIN keeps documents without paragraphs
+375	G	zero_count_groups	1		document with 0 paragraphs has the fewest
+376	G	zero_count_groups	1		document with 0 paragraphs has the fewest
+387	G	gold_literal_case	0		gold compares with lowercase literal so nothing is excluded; pred is semantically right
+388	G	gold_literal_case	0		gold compares with lowercase literal so nothing is excluded; pred is semantically right
+396	M	superlative_logic	0	extra_projection	no top-1 restriction; adds count column
+403	M	value_mismatch	0		'math' vs stored 'Math'
+405	G	zero_count_groups	1		LEFT JOIN keeps teachers with 0 courses
+406	G	zero_count_groups	1		LEFT JOIN keeps teachers with 0 courses
+417	H	column_order	0		
+419	G	ambiguous_question	1		'visited some museums more than once': pred = same museum twice, gold = total visits > 1
+439	M	domain_knowledge	0		highest rank = smallest number (MIN)
+447	M	wrong_join_path	0		uses rankings table instead of matches
+448	M	wrong_join_path	0		uses rankings (ranking_date) instead of matches.year; empty
+452	H	column_order	0		
+455	H	gold_unreadable	0	decode_feedback	gold fails: invalid UTF-8 in players.last_name; loop made the model CAST to BLOB
+456	H	gold_unreadable	0	decode_feedback	gold fails: invalid UTF-8 in players.last_name; loop made the model CAST to BLOB
+458	G	projection_format	1		'full names' = concatenated column vs two columns in gold
+459	H	column_order	0		
+460	H	column_order	0		
+462	M	extra_projection	0		adds match count
+463	M	aggregation_grain	0		GROUP BY includes winner_rank_points, splitting each player's matches
+464	G	gold_nondeterministic	1		gold takes an arbitrary winner_rank_points via bare column; pred MAX(points)
+466	M	missing_condition	0		Australian Open filter dropped
+467	H	column_order	0		
+468	M	wrong_column	0		best_of instead of minutes
+469	G	gold_grain_quirk	1	extra_projection	gold groups by first_name (merges players); pred per player and adds player_id
+470	G	zero_count_groups	1	decode_feedback	LEFT JOIN keeps players without rankings; per player not per first name; decode hack in SQL
+471	G	gold_grain_quirk	1	extra_projection	gold groups by first_name; pred per player and adds player_id
+472	G	zero_count_groups	1	decode_feedback	LEFT JOIN keeps players without rankings; CAST AS BLOB workaround for decode error
+473	H	column_order	0		
+474	H	column_order	0		
+479	H	column_order	0		
+480	H	column_order	0		
+481	H	column_order	0		
+482	H	column_order	0		
+485	M	missing_condition	0		WTA Championships filter dropped
+486	M	missing_condition	0		WTA Championships filter dropped
+487	M	wrong_join_path	0		no join to players; NULL AS birth_date; ties not limited
+489	H	column_order	0		
+490	H	column_order	0		
+493	G	gold_missing_projection	0		question asks name, date and result; gold omits result
+496	M	extra_projection	0		adds death.note
+500	G	gold_incorrect	1		'most total injuries': pred SUM(injured), gold count(*) of death rows
+505	M	wrong_column	0	wrong_join_path	name LIKE '%English Channel%' instead of ship.location
+507	G	ambiguous_projection	1		'all the addresses' -> pred returns all columns
+511	M	value_mismatch	0		'Math' vs stored 'math'
+525	G	zero_count_groups	1		LEFT JOIN keeps courses with 0 sections
+526	G	gold_incorrect	0	H_column_order	gold uses <= 2 for 'less than 2'; pred follows the question
+529	G	ambiguous_question	1		COUNT(DISTINCT student) vs gold COUNT(*) enrolments
+530	G	ambiguous_question	1		COUNT(DISTINCT student) vs gold COUNT(*) enrolments
+531	G	ambiguous_question	1		pred LIKE '%the computer%' follows question text literally, gold uses '%computer%'
+533	M	aggregation_grain	0		groups by semester instead of by student; no names
+534	M	missing_projection	0	aggregation_grain	last_name missing; groups per (student, semester)
+535	M	missing_distinct	0		duplicates of the same student
+536	M	degenerate_sql	0		WHERE 1 = 0
+537	M	extra_projection	0		adds student count
+540	M	wrong_column	0		degree_summary_description instead of degree_summary_name
+541	G	ties_limit	0		same semantics as gold; both students have 3 enrollments
+542	G	ties_limit	0	gold_extra_projection	same semantics as gold; tie broken differently; gold repeats student_id
+547	G	ties_limit	0		same semantics as gold; tie broken differently
+548	G	ties_limit	0		same semantics as gold; tie broken differently
+549	M	degenerate_sql	0		WHERE 1 = 0
+550	M	missing_condition	0		North Carolina filter dropped (stored value is 'NorthCarolina')
+554	G	gold_literal_case	0		gold compares lowercase literals so it returns 0 rows
+559	M	wrong_column	0		email_address instead of first_name
+566	G	ambiguous_projection	1		'what details' - pred adds transcript_id
+571	H	column_order	0		
+572	M	wrong_column	0	wrong_join_path	maps student_course_id to course/enrolment ids
+573	G	zero_count_groups	1		LEFT JOIN: transcripts with 0 results tie as 'least'
+574	G	zero_count_groups	1		LEFT JOIN: transcripts with 0 results tie as 'least'
+575	M	set_logic	0	wrong_column	compares two different programs instead of Master and Bachelor; returns name not id
+576	M	set_logic	0		>= 2 distinct programs instead of Master and Bachelor
+578	G	gold_incorrect	0		question asks which addresses; gold returns a COUNT
+579	G	ambiguous_projection	1		'student details' - gold uses column other_student_details, pred SELECT *
+580	G	ambiguous_projection	1		'other details' - gold uses column other_student_details, pred SELECT *
+581	G	ambiguous_projection	1		'Describe the section' - pred returns four columns
+610	M	value_mismatch	1		title in question lacks the final '!' stored in the DB
+612	M	wrong_column	0		Cartoon.Channel instead of Title
+614	M	extra_projection	0		adds Rating column
+615	M	extra_projection	0		adds series_name
+617	H	column_order	0		
+627	H	column_order	0		
+628	H	column_order	0		
+629	M	other	0		date() on text dates returns NULL, wrong ordering
+630	G	ambiguous_column	1		channel: pred returns series_name, gold returns Channel id
+631	M	value_mismatch	0		'Yes' vs stored 'yes'
+632	M	value_mismatch	0		'Yes' vs stored 'yes'
+635	M	set_logic	0		channel-level NOT EXISTS instead of country-level EXCEPT
+636	M	set_logic	0		channel-level NOT EXISTS instead of country-level EXCEPT
+637	M	missing_projection	0		country column missing
+638	M	missing_projection	0		country column missing
+641	G	gold_incorrect	0		gold returns one arbitrary id per country (bare column in GROUP BY)
+642	G	ambiguous_question	1		garbled question; pred joins TV_series
+645	G	distinct_duplicates	1		gold keeps duplicates, pred DISTINCT
+649	M	extra_projection	0		adds Name
+650	M	extra_projection	0		adds Name
+651	M	extra_projection	0		adds Name
+652	M	extra_projection	0		adds Name
+675	M	extra_projection	0		adds count
+687	G	gold_incorrect	0		gold counts rows (305), question asks number of states (51)
+695	G	ties_limit	0		pred returns both tied contestants; gold LIMIT 1
+698	G	ambiguous_question	1		area code derived from phone number vs gold join through state
+704	M	value_mismatch	1		LIKE '%Republic%' also matches 'Federal Republic' etc.; gold uses = 'Republic'
+705	M	value_mismatch	1		LIKE '%Republic%' also matches 'Federal Republic' etc.; gold uses = 'Republic'
+710	M	wrong_column	0		city.District = 'Kabul' instead of city.Name
+716	H	column_order	0		
+717	H	column_order	0		
+724	M	wrong_column	0		Region = 'Africa' instead of Continent; NULL result
+725	M	value_mismatch	1		LIKE '%Republic%' vs = 'Republic'
+731	M	value_mismatch	0		'Dependent Territory of the US' vs stored 'US Territory'
+740	G	ties_limit	0		same semantics as gold; tie between countries with 12 languages
+741	G	ties_limit	0		same semantics as gold; tie broken differently
+742	M	extra_projection	0		adds language count
+754	G	gold_literal_case	0		gold lowercase literals ('english', 't') return 0 rows
+755	G	gold_extra_projection	1		gold SELECT * (19 columns) for 'which countries'
+756	G	ambiguous_question	1		'most popular language': population-weighted vs number of countries
+758	M	value_mismatch	1		LIKE '%Republic%' vs = 'Republic'
+759	M	aggregation_grain	0	value_mismatch	filters government form after grouping; LIKE '%Republic%'
+761	G	gold_extra_projection	1		question asks for the city; gold also returns population
+770	M	missing_condition	0		IndepYear < 1930 dropped
+772	G	ambiguous_question	1		'greater than any country in Europe': pred = all (MAX), gold = any (MIN)
+773	G	ambiguous_question	1		'greater than any country in Europe': pred = all (MAX), gold = any (MIN)
+777	M	wrong_column	0		returns Code instead of Name; also 'any' read as MAX
+778	G	ambiguous_question	1		pred also includes countries without any language rows
+779	G	ambiguous_question	1		pred also includes countries without any language rows
+783	M	value_mismatch	1		NOT LIKE '%Republic%' vs != 'Republic'
+784	M	missing_condition	0		Europe filter dropped
+785	M	missing_condition	0		Europe filter dropped
+786	G	gold_literal_case	0		gold lowercase literals return 0 rows
+788	H	column_order	0		
+789	G	ties_limit	0	H_column_order	several countries with population 0; gold LIMIT 1
+790	H	column_order	0		
+792	H	column_order	0		
+793	H	column_order	0		
+794	H	column_order	0		
+795	H	column_order	0		
+796	H	column_order	0		
+797	M	extra_condition	0	H_column_order	LifeExpectancy IS NOT NULL changes the sums
+798	H	column_order	0		
+799	H	column_order	0		
+810	G	gold_literal_case	0		gold lowercase literal 'north america' returns NULLs
+811	G	gold_literal_case	0		gold lowercase literal 'north america' returns NULLs
+816	G	gold_extra_projection	1		gold returns max(Percentage) too; ties at max percentage
+817	G	gold_extra_projection	1		gold returns max(Percentage) too; ties at max percentage
+818	G	gold_incorrect	0		gold returns per-country rows instead of one count
+819	G	gold_incorrect	0		gold returns per-country rows instead of one count
+820	G	gold_incorrect	1		gold returns every country with Spanish; does not implement 'largest percentage'
+821	G	gold_incorrect	1		gold returns every country with Spanish; does not implement 'predominantly spoken'
+832	M	unnecessary_cast	0		CAST removes the '%' sign of the text column
+833	M	unnecessary_cast	0		CAST removes the '%' sign of the text column
+844	G	ties_limit	0		same semantics as gold; tie broken differently
+845	G	ties_limit	0		same semantics as gold; tie broken differently
+850	M	extra_projection	0		adds count column
+851	M	extra_projection	0		adds count column
+853	M	extra_projection	0		adds count column
+867	M	extra_projection	0		adds name
+879	G	ties_limit	0		pred returns all tied grades; gold LIMIT 1
+882	G	zero_count_groups	1		LEFT JOIN keeps students with 0 friends
+883	G	zero_count_groups	1		LEFT JOIN keeps students with 0 friends
+884	G	zero_count_groups	1		LEFT JOIN keeps students with 0 friends
+885	G	zero_count_groups	1		LEFT JOIN keeps students with 0 friends
+894	G	ambiguous_question	1		pred treats friendship as symmetric (student_id OR friend_id)
+895	G	ambiguous_question	1		pred treats friendship as symmetric (student_id OR friend_id)
+896	G	ambiguous_question	1		pred treats friendship as symmetric (student_id OR friend_id)
+897	G	ambiguous_question	1		pred treats friendship as symmetric (student_id OR friend_id)
+902	G	zero_count_groups	1		LEFT JOIN keeps students with 0 likes
+904	G	ambiguous_question	1		'who have likes': pred counts likes received (liked_id), gold likes given (student_id)
+905	G	ambiguous_question	1		'who have likes': pred counts likes received (liked_id), gold likes given (student_id)
+906	G	ambiguous_question	1		likes received vs likes given; pred also returns both tied students
+907	G	ambiguous_question	1		likes received vs likes given
+909	G	ambiguous_question	1		likes received vs likes given; gold returns 0 rows
+916	G	ambiguous_question	1		pred treats friendship as symmetric
+917	G	ambiguous_question	1		pred treats friendship as symmetric
+925	G	ambiguous_question	1		pred sums cost per owner, gold per dog
+928	M	missing_projection	0		role_code missing
+929	M	missing_projection	0		role_code missing
+932	M	missing_projection	0		role_code missing
+936	M	missing_projection	0		last_name missing
+937	M	missing_projection	0		NULL AS last_name placeholder
+940	M	superlative_logic	0		no SUM/ORDER BY: returns every owner with dogs
+941	M	degenerate_sql	0		WHERE 1 = 0
+943	G	gold_incorrect	1		'two or more types of treatments': pred COUNT(DISTINCT type), gold COUNT(*)
+944	G	gold_incorrect	0		gold joins Treatments without an ON condition (cross join)
+945	G	gold_incorrect	0		gold joins Treatments without an ON condition (cross join)
+954	G	ties_limit	0		several breeds share the minimum count; gold LIMIT 1
+955	M	wrong_column	0	ties_limit	treatment_id instead of date_of_treatment
+956	M	wrong_column	0		infers Virginia from zip code instead of Owners.state
+960	G	gold_incorrect	1		gold uses max(age) for 'youngest'; pred uses date_of_birth
+961	G	gold_incorrect	1		gold uses max(age) for 'youngest'; pred uses date_of_birth
+989	M	wrong_column	0		oldest dog via date_of_birth instead of the age column
+992	M	extra_projection	0		adds charge_type
+993	M	extra_projection	0		adds charge_type
+995	M	extra_projection	0		adds first_name, last_name
+996	G	ambiguous_projection	1		breed/size names vs codes
+997	G	ambiguous_projection	1		breed name vs code
+998	M	wrong_column	0		treatment_id instead of treatment description
+999	M	wrong_column	0		treatment_id instead of treatment description
+1007	M	value_mismatch	0		'French' vs stored 'France'
+1015	M	extra_projection	0		adds count
+1025	G	zero_count_groups	1		LEFT JOIN keeps singers without songs
+1033	M	wrong_column	0		property_type_code ignored; uses feature columns

@@ -94,6 +94,15 @@ It is what makes the per-sample records small, and it is the universe needed for
 
 `config` (mode, k, max_attempts, execution_feedback), `llm` (provider, model, temperature, reasoning_effort, host, timeout, retries; never the API key), `embedding`, `prompts` (full system prompts + hashes), `retrieval_units` (hash of the unit text templates), `dataset` (`dev.json` sha256, sample count), `code` (git commit, branch, `dirty`), `environment` (Python, SQLite, package versions), `fingerprint` (what must match to resume), `sessions[]` (one per process: argv, limit, start/end, status `complete` / `interrupted` / `failed`, wall time, code version), and `results` (metrics, token totals, status counts).
 
+## Error analysis of a finished run
+
+```bash
+python -m app.spider_eval.error_analysis runs/<run_dir> --check-only                  # validate error_labels.tsv
+python -m app.spider_eval.error_analysis runs/<run_dir> --spider_path ./spider        # tables + error_analysis.json
+```
+
+Two files are kept next to the log: `error_labels.tsv` (one hand-made label per failing sample: category `H` scorer / `G` gold or ambiguity / `M` model, a subtype, an `arguable` flag) and `error_analysis.json` (every number of the analysis, recomputed from the log, `dev.json`/`tables.json` and the labels: retry and dialect statistics, Recall@K, hardness, per-database results, adjusted EX). The labels are judgement; everything else is a pure function of the log. The report built from them is `docs/thesis/Error_Analysis_Full_Run_fa.md`.
+
 ## What is not logged
 
 API keys; the prompt text itself (rebuild it with `run_log prompt`); the unit text per sample; per-sample timestamps and timing breakdowns; embedding-API token usage.
