@@ -1,13 +1,14 @@
 """
-Run log for the Spider evaluation.
+Run log for the Spider evaluation (log format 2).
 
 Every evaluation run writes a directory::
 
     runs/<timestamp>_<mode>_<model>_k<K>[_<tag>]/
         manifest.json      what was run (config, model, prompts, code version,
                            dataset hash, environment) and, at the end, the results
-        samples.jsonl      ONE LINE PER SAMPLE with everything observed for it
-        schema_units.json  the retrieval units indexed for each database
+        samples.jsonl      ONE LINE PER SAMPLE with the evidence for it
+        schema_units.json  every retrieval unit indexed for each database
+        brief.jsonl        one short line per sample, for reading failures
         console.txt        a copy of everything printed to the terminal
 
 ``samples.jsonl`` is the source of truth. It is append-only, and each record is
@@ -17,11 +18,18 @@ last record for a sample index wins; earlier ones are kept, never rewritten).
 The metrics in the manifest are recomputed from the records, so the log can
 always be re-aggregated, and re-scored offline from the stored SQL.
 
+Nothing that can be recomputed exactly is stored per sample: the text of the
+retrieved units is looked up by id in ``schema_units.json``, and the prompt
+sent for each attempt is rebuilt from the question, the retrieved ids and the
+earlier attempts (a hash per attempt proves the rebuilt text is identical).
+
 The record format is documented in docs/run-log-format.md.
 
-Integrity check::
+Commands::
 
-    python -m app.spider_eval.run_log check runs/<run_dir>
+    python -m app.spider_eval.run_log check  runs/<run_dir>
+    python -m app.spider_eval.run_log brief  runs/<run_dir>
+    python -m app.spider_eval.run_log prompt runs/<run_dir> <sample_index> [attempt]
 """
 
 import hashlib
@@ -40,9 +48,11 @@ from typing import Dict, Iterable, List, Optional, Tuple
 from app.spider_eval.spider_evaluator import compute_metrics
 from app.spider_eval.spider_sqlite_executor import QueryRun
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
-MAX_RESULT_ROWS = 50
+# A result with at most this many rows is stored in full, so it can be
+# re-scored offline (e.g. with a column-order-tolerant comparison) exactly.
+MAX_RESULT_ROWS = 20
 MAX_CELL_CHARS = 200
 MAX_RAW_OUTPUT_CHARS = 50_000
 
@@ -84,26 +94,26 @@ def result_snapshot(run: Optional[QueryRun]) -> Optional[dict]:
     """
     A bounded, JSON-safe record of one query execution.
 
-    Keeps the first rows and the row count, plus hashes of the complete result
-    (as returned, and with rows sorted) so two results can be compared without
-    storing them in full.
+    Keeps the row/column counts, the first ``MAX_RESULT_ROWS`` rows and a hash of
+    the complete result with its rows sorted, so two results can be compared
+    without storing them in full.
     """
     if run is None:
         return None
-    snap = {"ok": run.ok, "error": run.error, "ms": round(run.ms, 2)}
-    if run.ok and run.rows is not None:
-        rows = run.rows
-        keys = [_row_key(r) for r in rows]
-        snap.update(
-            n_rows=len(rows),
-            n_cols=len(rows[0]) if rows else None,
-            rows_head=[[_cell(v) for v in row] for row in rows[:MAX_RESULT_ROWS]],
-            rows_truncated=len(rows) > MAX_RESULT_ROWS,
-            rows_sha256=hashlib.sha256("\x1e".join(keys).encode("utf-8", "replace")).hexdigest(),
-            rows_sha256_sorted=hashlib.sha256(
-                "\x1e".join(sorted(keys)).encode("utf-8", "replace")
-            ).hexdigest(),
-        )
+    if not run.ok or run.rows is None:
+        return {"ok": False, "error": run.error}
+    rows = run.rows
+    snap = {
+        "ok": True,
+        "n_rows": len(rows),
+        "n_cols": len(rows[0]) if rows else None,
+        "rows": [[_cell(v) for v in row] for row in rows[:MAX_RESULT_ROWS]],
+        "sha": hashlib.sha256(
+            "\x1e".join(sorted(_row_key(r) for r in rows)).encode("utf-8", "replace")
+        ).hexdigest()[:16],
+    }
+    if len(rows) > MAX_RESULT_ROWS:
+        snap["truncated"] = True
     return snap
 
 
@@ -121,7 +131,9 @@ def _clean(obj):
 
 
 def _dumps(obj) -> str:
-    return json.dumps(_clean(obj), ensure_ascii=False, allow_nan=False, default=str)
+    return json.dumps(
+        _clean(obj), ensure_ascii=False, allow_nan=False, default=str, separators=(",", ":")
+    )
 
 
 def sha256_file(path: str) -> str:
@@ -136,21 +148,35 @@ def sha256_text(text: str) -> str:
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
-def _atomic_write_json(path: str, obj) -> None:
+def prompt_sha(text: str) -> str:
+    """Short hash stored per attempt to prove a rebuilt prompt is identical."""
+    return sha256_text(text)[:12]
+
+
+def _atomic_write_text(path: str, text: str) -> None:
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8", errors="backslashreplace", newline="\n") as f:
-        json.dump(obj, f, ensure_ascii=False, indent=2, default=str)
-        f.write("\n")
+        f.write(text)
         f.flush()
         os.fsync(f.fileno())
     os.replace(tmp, path)
+
+
+def _atomic_write_json(path: str, obj) -> None:
+    _atomic_write_text(path, json.dumps(obj, ensure_ascii=False, indent=2, default=str) + "\n")
 
 
 # ---------------------------------------------------------------------------
 # Environment capture
 # ---------------------------------------------------------------------------
 
-def git_info(repo_dir: str) -> dict:
+def git_info(repo_dir: str, exclude_dir: Optional[str] = None) -> dict:
+    """
+    Commit, branch and whether the working tree has uncommitted changes.
+
+    ``exclude_dir`` (the directory holding the run directories) is left out of
+    the dirty check: a run's own output must not make the code look modified.
+    """
     def run(*args: str) -> Optional[str]:
         try:
             out = subprocess.run(
@@ -160,7 +186,12 @@ def git_info(repo_dir: str) -> dict:
         except Exception:
             return None
 
-    status = run("status", "--porcelain")
+    pathspec = ["--", "."]
+    if exclude_dir:
+        rel = os.path.relpath(os.path.abspath(exclude_dir), os.path.abspath(repo_dir))
+        if rel not in (".", "") and not rel.startswith(".."):
+            pathspec.append(":(exclude)" + rel.replace(os.sep, "/"))
+    status = run("status", "--porcelain", "--untracked-files=all", *pathspec)
     return {
         "commit": run("rev-parse", "HEAD"),
         "branch": run("rev-parse", "--abbrev-ref", "HEAD"),
@@ -272,6 +303,16 @@ def latest_by_index(records: Iterable[dict]) -> Dict[int, dict]:
     return latest
 
 
+def load_units(run_dir: str) -> Dict[str, Dict[str, dict]]:
+    """``{db_id: {unit_id: unit}}`` from schema_units.json."""
+    path = os.path.join(run_dir, "schema_units.json")
+    if not os.path.exists(path):
+        return {}
+    with open(path, encoding="utf-8") as f:
+        raw = json.load(f)
+    return {db: {u["id"]: u for u in entry["units"]} for db, entry in raw.items()}
+
+
 # ---------------------------------------------------------------------------
 # Aggregation (the metrics are a pure function of the records)
 # ---------------------------------------------------------------------------
@@ -301,15 +342,15 @@ def summarize_records(
     metrics["skipped"] = sum(1 for r in latest.values() if r["status"] == "skipped")
     metrics["inference_failures"] = sum(failure_reasons.values())
     metrics["failure_reasons"] = dict(failure_reasons)
-    metrics["llm_calls"] = sum(r["n_attempts"] for r in processed)
+    metrics["llm_calls"] = sum(len(r["attempts"]) for r in processed)
 
     if mode == "feedback":
-        retried = sum(1 for r in processed if r["n_attempts"] > 1)
+        retried = sum(1 for r in processed if len(r["attempts"]) > 1)
         recovered = sum(1 for r in processed if r.get("recovered"))
         first = compute_metrics(
             total,
-            sum(1 for r in scored if r["scoring"]["first_attempt_em"]),
-            sum(1 for r in scored if r["scoring"]["first_attempt_ex"]),
+            sum(1 for r in scored if r["scoring"]["first_em"]),
+            sum(1 for r in scored if r["scoring"]["first_ex"]),
         )
         metrics["max_attempts"] = max_attempts
         metrics["execution_feedback"] = execution_feedback
@@ -324,7 +365,8 @@ def summarize_records(
 
 
 def token_totals(latest: Dict[int, dict]) -> dict:
-    """Token usage summed over the run, and how many samples lack it.
+    """
+    Token usage summed over the run, and how many samples lack it.
 
     A sample counts as lacking usage only when an LLM call succeeded without
     the provider reporting any (a call that failed has no usage to report).
@@ -332,12 +374,124 @@ def token_totals(latest: Dict[int, dict]) -> dict:
     totals: Counter = Counter()
     missing = 0
     for record in latest.values():
-        usage = record.get("usage")
-        if usage:
-            totals.update(usage)
-        if any(a["llm"]["error"] is None and not a["llm"]["usage"] for a in record.get("attempts", [])):
-            missing += 1
+        lacks = False
+        for attempt in record.get("attempts", []):
+            tokens = attempt.get("tokens")
+            if tokens:
+                prompt, completion = tokens.get("prompt", 0), tokens.get("completion", 0)
+                totals["prompt_tokens"] += prompt
+                totals["completion_tokens"] += completion
+                totals["total_tokens"] += prompt + completion
+                if "reasoning" in tokens:
+                    totals["reasoning_tokens"] += tokens["reasoning"]
+                if "cached" in tokens:
+                    totals["cached_tokens"] += tokens["cached"]
+            elif not attempt.get("error"):
+                lacks = True
+        missing += lacks
     return {**dict(totals), "samples_without_usage": missing}
+
+
+def describe_outcome(record: dict) -> Optional[str]:
+    """Why a scored sample did not match the gold result (None if it matched)."""
+    scoring = record.get("scoring")
+    if not scoring or scoring["ex"]:
+        return None
+    results = record["results"]
+    kind = scoring["kind"]
+    if kind == "gold_failed":
+        return f"Gold SQL failed: {results['gold'].get('error')}"
+    if kind == "pred_failed":
+        return f"Predicted SQL failed: {results['final'].get('error')}"
+    if kind == "result_mismatch":
+        return (f"Result mismatch: predicted {results['final']['n_rows']} row(s), "
+                f"gold {results['gold']['n_rows']} row(s)")
+    return f"{kind}: {(results['final'] or {}).get('error')}"
+
+
+# ---------------------------------------------------------------------------
+# brief.jsonl: one short line per sample, for reading failures
+# ---------------------------------------------------------------------------
+
+def brief_record(record: dict) -> dict:
+    scoring = record.get("scoring") or {}
+    results = record.get("results") or {}
+    error = describe_outcome(record) or record.get("error")
+    if not error:
+        for attempt in record.get("attempts", []):
+            if attempt.get("rejected"):
+                error = f"attempt rejected ({attempt['rejected']['stage']}): {attempt['rejected']['error']}"
+                break
+    return {
+        "idx": record["sample_index"],
+        "db": record["db_id"],
+        "question": record["question"],
+        "gold": record["gold_sql"],
+        "pred": record.get("final_sql"),
+        "status": record["status"] if record["status"] != "scored" else None,
+        "ex": scoring.get("ex"),
+        "em": scoring.get("em"),
+        "kind": scoring.get("kind") if scoring else record.get("failure_kind") or record.get("skip_reason"),
+        "attempts": len(record.get("attempts", [])),
+        "first_ex": scoring.get("first_ex"),
+        "rows_pred": (results.get("final") or {}).get("n_rows"),
+        "rows_gold": (results.get("gold") or {}).get("n_rows"),
+        "error": error,
+    }
+
+
+def write_brief(run_dir: str) -> int:
+    """(Re)write brief.jsonl from samples.jsonl; returns the number of lines."""
+    records, _bad = read_records(os.path.join(run_dir, "samples.jsonl"))
+    latest = latest_by_index(r for r in records if "sample_index" in r)
+    lines = [_dumps(brief_record(latest[i])) for i in sorted(latest)]
+    _atomic_write_text(os.path.join(run_dir, "brief.jsonl"), "".join(line + "\n" for line in lines))
+    return len(lines)
+
+
+# ---------------------------------------------------------------------------
+# Rebuilding the prompts that were sent
+# ---------------------------------------------------------------------------
+
+def rebuild_user_prompts(record: dict, units: Dict[str, dict]) -> List[str]:
+    """
+    The user prompt of every attempt of ``record``, rebuilt from the question,
+    the retrieved unit ids, schema_units.json (``units``: this db's units by id)
+    and the earlier attempts' SQL and rejection messages.
+    """
+    from app.nl2sql_chain import NL2SQLChain
+    from app.sql_validator import SQLFeedbackLoop, SQLValidator
+
+    chain = NL2SQLChain.__new__(NL2SQLChain)   # the prompt builders do not use instance state
+    context = chain.build_schema_context([units[i]["text"] for i in record["retrieved"]])
+    loop = SQLFeedbackLoop(SQLValidator(), max_iterations=len(record["attempts"]) + 1)
+    prompts = []
+    for attempt in record["attempts"]:
+        prompts.append(chain.build_user_prompt(record["question"], context, loop.get_feedback_prompt()))
+        if attempt.get("error"):      # the call failed: nothing was checked, the loop stopped
+            break
+        rejected = attempt.get("rejected")
+        loop.add_iteration(attempt["sql"], rejected["error"] if rejected else None, success=rejected is None)
+    return prompts
+
+
+def verify_prompts(run_dir: str, latest: Dict[int, dict]) -> Tuple[int, List[str]]:
+    """Rebuild every prompt and compare its hash. Returns (checked, problems)."""
+    units = load_units(run_dir)
+    checked, problems = 0, []
+    for index, record in sorted(latest.items()):
+        if not record.get("attempts"):
+            continue
+        try:
+            prompts = rebuild_user_prompts(record, units[record["db_id"]])
+        except Exception as exc:
+            problems.append(f"sample {index}: cannot rebuild prompts ({type(exc).__name__}: {exc})")
+            continue
+        for number, (attempt, prompt) in enumerate(zip(record["attempts"], prompts), start=1):
+            checked += 1
+            if prompt_sha(prompt) != attempt["prompt_sha"]:
+                problems.append(f"sample {index} attempt {number}: rebuilt prompt differs from the one sent")
+    return checked, problems
 
 
 # ---------------------------------------------------------------------------
@@ -411,6 +565,11 @@ class RunLog:
         if resuming:
             with open(self.manifest_path, encoding="utf-8") as f:
                 self.manifest = json.load(f)
+            if self.manifest.get("schema_version") != SCHEMA_VERSION:
+                raise ValueError(
+                    f"cannot resume: this run uses log format {self.manifest.get('schema_version')}, "
+                    f"the current code writes format {SCHEMA_VERSION}. Start a new run."
+                )
             diffs = _fingerprint_diffs(self.manifest.get("fingerprint", {}), run_meta["fingerprint"])
             if diffs:
                 raise ValueError(
@@ -476,6 +635,10 @@ class RunLog:
             if results is not None:
                 updates["results"] = results
             self.save_manifest(**updates)
+            try:
+                write_brief(self.run_dir)
+            except Exception as exc:   # a convenience file must never fail a run
+                print(f"note: could not write brief.jsonl: {type(exc).__name__}: {exc}")
 
     def close(self) -> None:
         """Stop mirroring the terminal into console.txt."""
@@ -499,10 +662,10 @@ def _fingerprint_diffs(old: dict, new: dict, prefix: str = "") -> List[str]:
 
 
 # ---------------------------------------------------------------------------
-# Integrity check:  python -m app.spider_eval.run_log check <run_dir>
+# Commands
 # ---------------------------------------------------------------------------
 
-_REQUIRED_KEYS = ("sample_index", "db_id", "question", "gold_sql", "status", "n_attempts")
+_REQUIRED_KEYS = ("sample_index", "db_id", "question", "gold_sql", "status", "attempts")
 
 
 def check_run(run_dir: str) -> int:
@@ -515,6 +678,11 @@ def check_run(run_dir: str) -> int:
         return 1
     with open(manifest_path, encoding="utf-8") as f:
         manifest = json.load(f)
+    if manifest.get("schema_version") != SCHEMA_VERSION:
+        print(f"This run uses log format {manifest.get('schema_version')}; this checker reads "
+              f"format {SCHEMA_VERSION} (see docs/run-log-format.md). Re-run to get a format "
+              f"{SCHEMA_VERSION} log.")
+        return 1
 
     records, bad = read_records(samples_path)
     if bad:
@@ -525,13 +693,15 @@ def check_run(run_dir: str) -> int:
             problems.append(f"record {i}: missing {missing}")
     latest = latest_by_index(r for r in records if "sample_index" in r)
 
+    code = manifest.get("code", {})
     print(f"run:        {manifest.get('run_id')}  (status: {manifest.get('status')})")
     llm = manifest.get("llm", {})
-    print(f"model:      {llm.get('provider')} / {llm.get('model')}  temperature={llm.get('temperature')}")
+    print(f"model:      {llm.get('provider')} / {llm.get('model')}  temperature={llm.get('temperature')}  "
+          f"reasoning_effort={llm.get('reasoning_effort')}")
+    print(f"code:       {str(code.get('commit'))[:10]}  dirty={code.get('dirty')}")
     print(f"records:    {len(records)} lines, {len(latest)} samples "
           f"({len(records) - len(latest)} superseded by a later record)")
-    statuses = Counter(r["status"] for r in latest.values())
-    print(f"status:     {dict(statuses)}")
+    print(f"status:     {dict(Counter(r['status'] for r in latest.values()))}")
 
     config = manifest.get("config", {})
     mode, k = config.get("mode"), config.get("k")
@@ -550,10 +720,16 @@ def check_run(run_dir: str) -> int:
         print(f"tokens:     {tokens}")
         if tokens["samples_without_usage"]:
             problems.append(f"{tokens['samples_without_usage']} sample(s) have no token usage")
-        kinds = Counter(
-            (r.get("scoring") or {}).get("ex_error_kind") for r in latest.values() if r.get("scoring")
-        )
+        kinds = Counter((r.get("scoring") or {}).get("kind") for r in latest.values() if r.get("scoring"))
         print(f"ex outcome: {dict(kinds)}   (None = match)")
+
+    try:
+        checked, prompt_problems = verify_prompts(run_dir, latest)
+        print(f"prompts:    {checked} rebuilt from ids + schema_units.json; "
+              f"{len(prompt_problems)} differ from what was sent")
+        problems += prompt_problems
+    except ImportError as exc:
+        print(f"prompts:    not verified (the project's dependencies are not importable: {exc})")
 
     expected = manifest.get("dataset", {}).get("n_samples")
     sessions = manifest.get("sessions") or [{}]
@@ -566,6 +742,9 @@ def check_run(run_dir: str) -> int:
     if retryable:
         problems.append(f"{len(retryable)} sample(s) failed on infrastructure errors (--resume re-runs them)")
 
+    if code.get("dirty"):
+        print("\nWARNING: the run used uncommitted changes to tracked or new source files "
+              "(code.dirty): commit before a run you intend to report.")
     if problems:
         print("\nPROBLEMS:")
         for p in problems:
@@ -575,8 +754,34 @@ def check_run(run_dir: str) -> int:
     return 0
 
 
+def show_prompt(run_dir: str, index: int, attempt: int = 1) -> int:
+    records, _ = read_records(os.path.join(run_dir, "samples.jsonl"))
+    record = latest_by_index(records).get(index)
+    if record is None or not record.get("attempts"):
+        print(f"no attempts logged for sample {index}")
+        return 1
+    prompts = rebuild_user_prompts(record, load_units(run_dir)[record["db_id"]])
+    if not 1 <= attempt <= len(prompts):
+        print(f"sample {index} has {len(prompts)} attempt(s)")
+        return 1
+    with open(os.path.join(run_dir, "manifest.json"), encoding="utf-8") as f:
+        manifest = json.load(f)
+    system = manifest["prompts"]["system_feedback" if attempt > 1 else "system_first"]
+    sent = record["attempts"][attempt - 1]["prompt_sha"]
+    print(f"=== system ===\n{system}\n=== user (identical to what was sent: "
+          f"{prompt_sha(prompts[attempt - 1]) == sent}) ===\n{prompts[attempt - 1]}")
+    return 0
+
+
 if __name__ == "__main__":
-    if len(sys.argv) == 3 and sys.argv[1] == "check":
-        sys.exit(check_run(sys.argv[2]))
-    print("usage: python -m app.spider_eval.run_log check <run_dir>")
+    args = sys.argv[1:]
+    if len(args) == 2 and args[0] == "check":
+        sys.exit(check_run(args[1]))
+    if len(args) == 2 and args[0] == "brief":
+        print(f"wrote {write_brief(args[1])} lines to {os.path.join(args[1], 'brief.jsonl')}")
+        sys.exit(0)
+    if len(args) in (3, 4) and args[0] == "prompt":
+        sys.exit(show_prompt(args[1], int(args[2]), int(args[3]) if len(args) == 4 else 1))
+    print("usage: python -m app.spider_eval.run_log check|brief <run_dir>\n"
+          "       python -m app.spider_eval.run_log prompt <run_dir> <sample_index> [attempt]")
     sys.exit(2)

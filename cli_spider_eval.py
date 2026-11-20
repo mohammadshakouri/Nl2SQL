@@ -34,6 +34,8 @@ Model and logging flags
     --model NAME     Model for the active provider (OpenAI, or Ollama if USE_LOCAL_LLM)
     --temperature T  Sampling temperature, or "default" to omit it (for models
                      that reject the parameter)
+    --reasoning-effort E
+                     OpenAI reasoning_effort (e.g. low), or "default" to omit it
     --out-dir DIR    Where run directories are created (default: runs)
     --tag TEXT       Suffix for the run directory name
     --resume DIR     Continue the run in DIR: finished samples are kept, samples
@@ -43,8 +45,8 @@ Model and logging flags
                      collections from earlier runs
     --no-preflight   Skip the one-call check of the model/credentials
 
-Every run writes runs/<run_dir>/ (manifest.json, samples.jsonl, schema_units.json,
-console.txt); see docs/run-log-format.md. Verify a run with:
+Every run writes runs/<run_dir>/ (manifest.json, samples.jsonl, brief.jsonl,
+schema_units.json, console.txt); see docs/run-log-format.md. Verify a run with:
     python -m app.spider_eval.run_log check runs/<run_dir>
 """
 
@@ -140,6 +142,15 @@ def parse_args() -> argparse.Namespace:
         help='Sampling temperature, or "default" to omit the parameter.',
     )
     parser.add_argument(
+        "--reasoning-effort",
+        type=_reasoning_effort,
+        default=_NOT_GIVEN,
+        metavar="E",
+        dest="reasoning_effort",
+        help='OpenAI reasoning_effort value (default: the one in nl2sql_chain.py), '
+             'or "default" to omit the parameter. Ignored for Ollama.',
+    )
+    parser.add_argument(
         "--out-dir",
         default="runs",
         metavar="DIR",
@@ -185,6 +196,17 @@ def _temperature(value: str):
     if value.lower() == "default":
         return None
     return float(value)
+
+
+def _reasoning_effort(value: str):
+    return None if value.lower() == "default" else value
+
+
+def _llm_line(llm) -> str:
+    line = f"LLM: {llm.provider} / {llm.model}  temperature={llm.temperature}"
+    if llm.provider == "openai":
+        line += f"  reasoning_effort={llm.reasoning_effort}"
+    return line
 
 
 def _positive_int(value: str) -> int:
@@ -279,6 +301,9 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     if args.temperature is not _NOT_GIVEN and args.temperature != llm["temperature"]:
         print(f"ERROR: --temperature contradicts the run being resumed ({llm['temperature']!r}).")
         sys.exit(1)
+    if args.reasoning_effort is not _NOT_GIVEN and args.reasoning_effort != llm.get("reasoning_effort"):
+        print(f"ERROR: --reasoning-effort contradicts the run being resumed ({llm.get('reasoning_effort')!r}).")
+        sys.exit(1)
 
     args.k = saved["k"]
     args.feedback = saved["feedback"]
@@ -286,6 +311,7 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     args.max_iter = saved["max_iter"]
     args.model = saved["model"]
     args.temperature = llm["temperature"]
+    args.reasoning_effort = llm.get("reasoning_effort")
 
 
 async def _run_one(
@@ -359,6 +385,7 @@ async def _prepare():
     configure_llm(
         model=args.model,
         **({} if args.temperature is _NOT_GIVEN else {"temperature": args.temperature}),
+        **({} if args.reasoning_effort is _NOT_GIVEN else {"reasoning_effort": args.reasoning_effort}),
     )
     llm = get_llm_settings()
 
@@ -373,7 +400,7 @@ async def _prepare():
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
     print(f"Retrieving Top-{args.k} schema units per question.")
-    print(f"LLM: {llm.provider} / {llm.model}  temperature={llm.temperature}")
+    print(_llm_line(llm))
 
     if not args.no_preflight:
         call = await preflight()

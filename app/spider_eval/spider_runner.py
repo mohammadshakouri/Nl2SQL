@@ -31,16 +31,17 @@ import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import Column, Relation, SchemaManager, Table
 from app.nl2sql_chain import NL2SQLChain, get_llm_settings
-from app.sql_validator import SQLFeedbackLoop
+from app.sql_validator import SQLFeedbackLoop, SQLValidator
 from app.system_prompt import SYSTEM_PROMPT_NL2SQL, SYSTEM_PROMPT_NL2SQL_FEEDBACK
 from app.spider_eval.llm_io import LLMCall, call_llm, describe_exc, token_counts
 from app.spider_eval.run_log import (
     MAX_RAW_OUTPUT_CHARS,
     RETRYABLE_FAILURE_KINDS,
-    SCHEMA_VERSION,
     RunLog,
+    describe_outcome,
     environment_info,
     git_info,
+    prompt_sha,
     result_snapshot,
     sha256_file,
     sha256_text,
@@ -168,14 +169,32 @@ def _build_collection(
 
 
 def _schema_units(schema_dict: dict) -> List[dict]:
-    """Every retrieval unit of a schema as {"id", "kind", "text"}."""
+    """
+    Every retrieval unit of a schema, with its text and the schema element it
+    stands for, so retrieval can be analysed without parsing the text.
+
+    Ids match ``SchemaManager.get_all_embedding_texts`` (``table_i``,
+    ``column_i``, ``relation_i``).
+    """
     manager = SchemaManager()
     manager.load_schema_from_dict(schema_dict)
     ids, documents = manager.get_all_embedding_texts()
-    return [
-        {"id": unit_id, "kind": unit_id.split("_")[0], "text": text}
-        for unit_id, text in zip(ids, documents)
-    ]
+    texts = dict(zip(ids, documents))
+
+    units = []
+    for i, table in enumerate(manager.tables):
+        units.append({"id": f"table_{i}", "kind": "table", "table": table.name,
+                      "key_columns": table.key_columns, "text": texts[f"table_{i}"]})
+    for i, column in enumerate(manager.columns):
+        units.append({"id": f"column_{i}", "kind": "column", "table": column.table_name,
+                      "column": column.column_name, "data_type": column.data_type,
+                      "text": texts[f"column_{i}"]})
+    for i, relation in enumerate(manager.relations):
+        units.append({"id": f"relation_{i}", "kind": "relation",
+                      "source_table": relation.source_table, "source_column": relation.source_column,
+                      "target_table": relation.target_table, "target_column": relation.target_column,
+                      "text": texts[f"relation_{i}"]})
+    return units
 
 
 # ---------------------------------------------------------------------------
@@ -215,37 +234,26 @@ def _is_empty_sql(sql: Optional[str]) -> bool:
 
 
 def _retrieve_context(chain: NL2SQLChain, question: str, k: int):
-    """Return (schema_context, retrieval trace, None) or (None, trace, failed InferenceResult)."""
-    started = time.perf_counter()
+    """Return (schema_context, retrieval, None) or (None, retrieval, failed InferenceResult)."""
     try:
         units = chain.retrieve_schema_units(question, n_results=k)
     except Exception as exc:
-        trace = {"k": k, "ms": _ms(started), "n_units": 0, "units": [],
-                 "error": describe_exc(exc)}
-        return None, trace, InferenceResult(
-            None, f"schema retrieval failed: {describe_exc(exc)}", "retrieval_error",
-            retrieval=trace,
+        return None, None, InferenceResult(
+            None, f"schema retrieval failed: {describe_exc(exc)}", "retrieval_error"
         )
-    trace = {
-        "k": k,
-        "ms": _ms(started),
-        "n_units": len(units),
-        "units": [
-            {"rank": u["rank"], "id": u["id"], "kind": u["id"].split("_")[0],
-             "distance": u["distance"], "text": u["text"]}
-            for u in units
-        ],
-        "error": None,
+    retrieval = {
+        "ids": [u["id"] for u in units],
+        "distances": [round(u["distance"], 4) for u in units],
     }
     if not units:
-        return None, trace, InferenceResult(
-            None, "no schema elements retrieved", "no_retrieval", retrieval=trace
+        return None, retrieval, InferenceResult(
+            None, "no schema elements retrieved", "no_retrieval", retrieval=retrieval
         )
-    return chain.build_schema_context([u["text"] for u in units]), trace, None
+    return chain.build_schema_context([u["text"] for u in units]), retrieval, None
 
 
-def _ms(started: float) -> float:
-    return round((time.perf_counter() - started) * 1000, 2)
+def _ms(started: float) -> int:
+    return round((time.perf_counter() - started) * 1000)
 
 
 def _build_messages(
@@ -257,30 +265,42 @@ def _build_messages(
     ]
 
 
-def _attempt_entry(number: int, messages: list, call: LLMCall) -> dict:
-    """The run-log entry for one LLM attempt (SQL and check results are added later)."""
+def _tokens(usage: Optional[dict]) -> Optional[dict]:
+    """Provider usage as {prompt, completion[, reasoning][, cached]}; None if not reported."""
+    counts = token_counts(usage)
+    if "prompt_tokens" not in counts and "completion_tokens" not in counts:
+        return None
+    tokens = {"prompt": counts.get("prompt_tokens", 0), "completion": counts.get("completion_tokens", 0)}
+    if "reasoning_tokens" in counts:
+        tokens["reasoning"] = counts["reasoning_tokens"]
+    if "cached_tokens" in counts:
+        tokens["cached"] = counts["cached_tokens"]
+    return tokens
+
+
+def _attempt_entry(messages: list, call: LLMCall) -> dict:
+    """
+    The run-log entry for one LLM attempt. ``sql``, ``rejected`` and ``exec_rows``
+    are filled in once the attempt has been checked. The prompt itself is not
+    stored: ``prompt_sha`` proves it can be rebuilt exactly (see run_log).
+    """
     raw = call.text
-    return {
-        "attempt": number,
-        "system_prompt": "feedback" if number > 1 else "first",
-        "user_prompt": messages[1]["content"],
-        "llm": {
-            "provider": call.provider,
-            "model": call.model,
-            "raw_output": raw[:MAX_RAW_OUTPUT_CHARS],
-            "raw_output_truncated": len(raw) > MAX_RAW_OUTPUT_CHARS,
-            "finish_reason": call.finish_reason,
-            "usage": call.usage,
-            "latency_ms": round(call.latency_ms, 2),
-            "ttft_ms": None if call.ttft_ms is None else round(call.ttft_ms, 2),
-            "error": call.error,
-            "error_type": call.error_type,
-        },
+    if len(raw) > MAX_RAW_OUTPUT_CHARS:
+        raw = raw[:MAX_RAW_OUTPUT_CHARS] + f"…[truncated, {len(call.text) - MAX_RAW_OUTPUT_CHARS} more characters]"
+    entry = {
         "sql": None,
-        "sql_empty": None,
-        "check": {"ran": False, "valid": None, "stage": None, "error": None},
-        "exec": None,
+        "prompt_sha": prompt_sha(messages[1]["content"]),
+        "raw_output": raw,
+        "tokens": _tokens(call.usage),
+        "ms": round(call.latency_ms),
+        "rejected": None,
+        "exec_rows": None,
     }
+    if call.finish_reason not in (None, "stop"):
+        entry["finish"] = call.finish_reason     # e.g. "length": the output was cut off
+    if call.error:
+        entry["error"] = call.error
+    return entry
 
 
 # ---------------------------------------------------------------------------
@@ -302,7 +322,7 @@ async def _predict_sql(chain: NL2SQLChain, question: str, k: int) -> InferenceRe
 
     messages = _build_messages(chain, question, schema_context)
     call = await call_llm(messages)
-    attempt = _attempt_entry(1, messages, call)
+    attempt = _attempt_entry(messages, call)
     if call.error:
         return InferenceResult(
             None, f"LLM call failed: {call.error}", "llm_error", attempts=1,
@@ -310,7 +330,7 @@ async def _predict_sql(chain: NL2SQLChain, question: str, k: int) -> InferenceRe
         )
 
     sql = chain.validator.clean_sql_output(call.text).strip()
-    attempt["sql"], attempt["sql_empty"] = sql, _is_empty_sql(sql)
+    attempt["sql"] = sql
     if _is_empty_sql(sql):
         return InferenceResult(
             None, "LLM returned an empty response", "empty_response", attempts=1,
@@ -393,7 +413,7 @@ async def _predict_sql_with_feedback(
             chain, question, schema_context, feedback_loop.get_feedback_prompt()
         )
         call = await call_llm(messages)
-        attempt = _attempt_entry(attempts, messages, call)
+        attempt = _attempt_entry(messages, call)
         attempt_log.append(attempt)
         if call.error:
             error = f"LLM call failed on attempt {attempts}: {call.error}"
@@ -401,13 +421,14 @@ async def _predict_sql_with_feedback(
             break
 
         sql = chain.validator.clean_sql_output(call.text).strip()
-        attempt["sql"], attempt["sql_empty"] = sql, _is_empty_sql(sql)
+        attempt["sql"] = sql
         if first_sql is None:
             first_sql = sql
 
         ok, check_error, stage, execution = _check_sql(chain, sql, executor)
-        attempt["check"] = {"ran": True, "valid": ok, "stage": stage, "error": check_error}
-        attempt["exec"] = result_snapshot(execution)
+        attempt["rejected"] = None if ok else {"stage": stage, "error": check_error}
+        if execution is not None and execution.ok and execution.rows is not None:
+            attempt["exec_rows"] = len(execution.rows)
         feedback_loop.add_iteration(sql, check_error, success=ok)
         if ok:
             if attempts > 1:
@@ -473,11 +494,9 @@ def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: st
     scoring = {
         "em": em,
         "ex": final.match,
-        "ex_error": final.error,
-        "ex_error_kind": final.kind,
-        "first_attempt_em": first_em,
-        "first_attempt_ex": bool(first and first.match),
-        "first_attempt_ex_error": None if first is None else first.error,
+        "kind": final.kind,
+        "first_em": first_em,
+        "first_ex": bool(first and first.match),
     }
     results = {
         "gold": result_snapshot(final.gold),
@@ -491,40 +510,26 @@ def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: st
 # One sample -> one run-log record
 # ---------------------------------------------------------------------------
 
-def _usage_total(attempt_log: List[dict]) -> Optional[dict]:
-    totals: Dict[str, int] = {}
-    for attempt in attempt_log:
-        for key, value in token_counts(attempt["llm"]["usage"]).items():
-            totals[key] = totals.get(key, 0) + value
-    return totals or None
-
-
-def _base_record(index: int, sample: SpiderSample, mode: str) -> dict:
+def _base_record(index: int, sample: SpiderSample) -> dict:
     return {
-        "schema_version": SCHEMA_VERSION,
         "sample_index": index,
         "db_id": sample.db_id,
         "question": sample.question,
         "gold_sql": sample.gold_sql,
-        "mode": mode,
-        "started_at": utc_now(),
-        "finished_at": None,
         "status": None,
         "failure_kind": None,
         "skip_reason": None,
         "error": None,
-        "retrieval": None,
+        "retrieved": None,
+        "distances": None,
         "attempts": [],
-        "n_attempts": 0,
-        "first_sql": None,
         "final_sql": None,
         "final_attempt": None,
-        "final_source": None,
+        "fallback": False,
         "recovered": False,
         "scoring": None,
         "results": None,
-        "usage": None,
-        "timing_ms": None,
+        "ms": None,
     }
 
 
@@ -540,8 +545,7 @@ async def _process_sample(
     execution_feedback: bool,
 ) -> Tuple[dict, InferenceResult]:
     """Infer and score one sample. Never raises for ordinary failures: they are the record."""
-    mode = "feedback" if use_feedback_loop else "single-pass"
-    record = _base_record(index, sample, mode)
+    record = _base_record(index, sample)
     started = time.perf_counter()
     result = InferenceResult(None, None, "internal_error")
     try:
@@ -554,48 +558,35 @@ async def _process_sample(
             result = await _predict_sql(chain, sample.question, k=k)
 
         record.update(
-            retrieval=result.retrieval,
+            retrieved=(result.retrieval or {}).get("ids"),
+            distances=(result.retrieval or {}).get("distances"),
             attempts=result.attempt_log,
-            n_attempts=result.attempts,
-            first_sql=result.first_sql,
             final_sql=result.sql,
             final_attempt=result.final_attempt,
-            final_source=result.final_source,
+            fallback=result.final_source == "attempt_1_fallback",
             recovered=result.recovered,
             error=result.error,
-            usage=_usage_total(result.attempt_log),
         )
-        scoring_ms = 0.0
         if not result.sql:
             record.update(status="no_sql", failure_kind=result.failure_kind)
         else:
-            scoring_started = time.perf_counter()
             scoring, results = _score(executor, result, sample.gold_sql)
-            scoring_ms = (time.perf_counter() - scoring_started) * 1000
             record.update(status="scored", scoring=scoring, results=results)
     except Exception as exc:
         record.update(
             status="internal_error",
             failure_kind="internal_error",
             error=f"{describe_exc(exc)}\n{traceback.format_exc()}",
-            n_attempts=result.attempts,
+            attempts=result.attempt_log,
         )
-        scoring_ms = 0.0
 
-    llm_ms = sum(a["llm"]["latency_ms"] for a in record["attempts"])
-    record["timing_ms"] = {
-        "total": _ms(started),
-        "retrieval": (record["retrieval"] or {}).get("ms"),
-        "llm": round(llm_ms, 2),
-        "scoring": round(scoring_ms, 2),
-    }
-    record["finished_at"] = utc_now()
+    record["ms"] = _ms(started)
     return record, result
 
 
-def _skipped_record(index: int, sample: SpiderSample, mode: str, reason: str, detail: str) -> dict:
-    record = _base_record(index, sample, mode)
-    record.update(status="skipped", skip_reason=reason, error=detail, finished_at=utc_now())
+def _skipped_record(index: int, sample: SpiderSample, reason: str, detail: str) -> dict:
+    record = _base_record(index, sample)
+    record.update(status="skipped", skip_reason=reason, error=detail)
     return record
 
 
@@ -617,12 +608,13 @@ def _print_record(record: dict, result: InferenceResult, total: int, verbose: bo
     scoring = record["scoring"]
     em, ex = scoring["em"], scoring["ex"]
     label = "EM+EX" if (em and ex) else ("EM" if em else ("EX" if ex else "FAIL"))
-    retry_info = f" (attempts: {record['n_attempts']})" if record["n_attempts"] > 1 else ""
+    n_attempts = len(record["attempts"])
+    retry_info = f" (attempts: {n_attempts})" if n_attempts > 1 else ""
     print(f"{prefix} {label:<6} db={db_id}{retry_info} | Q: {record['question'][:60]}")
     for note in result.notes:
         print(f"         [feedback] {note}")
     if not ex:
-        print(f"         reason: {scoring['ex_error']}")
+        print(f"         reason: {describe_outcome(record)}")
         print(f"         pred:   {record['final_sql'][:200]}")
 
 
@@ -643,7 +635,7 @@ def _embedding_description(embedding_fn) -> dict:
 
 def _run_meta(
     spider_path: str, n_samples: int, *, k: int, use_feedback_loop: bool,
-    max_iterations: int, execution_feedback: bool, embedding_fn,
+    max_iterations: int, execution_feedback: bool, embedding_fn, out_dir: str,
 ) -> dict:
     llm = asdict(get_llm_settings())
     mode = "feedback" if use_feedback_loop else "single-pass"
@@ -662,6 +654,8 @@ def _run_meta(
     builder_sha = sha256_text(
         inspect.getsource(NL2SQLChain.build_user_prompt)
         + inspect.getsource(NL2SQLChain.build_schema_context)
+        + inspect.getsource(SQLValidator.extract_error_feedback)
+        + inspect.getsource(SQLFeedbackLoop.get_feedback_prompt)
     )
     prompts_sha = sha256_text(prompts["system_first"] + "\0" + prompts["system_feedback"])
     # The text of every retrieval unit comes from these templates.
@@ -678,11 +672,11 @@ def _run_meta(
         "prompts": {**prompts, "system_sha256": prompts_sha, "user_builder_sha256": builder_sha},
         "retrieval_units": {"templates_sha256": units_sha},
         "dataset": dataset,
-        "code": git_info(_REPO_DIR),
+        "code": git_info(_REPO_DIR, exclude_dir=out_dir),
         "environment": environment_info(),
         "fingerprint": {
             **config,
-            "llm": {k_: llm[k_] for k_ in ("provider", "model", "temperature")},
+            "llm": {k_: llm[k_] for k_ in ("provider", "model", "temperature", "reasoning_effort")},
             "embedding": embedding,
             "prompts_sha256": prompts_sha,
             "user_builder_sha256": builder_sha,
@@ -770,7 +764,7 @@ async def run_spider_evaluation(
         meta = _run_meta(
             spider_path, len(samples), k=k, use_feedback_loop=use_feedback_loop,
             max_iterations=feedback_max_iterations, execution_feedback=execution_feedback,
-            embedding_fn=embedding_fn,
+            embedding_fn=embedding_fn, out_dir=os.path.dirname(os.path.abspath(run_log.run_dir)),
         )
         session_meta = {
             "argv": argv, "limit": max_samples,
@@ -791,7 +785,8 @@ async def run_spider_evaluation(
         else:
             print(f"single-pass inference, k={k}")
         llm = meta["llm"]
-        print(f"LLM: {llm['provider']} / {llm['model']}  temperature={llm['temperature']}")
+        print(f"LLM: {llm['provider']} / {llm['model']}  temperature={llm['temperature']}"
+              + (f"  reasoning_effort={llm['reasoning_effort']}" if llm["provider"] == "openai" else ""))
         if resume:
             previous = run_log.manifest["sessions"][-2].get("code") or {}
             if previous.get("commit") != meta["code"].get("commit") or previous.get("dirty") != meta["code"].get("dirty"):
@@ -817,8 +812,7 @@ async def run_spider_evaluation(
 
             if not os.path.exists(sqlite_path):
                 record = _skipped_record(
-                    idx, sample, mode, "sqlite_missing",
-                    f"SQLite file missing: {sqlite_path}",
+                    idx, sample, "sqlite_missing", f"SQLite file missing: {sqlite_path}",
                 )
                 run_log.append(record)
                 latest[idx] = record
@@ -861,7 +855,7 @@ async def run_spider_evaluation(
                     run_log.save_schema_units(schema_units)
                 except Exception as exc:
                     record = _skipped_record(
-                        idx, sample, mode, "schema_build_failed",
+                        idx, sample, "schema_build_failed",
                         f"schema build failed: {describe_exc(exc)}",
                     )
                     run_log.append(record)

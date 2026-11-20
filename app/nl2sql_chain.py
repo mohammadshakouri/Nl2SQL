@@ -39,11 +39,13 @@ OLLAMA_MODEL_NAME: str = "gemma4:12b".strip().lower()
 OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
-# OpenAI path defaults. The model/temperature can be overridden per run with
-# configure_llm() (cli_spider_eval.py --model / --temperature), and the effective
-# values are written to the run manifest.
+# OpenAI path defaults. The model/temperature/reasoning effort can be overridden
+# per run with configure_llm() (cli_spider_eval.py --model / --temperature /
+# --reasoning-effort), and the effective values are written to the run manifest.
 OPENAI_MODEL_NAME: str = "gpt-6-luna"
 OPENAI_TEMPERATURE: float = 1
+# Sent as ``reasoning_effort``; None omits the parameter (the model's own default).
+OPENAI_REASONING_EFFORT: Optional[str] = "low"
 # Explicit so the values are recorded rather than inherited from SDK defaults:
 # a hung request must not stall a paid run for the SDK's 10-minute default, and
 # transient errors (429/5xx/connection) are retried by the SDK before a sample
@@ -63,24 +65,31 @@ class LLMSettings:
     host: Optional[str]
     timeout_s: Optional[float] = None
     max_retries: Optional[int] = None
+    reasoning_effort: Optional[str] = None
+    """OpenAI only; Ollama thinking is always off (``think=False``)."""
 
 
 _model_override: Optional[str] = None
 _temperature_override = _UNSET
+_reasoning_effort_override = _UNSET
 
 
-def configure_llm(model: Optional[str] = None, temperature=_UNSET) -> None:
+def configure_llm(
+    model: Optional[str] = None, temperature=_UNSET, reasoning_effort=_UNSET
+) -> None:
     """
-    Override the model and/or temperature for the active provider.
+    Override the model, temperature and/or reasoning effort for the active provider.
 
-    ``temperature=None`` omits the parameter from the request entirely, for
-    models that only accept their default.
+    ``temperature=None`` / ``reasoning_effort=None`` omit the parameter from the
+    request entirely, for models that only accept their default.
     """
-    global _model_override, _temperature_override
+    global _model_override, _temperature_override, _reasoning_effort_override
     if model:
         _model_override = model
     if temperature is not _UNSET:
         _temperature_override = temperature
+    if reasoning_effort is not _UNSET:
+        _reasoning_effort_override = reasoning_effort
 
 
 def get_llm_settings() -> LLMSettings:
@@ -96,6 +105,7 @@ def get_llm_settings() -> LLMSettings:
     temperature = OPENAI_TEMPERATURE if _temperature_override is _UNSET else _temperature_override
     base_url = os.getenv("OPENAI_BASE_URL")
     host = (urlparse(base_url).hostname or base_url) if base_url else "api.openai.com (SDK default)"
+    effort = OPENAI_REASONING_EFFORT if _reasoning_effort_override is _UNSET else _reasoning_effort_override
     return LLMSettings(
         provider="openai",
         model=_model_override or OPENAI_MODEL_NAME,
@@ -103,6 +113,7 @@ def get_llm_settings() -> LLMSettings:
         host=host,
         timeout_s=OPENAI_TIMEOUT_SECONDS,
         max_retries=OPENAI_MAX_RETRIES,
+        reasoning_effort=effort,
     )
 
 
@@ -343,9 +354,11 @@ class NL2SQLChain:
             OpenAI chat completion stream
         """
         settings = get_llm_settings()
-        request = {"model": settings.model, "messages": messages, "stream": stream, "reasoning_effort":"low"}
+        request = {"model": settings.model, "messages": messages, "stream": stream}
         if settings.temperature is not None:
             request["temperature"] = settings.temperature
+        if settings.reasoning_effort is not None:
+            request["reasoning_effort"] = settings.reasoning_effort
         if stream and include_usage:
             request["stream_options"] = {"include_usage": True}
 
