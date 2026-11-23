@@ -92,7 +92,7 @@ ONLINE (per question)
 NL question ──(no query enhancement)──► embed question (same embedding fn as the documents)
   └─ Chroma dense Top-K (K=15, no threshold, no filter) → list of unit texts (distances discarded)
   └─ build_schema_context(): group units into Tables / Columns / Relations sections
-  └─ build_user_prompt() + culture="en" system prompt → LLM (Ollama local | OpenAI gpt-4o-mini), streaming
+  └─ build_user_prompt() + culture="en" system prompt → LLM (Ollama local | OpenAI GPT-6-luna), streaming
   └─ clean_sql_output(): strip ``` fences and comments, flatten, add ';'
   └─ validate_query(): SELECT-first check + FROM/JOIN table-name check   [only validation signal that exists]
   └─ on failure: feedback prompt (last failed SQL + error + hint) → regenerate (same retrieved context, not re-run)
@@ -342,7 +342,7 @@ A question needing a `singer ↔ singer_in_concert ↔ concert` join would have 
 | Setting | Local (`USE_LOCAL_LLM=true`) | Online (`USE_LOCAL_LLM=false`) |
 |---|---|---|
 | Client | `ollama.AsyncClient` | `openai.AsyncOpenAI` |
-| Model | `gemma4:12b` (Ollama tag as configured, `nl2sql_chain.py:39`) | `gpt-4o-mini` (`:269`) |
+| Model | `gemma4:12b` (Ollama tag as configured, `nl2sql_chain.py:39`) | `GPT-6-luna` (`:269`) |
 | Endpoint | `http://127.0.0.1:11434` (reset to localhost by the cleanup; previously pointed at an internal company GPU host) | OpenAI API |
 | Temperature | 0.1 | 0.1 |
 | Max tokens | not set | not set |
@@ -508,7 +508,7 @@ The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval 
 | Few-shot examples from dev | **No** | – |
 | Execution feedback compared with gold results | **N/A** | There is no execution feedback at all right now (§8). If mechanism B is rebuilt, it must use only the prediction's own execution error, never the gold result. |
 | Tuning on the same split used for reporting | **Yes (methodological)** | Prompts, K and so on are developed on dev and reported on dev. Mitigation: hold out part of dev, or use a train subset for tuning, or the official test split if available. |
-| Pretraining contamination | *Possible (hypothesis)* | Spider has been public since 2018; gpt-4o-mini and Gemma may have seen it. A known limitation of all LLM-on-Spider results; mention it. |
+| Pretraining contamination | *Possible (hypothesis)* | Spider has been public since 2018; GPT-6-luna and Gemma may have seen it. A known limitation of all LLM-on-Spider results; mention it. |
 | Biased subsets | **Yes, if `--limit` is used** | `dev.json` is grouped by database (it starts with `concert_singer`), so `--limit 20` evaluates essentially **one** database. Use a stratified or random sample, or the full dev set. |
 | Stale vector stores across experiments | **Yes** | Collections are only built when empty. Changing the embedding model or unit template without deleting `chroma_db/spider_eval` reuses old vectors, or fails and silently skips that database's samples. |
 | Evaluation DB mutation | *Low probability, real* | Nothing blocks a predicted DML statement in single-pass mode. `SpiderSQLiteExecutor` opens with `with sqlite3.connect(...) as conn`, which **commits** on success, so a `DELETE` would persist; it also switches the files to WAL journal mode. Keep a pristine copy of `database/`, or open SQLite read-only (`file:...?mode=ro`). |
@@ -530,7 +530,7 @@ The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval 
 
 | Variable | Baseline | Proposed | Implemented? | Config Location |
 |---|---|---|---|---|
-| LLM provider | Online `gpt-4o-mini` | Local Ollama `gemma4:12b` (or vice versa) | **Yes** (env switch) | `USE_LOCAL_LLM`; names at `nl2sql_chain.py:39, 269` |
+| LLM provider | Online `GPT-6-luna` | Local Ollama `gemma4:12b` (or vice versa) | **Yes** (env switch) | `USE_LOCAL_LLM`; names at `nl2sql_chain.py:39, 269` |
 | LLM temperature | 0.1 | 0 for evaluation | Fixed, code edit needed | `nl2sql_chain.py:38, 269` |
 | Max tokens / seed | not set | fixed for reproducibility | **No** | – |
 | Embedding model | OpenAI `text-embedding-3-small` | Local SentenceTransformer (labelled EmbeddingGemma-300m) | **Yes** (env switch; Chroma dir must be rebuilt) | `USE_LOCAL_EMBEDDING`, `EMBEDDING_MODEL_DIR`; `app/dotenv.py:12-13` |
@@ -723,7 +723,7 @@ For each Spider question, `run_spider_evaluation` → build/reuse chain for `db_
 Dense-only Chroma kNN, K=15 hard-coded, no threshold, no metadata filters, no reranking, no query enhancement, distances discarded. BM25, RRF and the cross-encoder reranker are **not implemented** anywhere in the code or the git history — confirmed unchanged by this cleanup pass.
 
 **LLM**
-Local: Ollama `gemma4:12b` at `127.0.0.1:11434` (reset from an internal company host by this cleanup). Online: OpenAI `gpt-4o-mini`. Temperature 0.1 for both, no max_tokens/seed/num_ctx. Single-turn `[system, user]`, no few-shot, streaming. Four system prompts exist in `system_prompt.py`, but only the two English ones are ever reachable — the Persian pair (and its T-SQL-specific instruction) is currently dead code, reachable only if a future caller explicitly requests `culture="fa"`.
+Local: Ollama `gemma4:12b` at `127.0.0.1:11434` (reset from an internal company host by this cleanup). Online: OpenAI `GPT-6-luna`. Temperature 0.1 for both, no max_tokens/seed/num_ctx. Single-turn `[system, user]`, no few-shot, streaming. Four system prompts exist in `system_prompt.py`, but only the two English ones are ever reachable — the Persian pair (and its T-SQL-specific instruction) is currently dead code, reachable only if a future caller explicitly requests `culture="fa"`.
 
 **FEEDBACK**
 - (A) Static validation feedback: **implemented**, weak detector, the only mechanism that exists.

@@ -6,7 +6,7 @@ All experiments use the same LLM configuration.
 ```table
 | Parameter       | Value                      |
 | --------------- | -------------------------- |
-| Model           | GPT-4o-mini                |
+| Model           | GPT-6-luna                |
 | Temperature     | Fixed                      |
 | Maximum Tokens  | Fixed                      |
 | Prompt Template | Fixed                      |
