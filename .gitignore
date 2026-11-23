@@ -100,5 +100,9 @@ logs/
 # ─── Spider dataset (large, downloaded separately) ───────────────────────────
 Spider
 
+
+# ─── BIRD dataset (large, downloaded separately) ───────────────────────────
+BIRD
+
 # ─── Editor build caches ─────────────────────────────────────────────────────
 .vite/

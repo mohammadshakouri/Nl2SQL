@@ -358,7 +358,6 @@ def analyse(run_dir: str, spider_path: str, labels_path: Optional[str] = None) -
     out["overview"] = {
         "ex": sum(ex.values()), "ex_pct": _pct(sum(ex.values()), n),
         "single_pass_ex": first_ex, "single_pass_ex_pct": _pct(first_ex, n),
-        "em_pct": _pct(sum(latest[i]["scoring"]["em"] for i in ids), n),
         "failing": len(failing),
     }
     attempts = Counter(len(latest[i]["attempts"]) for i in ids)
@@ -581,7 +580,7 @@ def format_report(a: dict) -> str:
     w = lines.append
     o = a["overview"]
     w(f"run {a['run']}   {a['n_samples']} samples")
-    w(f"EX {o['ex_pct']}%  (single pass {o['single_pass_ex_pct']}%)   EM {o['em_pct']}%   failing {o['failing']}")
+    w(f"EX {o['ex_pct']}%  (single pass {o['single_pass_ex_pct']}%)   failing {o['failing']}")
     if a["label_problems"]:
         w("\nLABEL PROBLEMS:")
         lines.extend("  - " + p for p in a["label_problems"])

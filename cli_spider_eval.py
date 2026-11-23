@@ -235,7 +235,6 @@ def _print_results(metrics: dict) -> None:
     if metrics["mode"] == "feedback":
         print(f"Max attempts:        {metrics['max_attempts']}")
     print(f"Total Samples:       {metrics['total']}")
-    print(f"Exact Match:         {metrics['exact_match']:.2f}%  (normalised SQL string match, not Spider's exact set match)")
     print(f"Execution Accuracy:  {metrics['execution_accuracy']:.2f}%"
           f"  ({metrics.get('ex_column_reordered', 0)} matched only after reordering columns)")
     print(f"Inference failures:  {_format_failures(metrics)}")
@@ -259,14 +258,12 @@ def _format_tokens(tokens: dict) -> str:
 
 def _print_feedback_diagnostics(metrics: dict) -> None:
     fb = metrics["feedback"]
-    em_delta = metrics["exact_match"] - fb["first_attempt_exact_match"]
     ex_delta = metrics["execution_accuracy"] - fb["first_attempt_execution_accuracy"]
     total = metrics["total"] or 1
     print()
     print("Feedback diagnostics (paired, same run)")
-    print(f"  First-attempt EM / EX:  {fb['first_attempt_exact_match']:.2f}% / "
-          f"{fb['first_attempt_execution_accuracy']:.2f}%  (= single-pass answer)")
-    print(f"  Change from feedback:   {em_delta:+.2f} / {ex_delta:+.2f}")
+    print(f"  First-attempt EX:       {fb['first_attempt_execution_accuracy']:.2f}%  (= single-pass answer)")
+    print(f"  Change from feedback:   {ex_delta:+.2f}")
     print(f"  Samples retried:        {fb['retried']} ({fb['retried'] / total:.2%})")
     print(f"    recovered:            {fb['recovered']}  (a retry passed the checks)")
     print(f"    exhausted:            {fb['exhausted']}  (no attempt passed the checks)")
@@ -440,16 +437,13 @@ async def _run(args: argparse.Namespace, samples, spider_path: str, prelude: str
         print(f"{'Metric':<26} {'Single-pass':>12} {'Feedback':>12}")
         print("-" * 50)
         print(f"{'Total Samples':<26} {metrics_sp['total']:>12} {metrics_fb['total']:>12}")
-        print(f"{'Exact Match (%)':<26} {metrics_sp['exact_match']:>12.2f} {metrics_fb['exact_match']:>12.2f}")
         print(f"{'Execution Accuracy (%)':<26} {metrics_sp['execution_accuracy']:>12.2f} {metrics_fb['execution_accuracy']:>12.2f}")
         print(f"{'Inference failures':<26} {metrics_sp['inference_failures']:>12} {metrics_fb['inference_failures']:>12}")
         print(f"{'LLM calls':<26} {metrics_sp['llm_calls']:>12} {metrics_fb['llm_calls']:>12}")
         print("=" * 50)
 
-        em_delta = metrics_fb["exact_match"] - metrics_sp["exact_match"]
         ex_delta = metrics_fb["execution_accuracy"] - metrics_sp["execution_accuracy"]
         sign = lambda v: f"+{v:.2f}" if v >= 0 else f"{v:.2f}"
-        print(f"{'EM delta (feedback - single)':<26} {sign(em_delta):>25}")
         print(f"{'EX delta (feedback - single)':<26} {sign(ex_delta):>25}")
         print("(the deltas above compare two separate LLM runs and include sampling noise)")
         _print_feedback_diagnostics(metrics_fb)

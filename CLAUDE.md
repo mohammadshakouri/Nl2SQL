@@ -32,7 +32,7 @@ Config comes from `.env` (copy `.env.template`: `OPENAI_API_KEY`, `USE_LOCAL_LLM
 - Work on `main`. **Do not commit or push unless asked**: the user reviews diffs locally first. Never put API keys in files.
 - A full run costs money (~730k tokens, ~47 min for 1034 samples). Pilot with `--limit` first, ask before a full run, and commit before a run that will be reported (the manifest records `code.dirty`).
 - Changing prompts, unit text templates, the scorer or `dev.json` changes the run **fingerprint**: old logs then refuse `--resume`. That is intended.
-- Scoring: EX ignores row order, case and column order; invalid UTF-8 is dropped. `EM` is a normalised SQL **string** match, not Spider's EM: never report it as Spider EM. Ties at `ORDER BY ... LIMIT 1` and wrong gold queries are not handled (they are the G category in the analysis).
+- Scoring: EX ignores row order, case and column order; invalid UTF-8 is dropped. EX is the only metric; the old string-match "EM" was deliberately removed (it was not Spider's EM), so do not add it back. Ties at `ORDER BY ... LIMIT 1` and wrong gold queries are not handled (they are the G category in the analysis).
 - The user is on Windows.
 
 ## State (last full run: gpt-6-luna, K=15, exec-feedback, `runs/20261120T164326Z_..._all_samples`)

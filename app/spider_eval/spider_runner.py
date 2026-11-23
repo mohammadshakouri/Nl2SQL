@@ -12,7 +12,7 @@ For each Spider sample the runner:
 4. Retrieves the Top-K schema units and generates SQL, either single-pass or
    with the feedback/retry loop (static validation, optionally plus the
    predicted query's own SQLite execution error)
-5. Evaluates Exact Match and Execution Accuracy
+5. Evaluates Execution Accuracy
 6. Writes one complete record for the sample to the run log (see run_log.py)
    and, at the end, returns metrics recomputed from the log
 """
@@ -52,8 +52,7 @@ from app.spider_eval.run_log import (
 from app.spider_eval.spider_loader import SpiderSample, get_sqlite_path
 from app.spider_eval.sqlite_schema_extractor import SQLiteSchemaExtractor
 from app.spider_eval.spider_sqlite_executor import CompareResult, QueryRun, SpiderSQLiteExecutor
-from app.spider_eval import spider_evaluator, spider_sqlite_executor
-from app.spider_eval.spider_evaluator import exact_match
+from app.spider_eval import spider_sqlite_executor
 from chromadb.utils import embedding_functions
 
 USE_LOCAL_EMBEDDING = env.use_local_embedding
@@ -480,23 +479,19 @@ def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: st
         (scoring dict, results dict) for the run record.
     """
     pred_sql = result.sql
-    em = exact_match(pred_sql, gold_sql)
     final = _compare(executor, pred_sql, gold_sql)
 
     if result.first_sql == pred_sql:
-        first_em, first, first_run = em, final, final.pred
+        first, first_run = final, final.pred
     elif _is_empty_sql(result.first_sql):
-        first_em, first, first_run = False, None, None
+        first, first_run = None, None
     else:
-        first_em = exact_match(result.first_sql, gold_sql)
         first = _compare(executor, result.first_sql, gold_sql)
         first_run = first.pred
 
     scoring = {
-        "em": em,
         "ex": final.match,
         "kind": final.kind,
-        "first_em": first_em,
         "first_ex": bool(first and first.match),
         "permuted": final.permuted,
     }
@@ -608,14 +603,13 @@ def _print_record(record: dict, result: InferenceResult, total: int, verbose: bo
                 print(f"         [feedback] {note}")
         return
     scoring = record["scoring"]
-    em, ex = scoring["em"], scoring["ex"]
-    label = "EM+EX" if (em and ex) else ("EM" if em else ("EX" if ex else "FAIL"))
+    label = "EX" if scoring["ex"] else "FAIL"
     n_attempts = len(record["attempts"])
     retry_info = f" (attempts: {n_attempts})" if n_attempts > 1 else ""
     print(f"{prefix} {label:<6} db={db_id}{retry_info} | Q: {record['question'][:60]}")
     for note in result.notes:
         print(f"         [feedback] {note}")
-    if not ex:
+    if not scoring["ex"]:
         print(f"         reason: {describe_outcome(record)}")
         print(f"         pred:   {record['final_sql'][:200]}")
 
@@ -664,7 +658,7 @@ def _run_meta(
     units_sha = sha256_text(
         "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
     )
-    # The scorer decides EX/EM: a run must not be resumed after it has changed.
+    # The scorer decides EX: a run must not be resumed after it has changed.
     scorer_sha = sha256_text(
         "".join(
             inspect.getsource(f)
@@ -675,8 +669,6 @@ def _run_meta(
                 spider_sqlite_executor._decode_text,
                 SpiderSQLiteExecutor._open_connection,
                 SpiderSQLiteExecutor.compare_detailed,
-                spider_evaluator.normalize_sql,
-                spider_evaluator.exact_match,
             )
         )
     )
@@ -759,7 +751,7 @@ async def run_spider_evaluation(
         argv: The command line, recorded in the manifest.
 
     Returns:
-        Dict with keys: total, exact_match, execution_accuracy, mode, k,
+        Dict with keys: total, execution_accuracy, mode, k,
         skipped, inference_failures, failure_reasons, llm_calls and, in feedback
         mode, max_attempts, execution_feedback and feedback (loop diagnostics);
         plus run_dir, tokens and status_counts. All of it is recomputed from the

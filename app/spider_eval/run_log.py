@@ -329,11 +329,7 @@ def summarize_records(
     scored = [r for r in processed if r.get("scoring")]
     total = len(processed)
 
-    metrics = compute_metrics(
-        total,
-        sum(1 for r in scored if r["scoring"]["em"]),
-        sum(1 for r in scored if r["scoring"]["ex"]),
-    )
+    metrics = compute_metrics(total, sum(1 for r in scored if r["scoring"]["ex"]))
     failure_reasons = Counter(
         r["failure_kind"] for r in processed if r["status"] in ("no_sql", "internal_error")
     )
@@ -351,18 +347,13 @@ def summarize_records(
     if mode == "feedback":
         retried = sum(1 for r in processed if len(r["attempts"]) > 1)
         recovered = sum(1 for r in processed if r.get("recovered"))
-        first = compute_metrics(
-            total,
-            sum(1 for r in scored if r["scoring"]["first_em"]),
-            sum(1 for r in scored if r["scoring"]["first_ex"]),
-        )
+        first = compute_metrics(total, sum(1 for r in scored if r["scoring"]["first_ex"]))
         metrics["max_attempts"] = max_attempts
         metrics["execution_feedback"] = execution_feedback
         metrics["feedback"] = {
             "retried": retried,
             "recovered": recovered,
             "exhausted": retried - recovered,
-            "first_attempt_exact_match": first["exact_match"],
             "first_attempt_execution_accuracy": first["execution_accuracy"],
         }
     return metrics
@@ -434,7 +425,6 @@ def brief_record(record: dict) -> dict:
         "pred": record.get("final_sql"),
         "status": record["status"] if record["status"] != "scored" else None,
         "ex": scoring.get("ex"),
-        "em": scoring.get("em"),
         "kind": scoring.get("kind") if scoring else record.get("failure_kind") or record.get("skip_reason"),
         "attempts": len(record.get("attempts", [])),
         "first_ex": scoring.get("first_ex"),
@@ -672,6 +662,25 @@ def _fingerprint_diffs(old: dict, new: dict, prefix: str = "") -> List[str]:
 _REQUIRED_KEYS = ("sample_index", "db_id", "question", "gold_sql", "status", "attempts")
 
 
+def _metrics_differ(stored: dict, current: dict) -> bool:
+    """
+    True if a stored metric disagrees with the recomputed one.
+
+    Only the metrics the current code computes are compared: a log written by
+    other code may hold metrics that are no longer reported (or not yet), and
+    those must not fail the check.
+    """
+    for key, value in stored.items():
+        if key not in current:
+            continue
+        if isinstance(value, dict) and isinstance(current[key], dict):
+            if _metrics_differ(value, current[key]):
+                return True
+        elif current[key] != value:
+            return True
+    return False
+
+
 def check_run(run_dir: str) -> int:
     """Validate a run directory and print a summary. Returns a process exit code."""
     problems: List[str] = []
@@ -715,12 +724,10 @@ def check_run(run_dir: str) -> int:
             max_attempts=config.get("max_attempts"),
             execution_feedback=config.get("execution_feedback"),
         )
-        print(f"recomputed: EM {metrics['exact_match']}%  EX {metrics['execution_accuracy']}%  "
+        print(f"recomputed: EX {metrics['execution_accuracy']}%  "
               f"over {metrics['total']} samples, {metrics['llm_calls']} LLM calls")
         stored = (manifest.get("results") or {}).get("metrics")
-        # Compare the metrics the manifest has: a log written before a metric was
-        # added (e.g. ex_column_reordered) must still pass.
-        if stored and any(metrics.get(key, object()) != value for key, value in stored.items()):
+        if stored and _metrics_differ(stored, metrics):
             problems.append("manifest results differ from metrics recomputed from samples.jsonl")
         tokens = token_totals(latest)
         print(f"tokens:     {tokens}")

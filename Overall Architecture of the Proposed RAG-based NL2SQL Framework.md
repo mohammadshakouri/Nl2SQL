@@ -64,7 +64,6 @@ For the Hybrid Retrieval architecture:
 ```table
 | Metric                       | Description                            |
 | ---------------------------- | -------------------------------------- |
-| Exact Match (EM)             | Exact SQL matching accuracy            |
 | Execution Accuracy (EX)      | Correct execution result accuracy      |
 | Average Tokens Used          | Token consumption                      |
 | Syntax Error Rate            | Invalid SQL generation rate            |
@@ -80,12 +79,12 @@ For the Hybrid Retrieval architecture:
 
 This experiment evaluates the contribution of each retrieval component by progressively adding BM25 retrieval and reranking modules. The final number of schema units provided to the LLM is fixed to 10 in all configurations to ensure a fair comparison.
 ```table
-| Retrieval Architecture                     | Dense Retrieval | BM25 Retrieval | Reranker | Candidate Pool | Final Schema Units | EM (%) | EX (%) |
-| ------------------------------------------ | --------------- | -------------- | -------- | -------------- | ------------------ | ------ | ------ |
-| Dense Only                                 | Top-10          | ✗              | ✗        | 10             | 10                 | 69.4   | 75.9   |
-| BM25 Only                                  | ✗               | Top-10         | ✗        | 10             | 10                 | 67.8   | 74.6   |
-| Dense + BM25                               | Top-20          | Top-20         | ✗        | 40             | 10                 | 72.9   | 79.8   |
-| Dense + BM25 + Reranker (Hybrid Retrieval) | Top-20          | Top-20         | ✓        | 40             | 10                 | 74.8   | 81.7   |
+| Retrieval Architecture                     | Dense Retrieval | BM25 Retrieval | Reranker | Candidate Pool | Final Schema Units | EX (%) |
+| ------------------------------------------ | --------------- | -------------- | -------- | -------------- | ------------------ | ------ |
+| Dense Only                                 | Top-10          | ✗              | ✗        | 10             | 10                 | 75.9   |
+| BM25 Only                                  | ✗               | Top-10         | ✗        | 10             | 10                 | 74.6   |
+| Dense + BM25                               | Top-20          | Top-20         | ✗        | 40             | 10                 | 79.8   |
+| Dense + BM25 + Reranker (Hybrid Retrieval) | Top-20          | Top-20         | ✓        | 40             | 10                 | 81.7   |
 ```
 
 **Result:**
@@ -104,11 +103,11 @@ Therefore, the complete Hybrid Retrieval architecture (Dense + BM25 + Reranker) 
 
 The best retrieval architecture identified in Table 1 is fixed for this experiment.
 ```table
-| Retrieval Architecture | Feedback Loop        | Schema Type | EM (%) | EX (%) | ΔEX  |
-| ---------------------- | -------------------- | ----------- | ------ | ------ | ---- |
-| Hybrid Retrieval       | No Feedback          | Raw Schema  | 74.8   | 81.7   | -    |
-| Hybrid Retrieval       | Single Retry         | Raw Schema  | 76.9   | 83.2   | +1.5 |
-| Hybrid Retrieval       | Iterative Refinement | Raw Schema  | 78.5   | 85.1   | +3.4 |
+| Retrieval Architecture | Feedback Loop        | Schema Type | EX (%) | ΔEX  |
+| ---------------------- | -------------------- | ----------- | ------ | ---- |
+| Hybrid Retrieval       | No Feedback          | Raw Schema  | 81.7   | -    |
+| Hybrid Retrieval       | Single Retry         | Raw Schema  | 83.2   | +1.5 |
+| Hybrid Retrieval       | Iterative Refinement | Raw Schema  | 85.1   | +3.4 |
 ```
 ---
 
@@ -116,10 +115,10 @@ The best retrieval architecture identified in Table 1 is fixed for this experime
 
 The optimal retrieval architecture and feedback configuration are fixed.
 ```table
-| Retrieval Architecture | Feedback Loop | Schema Type     | EM (%) | EX (%) |
-| ---------------------- | ------------- | --------------- | ------ | ------ |
-| Hybrid Retrieval       | No Feedback   | Raw Schema      | 74.8   | 81.7   |
-| Hybrid Retrieval       | No Feedback   | Enriched Schema | 77.4   | 84.0   |
+| Retrieval Architecture | Feedback Loop | Schema Type     | EX (%) |
+| ---------------------- | ------------- | --------------- | ------ |
+| Hybrid Retrieval       | No Feedback   | Raw Schema      | 81.7   |
+| Hybrid Retrieval       | No Feedback   | Enriched Schema | 84.0   |
 ```
 ---
 
@@ -127,25 +126,25 @@ The optimal retrieval architecture and feedback configuration are fixed.
 
 This table evaluates the cumulative contribution of all proposed components.
 ```table
-| Retrieval Architecture | Feedback Loop        | Schema Type     | EM (%) | EX (%) |
-| ---------------------- | -------------------- | --------------- | ------ | ------ |
-| Dense Retrieval        | No Feedback          | Raw Schema      | 69.4   | 75.9   |
-| Hybrid Retrieval       | No Feedback          | Raw Schema      | 74.8   | 81.7   |
-| Hybrid Retrieval       | Single Retry         | Raw Schema      | 76.9   | 83.2   |
-| Hybrid Retrieval       | Iterative Refinement | Raw Schema      | 78.5   | 85.1   |
-| Hybrid Retrieval       | Iterative Refinement | Enriched Schema | 81.2   | 88.4   |
+| Retrieval Architecture | Feedback Loop        | Schema Type     | EX (%) |
+| ---------------------- | -------------------- | --------------- | ------ |
+| Dense Retrieval        | No Feedback          | Raw Schema      | 75.9   |
+| Hybrid Retrieval       | No Feedback          | Raw Schema      | 81.7   |
+| Hybrid Retrieval       | Single Retry         | Raw Schema      | 83.2   |
+| Hybrid Retrieval       | Iterative Refinement | Raw Schema      | 85.1   |
+| Hybrid Retrieval       | Iterative Refinement | Enriched Schema | 88.4   |
 ```
 ---
 
 # Table 5 — Error Analysis of Complete Ablation Study
 ```table
-| Retrieval Architecture | Feedback Loop        | Schema Type     | EM (%) | EX (%) | Syntax Error (%) | Semantic Error (%) |
-| ---------------------- | -------------------- | --------------- | ------ | ------ | ---------------- | ------------------ |
-| Dense Retrieval        | No Feedback          | Raw Schema      | 69.4   | 75.9   | 5.8              | 18.3               |
-| Hybrid Retrieval       | No Feedback          | Raw Schema      | 74.8   | 81.7   | 4.2              | 14.1               |
-| Hybrid Retrieval       | Single Retry         | Raw Schema      | 76.9   | 83.2   | 3.1              | 13.7               |
-| Hybrid Retrieval       | Iterative Refinement | Raw Schema      | 78.5   | 85.1   | 2.4              | 12.5               |
-| Hybrid Retrieval       | Iterative Refinement | Enriched Schema | 81.2   | 88.4   | 1.3              | 10.3               |
+| Retrieval Architecture | Feedback Loop        | Schema Type     | EX (%) | Syntax Error (%) | Semantic Error (%) |
+| ---------------------- | -------------------- | --------------- | ------ | ---------------- | ------------------ |
+| Dense Retrieval        | No Feedback          | Raw Schema      | 75.9   | 5.8              | 18.3               |
+| Hybrid Retrieval       | No Feedback          | Raw Schema      | 81.7   | 4.2              | 14.1               |
+| Hybrid Retrieval       | Single Retry         | Raw Schema      | 83.2   | 3.1              | 13.7               |
+| Hybrid Retrieval       | Iterative Refinement | Raw Schema      | 85.1   | 2.4              | 12.5               |
+| Hybrid Retrieval       | Iterative Refinement | Enriched Schema | 88.4   | 1.3              | 10.3               |
 ```
 ---
 
@@ -153,15 +152,15 @@ This table evaluates the cumulative contribution of all proposed components.
 
 This experiment evaluates the contribution of each major framework component.
 ```table
-| Retrieval Architecture | Feedback Loop        | Schema Enrichment | EM (%) | EX (%) |
-| ---------------------- | -------------------- | ----------------- | ------ | ------ |
-| Dense Retrieval        | No Feedback          | Raw Schema        | 69.4   | 75.9   |
-| Hybrid Retrieval       | No Feedback          | Raw Schema        | 74.8   | 81.7   |
-| Dense Retrieval        | Iterative Refinement | Raw Schema        | 73.8   | 80.4   |
-| Dense Retrieval        | No Feedback          | Enriched Schema   | 72.6   | 79.2   |
-| Hybrid Retrieval       | Iterative Refinement | Raw Schema        | 78.5   | 85.1   |
-| Hybrid Retrieval       | No Feedback          | Enriched Schema   | 77.4   | 84.0   |
-| Dense Retrieval        | Iterative Refinement | Enriched Schema   | 75.2   | 82.1   |
-| Hybrid Retrieval       | Iterative Refinement | Enriched Schema   | 81.2   | 88.4   |
+| Retrieval Architecture | Feedback Loop        | Schema Enrichment | EX (%) |
+| ---------------------- | -------------------- | ----------------- | ------ |
+| Dense Retrieval        | No Feedback          | Raw Schema        | 75.9   |
+| Hybrid Retrieval       | No Feedback          | Raw Schema        | 81.7   |
+| Dense Retrieval        | Iterative Refinement | Raw Schema        | 80.4   |
+| Dense Retrieval        | No Feedback          | Enriched Schema   | 79.2   |
+| Hybrid Retrieval       | Iterative Refinement | Raw Schema        | 85.1   |
+| Hybrid Retrieval       | No Feedback          | Enriched Schema   | 84.0   |
+| Dense Retrieval        | Iterative Refinement | Enriched Schema   | 82.1   |
+| Hybrid Retrieval       | Iterative Refinement | Enriched Schema   | 88.4   |
 ```
 ---

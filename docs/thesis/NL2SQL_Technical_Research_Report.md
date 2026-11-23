@@ -43,14 +43,14 @@ These findings decide what can be shown in the presentation.
 
 1. **The repository is now a single pipeline.** There is no more chatbot/production path to confuse with the research path — `cli_spider_eval.py` is the only entry point, and `app.nl2sql_chain.NL2SQLChain` + `app.spider_eval.spider_runner` is the only orchestration. This removes an entire category of confusion from the first report, but it also means two previously-implemented mechanisms are simply gone (see the revision note above and §8).
 2. **Retrieval is still dense-only.** Query Enhancement, BM25, RRF and the Reranker appear in `docs/diagrams/OnlineInference.drawio.png` and in `Overall Architecture of the Proposed RAG-based NL2SQL Framework.md`. None of them exists in the code, and none has ever existed in the git history (confirmed again after the cleanup: `requirements.txt` still has no BM25/cross-encoder dependency, and no such code was ever committed). All four are **PLANNED**.
-3. **The results tables in `Overall Architecture of the Proposed RAG-based NL2SQL Framework.md` were not produced by this code**, and cannot have been, for three reasons that all still hold: (a) BM25 and the reranker do not exist; (b) the Spider pipeline never applies metadata enrichment; (c) this repository's Exact Match is a strict string comparison, not the official Spider EM, and would score much lower than the numbers in that table. Present those tables only as *hypotheses or expected outcomes*, clearly labelled, or remove them.
+3. **The results tables in `Overall Architecture of the Proposed RAG-based NL2SQL Framework.md` were not produced by this code**, and cannot have been, for two reasons that both still hold: (a) BM25 and the reranker do not exist; (b) the Spider pipeline never applies metadata enrichment. Present those tables only as *hypotheses or expected outcomes*, clearly labelled, or remove them.
 4. **Metadata enrichment (`enrich_schema.py`) is implemented but currently disconnected from the only pipeline that runs.** It was previously invoked automatically by the (now-removed) SQL Server extractor; nothing calls it today. It is a working, generic, standalone tool — `python enrich_schema.py <schema.json>` — but Spider evaluation never sees enriched schemas. There is **no runnable "Raw vs Enriched" experiment yet**.
 5. **There is currently no execution-guided feedback anywhere in the code**, and there is no comment-driven human feedback anywhere in the code. Both existed in the removed chatbot layer and would need to be rebuilt from scratch, directly against the Spider harness, if the thesis still wants to claim them (§8, §12).
 6. **The validator is weak.** Confirmed empirically, unchanged by the cleanup (the validator logic itself was not touched):
    - `SELEC * FRM singer` and `hello world` both pass the "syntax" check.
    - The column check is a no-op.
    - There are false positives: `SELECT EXTRACT(YEAR FROM birth_date) ...` is rejected as "Table 'birth_date' does not exist".
-7. **The evaluation metrics are non-standard.** EM is lowercase/whitespace-normalised string equality, not Spider's official component-based exact-set-match; EX compares sorted, lower-cased result rows, not the official test-suite evaluation. Numbers from this harness are not comparable with published Spider results unless the official scripts are added (§10).
+7. **The evaluation metric is non-standard.** EX compares sorted, lower-cased result rows, not the official test-suite evaluation. Numbers from this harness are not comparable with published Spider results unless the official scripts are added (§10).
 8. **The Spider harness saves no predictions or retrieval traces.** Error analysis, schema-linking recall and before/after examples cannot be produced without a small code addition (§14).
 9. **The retrieval depth is fixed at K = 15.** `retrieve_schema_elements`'s own default of 10 is never used by any caller. K is not exposed as a CLI flag, and the relevance threshold is commented out (disabled).
 10. **The repository has no automated tests** (no `test_*.py`, no pytest configuration) and no saved experiment results of any kind.
@@ -67,7 +67,7 @@ Unlike the previous version of this repository, there is now exactly one executi
 2. builds (or reuses) a Chroma collection of retrieval units for that database,
 3. instantiates `NL2SQLChain` (`app/nl2sql_chain.py`) for retrieval, prompt-building and LLM calls,
 4. runs single-pass or validation-feedback inference (`SQLFeedbackLoop`, `app/sql_validator.py`),
-5. scores the result with Exact Match and Execution Accuracy (`app/spider_eval/spider_evaluator.py`, `spider_sqlite_executor.py`).
+5. scores the result with Execution Accuracy (`app/spider_eval/spider_evaluator.py`, `spider_sqlite_executor.py`).
 
 Two components exist in the repository but sit **outside** this call graph, invocable only by hand:
 - `enrich_schema.py` — a standalone CLI (`python enrich_schema.py <schema.json>`) with zero callers elsewhere in the code.
@@ -97,7 +97,7 @@ NL question ──(no query enhancement)──► embed question (same embedding
   └─ validate_query(): SELECT-first check + FROM/JOIN table-name check   [only validation signal that exists]
   └─ on failure: feedback prompt (last failed SQL + error + hint) → regenerate (same retrieved context, not re-run)
        up to max_iterations total attempts (Spider CLI: --max-iter, default 4)
-  └─ EM (string match against gold) + EX (separate, read-only SQLite execution of pred vs gold — scoring only,
+  └─ EX (separate, read-only SQLite execution of pred vs gold — scoring only,
        never fed back into generation)
 ```
 
@@ -121,8 +121,8 @@ NL question ──(no query enhancement)──► embed question (same embedding
 | 12 | Execution validation (as feedback) | SQL | **Does not exist.** `SQLValidator.execute_and_validate` was removed with the chatbot layer. | – | – | – | REMOVED |
 | 13 | Automatic feedback loop | Failed SQL + error | Builds a feedback prompt from the **last** failure, switches to the feedback system prompt, re-uses the same retrieved context, and regenerates | New SQL | Self-correction | `sql_validator.py:199-263`, `spider_runner.py:190-247` | IMPLEMENTED (validation-only) |
 | 14 | Human semantic feedback | – | **Does not exist.** The `/feedback`/`/regenerate` endpoints and the corrected-SQL/comment storage were removed with the chatbot layer. | – | – | – | REMOVED |
-| 15 | Logging | Run data | `print()`-only per-sample status lines and final aggregate metrics to stdout | Console output | Minimal progress reporting | `spider_runner.py:374-379`, `cli_spider_eval.py:83-88, 159-162` | IMPLEMENTED (minimal; see §10.6) |
-| 16 | Spider evaluation | dev.json + SQLite DBs | Runs inference per sample, then string EM and result-set EX | Aggregate % | Controlled benchmark | `app/spider_eval/*`, `cli_spider_eval.py` | IMPLEMENTED (non-standard metrics) |
+| 15 | Logging | Run data | `print()`-only per-sample status lines and final aggregate metrics to stdout | Console output | Minimal progress reporting | `spider_runner.py:374-379`, `cli_spider_eval.py:83-88, 159-162` | IMPLEMENTED (minimal; see §10.5) |
+| 16 | Spider evaluation | dev.json + SQLite DBs | Runs inference per sample, then result-set EX | Aggregate % | Controlled benchmark | `app/spider_eval/*`, `cli_spider_eval.py` | IMPLEMENTED (non-standard metric) |
 
 ---
 
@@ -172,7 +172,7 @@ A **retrieval unit** is one schema element rendered as one sentence-like string.
 Properties that matter for the research:
 - **Granularity:** fine-grained, one unit per column. A table unit lists only its *key* columns, not all of them.
 - **Units are independent.** Retrieving a column does not bring in its table, and retrieving a table does not bring in its non-key columns. There is no FK-graph expansion to add missing join paths or bridge tables.
-- **The glue words used to be Persian — now English.** Until this change the templates contained `شامل ستون های` ("includes columns"), `نوع داده` ("data type") and `نوع رابطه` ("relationship type") inside otherwise-English units, a leftover of the Persian production chatbot. They are now `Includes columns`, `data type` and `Relationship type`; the structure and whitespace are unchanged, so this is a pure language swap. **Every retrieval result, EM/EX figure and error analysis produced before this change (including `execution-log.md` and the numbers in `Technical-dept.md`) was obtained with the Persian wording and is not directly comparable with runs made after it.** Collections cached under `./chroma_db/spider_eval/` from before the change are detected as outdated and rebuilt automatically; the run manifest records a hash of the templates, so a run cannot be resumed across a template change.
+- **The glue words used to be Persian — now English.** Until this change the templates contained `شامل ستون های` ("includes columns"), `نوع داده` ("data type") and `نوع رابطه` ("relationship type") inside otherwise-English units, a leftover of the Persian production chatbot. They are now `Includes columns`, `data type` and `Relationship type`; the structure and whitespace are unchanged, so this is a pure language swap. **Every retrieval result, EX figure and error analysis produced before this change (including `execution-log.md` and the numbers in `Technical-dept.md`) was obtained with the Persian wording and is not directly comparable with runs made after it.** Collections cached under `./chroma_db/spider_eval/` from before the change are detected as outdated and rebuilt automatically; the run manifest records a hash of the templates, so a run cannot be resumed across a template change.
 - **Relation units carry almost no semantics:** identifiers plus "many-to-one". The LLM-generated `join_purpose` is dropped (present in the schema dict, never read by `SchemaManager`).
 - **No cell values or example values** are indexed.
 - **No Chroma metadata** is stored (documents and ids only). Unit type and parent table can only be recovered by string matching, so metadata filters such as "only columns of table X" are impossible.
@@ -184,7 +184,7 @@ Properties that matter for the research:
 - **The only collections the running code ever creates** live under `./chroma_db/spider_eval/`, named `Schema_spider_<db_id>`, one per Spider database, populated only if the collection is currently empty (`spider_runner.py:99, 46-48`).
 - `app.utilities.create_schema_vector_store()` (a generic "any schema JSON → `./chroma_db/Schema_<name>`" builder) still exists and still works, but as noted in §1.1 it has **zero callers** anywhere in the current codebase — it is available for reuse (e.g. to build a one-off collection from an enriched schema for a manual experiment) but nothing invokes it automatically.
 - **Index:** Chroma's default space (squared L2). With unit-normalised vectors, squared L2 equals 2·(1 − cos), so ranking is **equivalent to cosine similarity**.
-- **Lifecycle caveat:** changing the schema dict, the unit template or the embedding model does **not** re-embed an existing collection (only empty collections are populated). The `chroma_db/spider_eval` directory must be deleted manually between experiments that change any of those, otherwise a run silently uses stale vectors (§10.7).
+- **Lifecycle caveat:** changing the schema dict, the unit template or the embedding model does **not** re-embed an existing collection (only empty collections are populated). The `chroma_db/spider_eval` directory must be deleted manually between experiments that change any of those, otherwise a run silently uses stale vectors (§10.6).
 
 ---
 
@@ -287,7 +287,7 @@ To run "Raw vs Enriched" on Spider, three changes are needed:
 | Filtering | None (no `where`, no type quotas, no per-table caps) | – |
 | Distances | Returned by `retrieve_schema_elements` but **discarded** by every caller. Not in the prompt, not logged, not used for ranking decisions. | `nl2sql_chain.py:97-126`; callers ignore the second tuple element |
 | Post-processing | Grouped by unit type into Tables / Columns / Relations, preserving rank order within groups | `nl2sql_chain.py:128-177` |
-| Empty result | `None` is returned by the inference helper, which counts as wrong for both EM and EX | `spider_runner.py:159-163, 204-207` |
+| Empty result | `None` is returned by the inference helper, which counts as wrong for EX | `spider_runner.py:159-163, 204-207` |
 
 If K exceeds the collection size, Chroma returns all units, so the whole schema is included.
 
@@ -430,7 +430,7 @@ If the thesis still intends to claim an execution-feedback or human-feedback con
    - The retrieved schema context. **Retrieval is not re-run**, so an error caused by a missing table or column in the context cannot be repaired from new schema information.
    - Only the **last** failure is shown. Earlier failed attempts are forgotten, which allows oscillation between two wrong queries.
    - The Rules block disappears in feedback iterations.
-5. **When all attempts fail:** the inference helper returns `None`, which counts as incorrect for both EM and EX (§5.1).
+5. **When all attempts fail:** the inference helper returns `None`, which counts as incorrect for EX (§5.1).
 
 ### 8.3 Why the feedback variable is subtle on Spider
 
@@ -448,7 +448,7 @@ Because the detector is weak (§9), two things follow: (i) real errors — a wro
 | 1. "Syntax" | `validate_syntax` (`sql_validator.py:42-74`) using `sqlparse` | Non-empty; **if** the first token is a DML keyword it must be SELECT. `sqlparse` is a non-validating tokenizer, so real syntax errors pass. | IMPLEMENTED, but nominal |
 | 2. Schema | `validate_schema_elements` (`:76-113`) | Regex `(?:from\|join)\s+([a-z_][a-z0-9_]*)` on the lowercased SQL; each captured name must be a table in the **full** schema, not only the retrieved subset. The column check (`:104-111`) is a **no-op loop**. | PARTIALLY IMPLEMENTED |
 | 3. Execution (as feedback) | – | **Does not exist.** `execute_and_validate` was removed with the chatbot layer, along with SQLAlchemy. | **REMOVED** |
-| 3'. Execution (as scoring, not feedback) | `SpiderSQLiteExecutor.compare` (`app/spider_eval/spider_sqlite_executor.py:208-248`) | Executes predicted and gold SQL via a connection that actually commits on success (§10.5), and compares sorted, lowercased rows. **Only used after a final SQL string is already chosen, to compute the EX metric — never as a signal fed back into generation.** | IMPLEMENTED, but scoring-only |
+| 3'. Execution (as scoring, not feedback) | `SpiderSQLiteExecutor.compare` (`app/spider_eval/spider_sqlite_executor.py:208-248`) | Executes predicted and gold SQL via a connection that actually commits on success (§10.4), and compares sorted, lowercased rows. **Only used after a final SQL string is already chosen, to compute the EX metric — never as a signal fed back into generation.** | IMPLEMENTED, but scoring-only |
 | 4. Semantic | – | No automatic semantic check exists. There is also no human-feedback channel left to catch this manually (§8, mechanism C removed). | PLANNED / future work |
 
 ### 9.2 Empirical probe (executed against the current, unchanged `SQLValidator` code)
@@ -470,7 +470,7 @@ Because the detector is weak (§9), two things follow: (i) real errors — a wro
 
 "Valid SQL" now means, simply: **non-empty, not led by a non-SELECT DML keyword, and every identifier after FROM/JOIN is a known table name.** There is no longer an "additionally executes without error" tier available anywhere (that existed only in the removed chatbot's execution-validation flag). Validity implies neither syntactic correctness nor semantic correctness — and, unlike before the cleanup, it also no longer implies "runs against a real database," since nothing in the generation loop ever executes the SQL.
 
-The read-only guard can still be bypassed (CTE, multi-statement) — this matters if the Spider database files are ever treated as anything other than disposable, since `SpiderSQLiteExecutor` opens them read-write (§10.5).
+The read-only guard can still be bypassed (CTE, multi-statement) — this matters if the Spider database files are ever treated as anything other than disposable, since `SpiderSQLiteExecutor` opens them read-write (§10.4).
 
 ---
 
@@ -484,22 +484,18 @@ The read-only guard can still be bypassed (CTE, multi-statement) — this matter
   - **Only `dev.json`** is used: `question`, `query` (gold), `db_id`. The dev set has 1,034 questions over 20 databases.
   - **train** is unused. There are no few-shot examples and no fine-tuning.
   - **test** is unused. `tables.json` is loadable but unused (§2.1).
-- **Per sample:** resolve the SQLite path → build/reuse the schema + Chroma collection + `NL2SQLChain` for that `db_id` → run single-pass (`_infer_sql`) or validation-feedback (`_infer_sql_with_feedback`) inference → compute EM and EX.
+- **Per sample:** resolve the SQLite path → build/reuse the schema + Chroma collection + `NL2SQLChain` for that `db_id` → run single-pass (`_infer_sql`) or validation-feedback (`_infer_sql_with_feedback`) inference → compute EX.
 - **Skips:** if a SQLite file is missing or schema building throws, the sample is **skipped and not counted** in `total` (`spider_runner.py:296-335`). If inference returns nothing, the sample **is** counted as wrong.
 
-### 10.2 Exact Match (as implemented, `spider_evaluator.py:17-56`)
-
-*(unchanged)* EM = lowercase, whitespace collapse, strip one trailing `;`, then string equality. This is **not** Spider's official EM, which parses both queries into clause components, compares them as sets, and by default ignores literal values. Aliases, column order, spacing and quote style all break the implemented EM. Expect values **far below** published EM, and do not compare them with the literature.
-
-### 10.3 Execution Accuracy (as implemented, `spider_sqlite_executor.py`)
+### 10.2 Execution Accuracy (as implemented, `spider_sqlite_executor.py`)
 
 *(unchanged)* Both queries run on the same SQLite file. The gold query fails → False; the prediction fails → False. Rows are compared after converting every value to `str(v).strip().lower()` and **sorting** — multiset equality with column order preserved. Differences from the official test-suite EX: order is ignored even for `ORDER BY` queries; there is no alternative-database test suite; there are no timeouts; string conversion may flag `1` vs `1.0` as different.
 
-### 10.4 Gold vs predicted SQL
+### 10.3 Gold vs predicted SQL
 
-The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval or validation.
+The gold SQL is used **only** for EX. It never enters prompts, retrieval or validation.
 
-### 10.5 Leakage and validity assessment
+### 10.4 Leakage and validity assessment
 
 | Risk | Present? | Notes |
 |---|---|---|
@@ -514,12 +510,12 @@ The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval 
 | Evaluation DB mutation | *Low probability, real* | Nothing blocks a predicted DML statement in single-pass mode. `SpiderSQLiteExecutor` opens with `with sqlite3.connect(...) as conn`, which **commits** on success, so a `DELETE` would persist; it also switches the files to WAL journal mode. Keep a pristine copy of `database/`, or open SQLite read-only (`file:...?mode=ro`). |
 | Non-determinism | **Yes** | Temperature 0.1 with no seed. Single-pass vs feedback runs are separate samples, so part of the delta is noise. Use T=0 and/or repeated runs and paired statistics. |
 
-### 10.6 Logging and experiment tracking
+### 10.5 Logging and experiment tracking
 
 - Every run prints `[i/N] STATUS db=<id> | Q: <first 60 chars>` to stdout, plus final aggregates. **Predicted SQL is not printed or saved**, retrieved units and distances are not logged, and no configuration snapshot (model, embedding model, K, feedback mode) is recorded anywhere.
 - **Consequence:** the design document's metrics "Average Tokens Used", "Syntax Error Rate" and "Semantic Error Rate" are **not measurable** with the current code (PLANNED).
 
-### 10.7 Reproducibility notes — one previously-flagged bug is now fixed
+### 10.6 Reproducibility notes — one previously-flagged bug is now fixed
 
 - **Fixed by the cleanup:** the first version of this report flagged that merely *importing* `app.nl2sql_chain` created SQLAlchemy async engines from `EXECUTION_DATABASE_URL`/`MAIN_DATABASE_URL` at import time, even for the Spider CLI, which never used them. Those engines (and the SQLAlchemy dependency itself) are gone; importing `app.nl2sql_chain` now only sets a few module-level constants and defines the `NL2SQLChain` class — verified by a clean import smoke test after the cleanup.
 - **Still true:** the LLM and embedding model identity comes from hard-coded names plus env variables (`.env` — not committed, templated by `.env.template`). Record them manually for every reported run.
@@ -554,7 +550,7 @@ The gold SQL is used **only** for EM and EX. It never enters prompts, retrieval 
 | Prompt language / culture | `en` (the only value ever passed) | `fa` | Code path **exists** (`system_prompt.py`) but **unreachable** — no current caller ever requests `"fa"` | `nl2sql_chain.py:82-96`; the one call site, `spider_runner.py:321`, hard-codes `"en"` |
 | Prompt configuration (rules, format, dialect) | current prompts | e.g. SQLite dialect hint, DDL-style context, few-shot | Only one fixed variant per language | `system_prompt.py`, `nl2sql_chain.py:179-226` |
 | Evaluation subset | full dev | – | **Yes** (`--limit`, first N only) | `cli_spider_eval.py` |
-| EM / EX definition | string EM, sorted-row EX | official Spider EM + test-suite EX | Custom only | `spider_evaluator.py`, `spider_sqlite_executor.py` |
+| EX definition | sorted-row EX | official test-suite EX | Custom only | `spider_evaluator.py`, `spider_sqlite_executor.py` |
 
 ---
 
@@ -605,7 +601,7 @@ The components below exist in code. None is novel *merely because it exists*. Sc
 
 ### C6: Reproducible Spider evaluation harness. Status: IMPLEMENTED — arguably strengthened by the cleanup
 
-The harness's dependency on chatbot infrastructure (SQLAlchemy engines created at import time regardless of use, a hard-coded production Ollama host) is gone (§10.7), and the codebase is now single-purpose. This is an engineering contribution: valuable for methodology and reproducibility, but not research novelty on its own. It needs official metrics (§10.2, §10.3) to be fully credible.
+The harness's dependency on chatbot infrastructure (SQLAlchemy engines created at import time regardless of use, a hard-coded production Ollama host) is gone (§10.6), and the codebase is now single-purpose. This is an engineering contribution: valuable for methodology and reproducibility, but not research novelty on its own. It needs the official metric (§10.2) to be fully credible.
 
 ---
 
@@ -671,13 +667,13 @@ Evidence-based means the gap follows directly from the code. Hypothesis means it
 - EX broken down by Spider hardness (easy / medium / hard / extra).
 
 **Metric fidelity:**
-- Report both the repository's EM/EX and the **official** Spider EM (exact set match) and test-suite EX.
+- Report both the repository's EX and the **official** test-suite EX.
 - Always state the denominator (samples evaluated vs skipped).
 
 ### 14.3 Minimal code additions before any results slide (priority order)
 
-1. **Save a per-sample JSONL** with db_id, question, gold, pred, retrieved units + distances, iterations and errors, EM and EX. This is required for everything else.
-2. **Add the official Spider evaluation** (component EM + test-suite EX), or run it offline on the saved predictions.
+1. **Save a per-sample JSONL** with db_id, question, gold, pred, retrieved units + distances, iterations, errors and EX. This is required for everything else.
+2. **Add the official Spider evaluation** (test-suite EX), or run it offline on the saved predictions.
 3. **Expose `--k`** and add a **full-schema baseline flag**. Compute schema-linking recall@K.
 4. **Hook `enrich_schema` into `spider_runner`** (§3.5), with a language option and per-DB caching.
 5. **Add SQLite execution feedback** in `_infer_sql_with_feedback` (the prediction's own error only, via the already-existing `SpiderSQLiteExecutor`), and open databases read-only.
@@ -717,7 +713,7 @@ Online: question → dense retrieval (Top-K units) → typed schema context → 
 - Embeds via a local SentenceTransformer (unrecorded model identity, normalised, CPU) or OpenAI `text-embedding-3-small`, into per-`db_id` Chroma collections cached under `./chroma_db/spider_eval/`.
 
 **ONLINE PIPELINE**
-For each Spider question, `run_spider_evaluation` → build/reuse chain for `db_id` → retrieve dense Top-15 → group into Tables/Columns/Relations → build the (always-English) system + user prompt → stream LLM tokens → clean → validate (static only) → on failure, feed back the last failed SQL + error + hint, same retrieved context, up to `--max-iter` total attempts → EM (string match) + EX (separate read-only-in-intent, actually read-write SQLite comparison, scoring-only) against gold.
+For each Spider question, `run_spider_evaluation` → build/reuse chain for `db_id` → retrieve dense Top-15 → group into Tables/Columns/Relations → build the (always-English) system + user prompt → stream LLM tokens → clean → validate (static only) → on failure, feed back the last failed SQL + error + hint, same retrieved context, up to `--max-iter` total attempts → EX (separate read-only-in-intent, actually read-write SQLite comparison, scoring-only) against gold.
 
 **RETRIEVAL**
 Dense-only Chroma kNN, K=15 hard-coded, no threshold, no metadata filters, no reranking, no query enhancement, distances discarded. BM25, RRF and the cross-encoder reranker are **not implemented** anywhere in the code or the git history — confirmed unchanged by this cleanup pass.
@@ -730,11 +726,11 @@ Local: Ollama `gemma4:12b` at `127.0.0.1:11434` (reset from an internal company 
 - (B) Execution feedback: **removed** — existed only in the deleted chatbot layer; needs to be built fresh against the already-existing `SpiderSQLiteExecutor`.
 - (C) Human semantic feedback: **removed** — existed only in the deleted chatbot layer (chat UI + endpoints); needs a fresh design shaped for batch evaluation, not a resurrection of the chat-product code.
 - (D) Regeneration: only the automatic kind (via A) remains. `max_iterations` = total attempts (`--max-iter`, default 4). Only the last failure is shown. Retrieval is not re-run.
-- When all attempts fail: the run returns `None`, scored as wrong for both EM and EX.
+- When all attempts fail: the run returns `None`, scored as wrong for EX.
 - Empirically, the validator accepts `SELEC * FRM x`, incomplete SQL, non-SQL and hallucinated columns; it rejects correct queries containing `EXTRACT(… FROM col)` or columns named `*_from`; it can be bypassed with a CTE or multi-statement SQL.
 
 **EVALUATION**
-`cli_spider_eval.py`: Spider **dev.json only** (1,034 questions / 20 DBs); train, test and tables.json are unused. Modes are single-pass, `--feedback` and `--compare`; `--limit N` takes the first N samples (biased toward one database for small N). Culture is always `en`. There is no execution feedback and no human feedback. EM is normalised string equality; EX is a sorted, lowercased row-multiset comparison on a single (accidentally read-write-opened) database — neither matches the official Spider metrics. Validity risks: tuning-on-dev, possible pretraining contamination, stale Chroma caches with silently-skipped samples, evaluation-DB mutation risk, non-determinism. Nothing is saved per sample. One previously-flagged reproducibility bug (SQLAlchemy engines built at import time regardless of use) is now fixed by the cleanup.
+`cli_spider_eval.py`: Spider **dev.json only** (1,034 questions / 20 DBs); train, test and tables.json are unused. Modes are single-pass, `--feedback` and `--compare`; `--limit N` takes the first N samples (biased toward one database for small N). Culture is always `en`. There is no execution feedback and no human feedback. EX is a sorted, lowercased row-multiset comparison on a single (accidentally read-write-opened) database — it does not match the official Spider metric. Validity risks: tuning-on-dev, possible pretraining contamination, stale Chroma caches with silently-skipped samples, evaluation-DB mutation risk, non-determinism. Nothing is saved per sample. One previously-flagged reproducibility bug (SQLAlchemy engines built at import time regardless of use) is now fixed by the cleanup.
 
 **EXPERIMENTAL VARIABLES**
 Switchable now: LLM (local/online via env), embedding model (via env + Chroma rebuild), validation-feedback on/off and its iteration count (`--max-iter`). Code constants: K (15), temperature (0.1), model names, enrichment model/language (though enrichment isn't wired in), culture (fixed to `en` at the one call site). Missing entirely: full-schema baseline, a K flag, BM25/RRF/reranker, query enhancement, the enrichment↔Spider hook, execution feedback (needs to be built from zero, not ported), human feedback (needs to be built from zero, not ported), few-shot enrichment, official metrics, token/error-rate metrics.
@@ -759,7 +755,7 @@ All of the above are system contributions. Their empirical benefit is **not yet 
 - Retrieval re-run during feedback.
 - Semantic validation.
 - Token-usage, syntax-error-rate and semantic-error-rate metrics.
-- Official Spider EM and test-suite EX.
+- Official test-suite EX.
 
 **OPEN QUESTIONS**
 1. Given that the human-feedback and execution-feedback mechanisms now have zero code (rather than "chatbot-only, unevaluated" code), does the thesis still want to claim both, one, or neither as contributions? Each now needs a from-scratch design and build, not a port.

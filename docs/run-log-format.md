@@ -10,7 +10,7 @@ Every `cli_spider_eval.py` run writes one directory, `runs/<UTC timestamp>_<mode
 | `schema_units.json` | For each database, every retrieval unit that was indexed: `id`, `kind`, the schema element it stands for, and its text. |
 | `console.txt` | A copy of everything printed to the terminal, including the output before the run started (settings, preflight). |
 
-The metrics (EM, EX, failures, tokens) are **recomputed from `samples.jsonl`**, never accumulated separately, so the log can always be re-aggregated or re-scored offline from the stored SQL.
+The metrics (EX, failures, tokens) are **recomputed from `samples.jsonl`**, never accumulated separately, so the log can always be re-aggregated or re-scored offline from the stored SQL.
 
 **Nothing that can be recomputed exactly is stored per sample.** The text of the retrieved units is looked up by id in `schema_units.json`, and the user prompt of each attempt is rebuilt from the question, the retrieved ids and the earlier attempts; `prompt_sha` per attempt proves the rebuilt text is identical (`check` does this for every attempt of the run). A full 1,034-sample run is on the order of 1–2 MB.
 
@@ -51,7 +51,7 @@ python -m app.spider_eval.run_log prompt runs/<run_dir> <sample_index> [attempt]
 * **the order of the columns does not matter** (Spider's own `result_eq` does the same), but every gold column must appear exactly once;
 * TEXT values with invalid UTF-8 are decoded with the bad bytes dropped (also what Spider's test-suite does), so a gold query over such a database (e.g. `wta_1`) can run; the same decoding applies to the executions of the feedback loop.
 
-Not handled: ties at `ORDER BY ... LIMIT 1` (gold and prediction may legitimately pick different rows) and gold queries that are themselves wrong. `EM` is a normalised SQL **string** match, not Spider's exact set match: do not report it as Spider EM.
+Not handled: ties at `ORDER BY ... LIMIT 1` (gold and prediction may legitimately pick different rows) and gold queries that are themselves wrong.
 
 ## `samples.jsonl` records
 
@@ -78,7 +78,7 @@ for line in open("runs/<run_dir>/samples.jsonl", encoding="utf-8"):
 | `final_sql` | the SQL that was scored |
 | `final_attempt` | which attempt it came from (1-based); `fallback` is true when no attempt passed the checks and attempt 1 was kept |
 | `recovered` | a retry passed the checks after attempt 1 was rejected |
-| `scoring` | `em`, `ex`, `kind`, `first_em`, `first_ex`, `permuted` |
+| `scoring` | `ex`, `kind`, `first_ex`, `permuted` |
 | `results` | `gold`, `final`, `first`: execution snapshots (below); `first` only when attempt 1 differs from the final SQL |
 | `ms` | wall time for the sample |
 | `session` | which process invocation wrote the record |
