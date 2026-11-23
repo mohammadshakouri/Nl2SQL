@@ -120,12 +120,18 @@ It is what makes the per-sample records small, and it is the universe needed for
 
 ```bash
 python -m app.evaluation.error_analysis runs/<run_dir> --check-only                  # validate error_labels.tsv
-python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider        # tables + error_analysis.json
+python -m app.evaluation.error_analysis runs/<run_dir> --data_path ./Spider          # tables + error_analysis.json (./BIRD for a BIRD log)
 ```
 
-The analysis is **Spider-only** (it needs Spider's `tables.json` and its hardness classes, and the labels are Spider's); it refuses a BIRD log. For BIRD, `results.metrics.by_difficulty` in the manifest (and the per-difficulty lines printed at the end of a run) give EX per `simple` / `moderate` / `challenging`.
+The analysis works on both datasets; the dataset comes from the manifest, and `--data_path` points at its folder (default `./Spider` or `./BIRD`). What differs is read from `app/evaluation/benchmarks.py`: the gold columns (Spider: parsed from the SQL with `tables.json`; BIRD: the columns the gold query reads, taken from SQLite's authorizer while it runs), the difficulty (Spider: the official hardness rule; BIRD: the `difficulty` field of `dev.json`) and the scoring rule.
 
-Two files are kept next to the log: `error_labels.tsv` (one hand-made label per failing sample: category `H` scorer / `G` gold or ambiguity / `M` model, a subtype, an `arguable` flag) and `error_analysis.json` (every number of the analysis, recomputed from the log, `dev.json`/`tables.json` and the labels: retry and dialect statistics, Recall@K, hardness, per-database results, adjusted EX). The labels are judgement; everything else is a pure function of the log. The report built from them is `docs/thesis/Error_Analysis_Full_Run_fa.md`.
+Three files are kept next to the log:
+
+- `error_labels.tsv`: one hand-made label per failing sample (category `H` scorer / `G` gold, evidence or ambiguity / `M` model, a subtype, an `arguable` flag, an optional second subtype `also`, a note). The labels are judgement.
+- `result_relations.json`: for every failing sample, how its final result differs from gold (`pred_empty`, `column_order`, `extra_columns`, `rows_subset`, `scalar_differs`, …), from running both queries again read-only on the SQLite file (30 s each). It is a cache keyed by a hash of the two queries; `--refresh` ignores it, `--no-reexecute` skips the step. The label check uses it to verify every `H/column_order` and `H/case_or_format` against the complete results (the log keeps only the first 20 rows).
+- `error_analysis.json`: every number of the analysis, recomputed from the log, the dataset files and the labels: retry and dialect statistics, Recall@K, difficulty, per-database results, adjusted EX, result relations. Everything except the labels is a pure function of the log and the dataset.
+
+`--no-write` prints the report and writes neither JSON file. The reports built from them are `docs/thesis/Error_Analysis_Full_Run_fa.md` (Spider) and `docs/thesis/Error_Analysis_BIRD_Full_Run_fa.md` (BIRD).
 
 ## What is not logged
 

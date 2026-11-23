@@ -249,7 +249,7 @@ python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider --
 python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider
 ```
 
-`--spider_path` پوشه‌ای با `dev.json` و `tables.json` است. این تحلیل فقط برای لاگ‌های Spider است. برچسب‌ها: `error_labels.tsv` (ستون‌ها: `sample_index, category, subtype, arguable, also, note`).
+`--spider_path` (نام جدید `--data_path`) پوشه‌ای با `dev.json` و `tables.json` است. این تحلیل بعداً برای لاگ‌های BIRD هم گسترش یافت (`--data_path ./BIRD`؛ گزارش: `Error_Analysis_BIRD_Full_Run_fa.md`). برچسب‌ها: `error_labels.tsv` (ستون‌ها: `sample_index, category, subtype, arguable, also, note`).
 
 ## ۱۱. وضعیت اصلاح scorer (پس از این تحلیل انجام شد)
 

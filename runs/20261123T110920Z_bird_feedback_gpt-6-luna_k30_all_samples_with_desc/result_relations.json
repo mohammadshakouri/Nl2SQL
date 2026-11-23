@@ -1,0 +1,5516 @@
+{
+"0": {
+"key": "42501d10da5b3311ec3efe6b19b3d708",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1": {
+"key": "91d54de5524a981f0011e0c6e19ebda7",
+"rel": "rows_disjoint",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"2": {
+"key": "72621e8001c6449c94801cea31c444c0",
+"rel": "rows_superset",
+"n_pred": 6,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"3": {
+"key": "faac049d090c1df726d2ba1fc9f5be58",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"4": {
+"key": "74f1670f44cacdff5f454d3c70b30e22",
+"rel": "rows_overlap",
+"n_pred": 747,
+"n_gold": 751,
+"w_pred": 1,
+"w_gold": 1
+},
+"8": {
+"key": "5976f547bb884bda6ef0d33f38f2a6e4",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"10": {
+"key": "bdab56714d358c0abd7fa6c9b756397c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"11": {
+"key": "222037e472c864d49ce232ea7152ecda",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 7806,
+"w_pred": 0,
+"w_gold": 1
+},
+"12": {
+"key": "8000cf9b8849a214eba6e515da05a59e",
+"rel": "rounding",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"15": {
+"key": "949f8439dc6f4aa07b6455e4867a3c83",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"16": {
+"key": "877528aefc62aed70d21144a9759f267",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"17": {
+"key": "ed3d0c2465b5e999f7b48ff9541025ea",
+"rel": "missing_columns",
+"n_pred": 50,
+"n_gold": 50,
+"w_pred": 2,
+"w_gold": 3
+},
+"18": {
+"key": "951ec4452f956a664e1181d1a0f3b70a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"20": {
+"key": "fc6d17b7184da3308fa169c2d00c8dc8",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"21": {
+"key": "3e839f4e8b21a0336cca94b81e5419c7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"22": {
+"key": "bd394df0018730420e767932526ec390",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"24": {
+"key": "fd61761e1d49d30464fd11d25c1d6e34",
+"rel": "rows_overlap",
+"n_pred": 999,
+"n_gold": 1068,
+"w_pred": 1,
+"w_gold": 1
+},
+"25": {
+"key": "248d3c64ba0e6da773eaeca701de7833",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 6,
+"w_pred": 2,
+"w_gold": 2
+},
+"27": {
+"key": "52b9f010903c717fec8ca0aee24c64ef",
+"rel": "rows_subset",
+"n_pred": 749,
+"n_gold": 8574,
+"w_pred": 3,
+"w_gold": 3
+},
+"28": {
+"key": "0c19c282e65f21e583023352be63838b",
+"rel": "rows_disjoint",
+"n_pred": 57,
+"n_gold": 57,
+"w_pred": 2,
+"w_gold": 2
+},
+"29": {
+"key": "af8163da152eb92bc3300dff4ca279d3",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"32": {
+"key": "76045663296f73a7bd50336df434efc5",
+"rel": "extra_columns",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 3,
+"w_gold": 1
+},
+"33": {
+"key": "fdaf4d2ee1a850503dfa1179676adde5",
+"rel": "rows_disjoint",
+"n_pred": 3,
+"n_gold": 2,
+"w_pred": 2,
+"w_gold": 2
+},
+"34": {
+"key": "55876e6c6e0fc1de6fe0f71b6e255c44",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"35": {
+"key": "01bb8dd29561e84bd86829ddaaf32e52",
+"rel": "rows_superset",
+"n_pred": 8,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"36": {
+"key": "bdb2c05bce520ce5d02cec4d95a8c69a",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 6
+},
+"37": {
+"key": "d699e6f79ff9f1cbe22b4da0f2191a78",
+"rel": "rows_disjoint",
+"n_pred": 14,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 4
+},
+"39": {
+"key": "ae5771f0bf5e6b433f67a1285f9a418b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"41": {
+"key": "5e237754556b781f8661fa33e58341b9",
+"rel": "rows_subset",
+"n_pred": 4,
+"n_gold": 34,
+"w_pred": 1,
+"w_gold": 1
+},
+"43": {
+"key": "246439bf555eca7acfb2c79b3defeef5",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"46": {
+"key": "1ff054367e9f40b345ec58ca7b07774a",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"49": {
+"key": "949c4d398c04254cec3b10f8d07fee74",
+"rel": "rows_superset",
+"n_pred": 879,
+"n_gold": 858,
+"w_pred": 3,
+"w_gold": 3
+},
+"50": {
+"key": "f89de9fcc580a05003523dff7cce4bed",
+"rel": "column_order",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"51": {
+"key": "eea1145c6103929d35e2e71143d07fff",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"53": {
+"key": "0d46b72c0f1ac9733afb8aa94f61f449",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 32,
+"w_pred": 1,
+"w_gold": 1
+},
+"55": {
+"key": "c46bb82b473541376d600675debf0dae",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"56": {
+"key": "d3f0c378e65325147cd77debafcfabe9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"57": {
+"key": "3846712721be1a8c664686cccfe801e3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"58": {
+"key": "5e2bef8f570aa91d9f28e28ed26ea482",
+"rel": "column_order",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"59": {
+"key": "54f8c399f9b4ac14f64b8ff7aeb736be",
+"rel": "extra_columns",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 2,
+"w_gold": 1
+},
+"60": {
+"key": "a0a6db0968b14a1781e549817cd9c546",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 1
+},
+"62": {
+"key": "ccd8b9b1d550b4f016bce4a5356b0dca",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"63": {
+"key": "a1b2d24dd13acaa4b8efd891cc3067b3",
+"rel": "fewer_columns_other",
+"n_pred": 7,
+"n_gold": 8,
+"w_pred": 3,
+"w_gold": 4
+},
+"65": {
+"key": "af1259410b71e1063c26feb485d2f9ee",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"66": {
+"key": "9df9860222218c955bb4014ae64c4bfb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"70": {
+"key": "580536677d4e9a4533d00324f0433656",
+"rel": "more_columns_other",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"71": {
+"key": "eb1edb56bb211c6335b1ce5b7b5b65df",
+"rel": "rows_overlap",
+"n_pred": 24,
+"n_gold": 151,
+"w_pred": 1,
+"w_gold": 1
+},
+"72": {
+"key": "bc8eab7ef7e39e808f6ed0d85f844201",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 2,
+"w_pred": 1,
+"w_gold": 1
+},
+"74": {
+"key": "a0181e0ceb396d8f911216ca02f7b2f7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"75": {
+"key": "65a130a4c1141948792135f4fd95ad49",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 8,
+"w_pred": 0,
+"w_gold": 2
+},
+"76": {
+"key": "8b3b554b475e2006d89c4d8cc6f6fde5",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"77": {
+"key": "fe54d81c86662203fa55fc9bc611dfa8",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 2,
+"w_gold": 2
+},
+"78": {
+"key": "68a2c782abe4f23bb5686e8541345abf",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"80": {
+"key": "6fb346f93b3040634e156b20120ff0c8",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"81": {
+"key": "c5d2d537d3764b99ac9e6d90dbf3c245",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"82": {
+"key": "fe75f15909c48259967fbffad0382237",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"83": {
+"key": "f91f289a67f0808daf9bbbe2a1f34524",
+"rel": "more_columns_other",
+"n_pred": 455,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 2
+},
+"85": {
+"key": "3d59c1aea6a3eadbc9787097c66ab27a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"87": {
+"key": "5aaf76e33420a20680ea2e97855ba8cf",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"88": {
+"key": "0d3f05bcca5a948c389970f32f1e2ea7",
+"rel": "column_order",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"89": {
+"key": "eb717166d2297b53619a9119d60796df",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"93": {
+"key": "586375fb2c04ed2edde525f303b5aeed",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"94": {
+"key": "3c1f41fcee0a37c3d887ed8ddc5619dd",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"95": {
+"key": "0b11c37bdd8ecd67198759d3d11c43df",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"97": {
+"key": "de64d3acde18f5d3a510f6cf4c680979",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 14,
+"w_pred": 0,
+"w_gold": 1
+},
+"101": {
+"key": "11935f153b992d4e6af02448b9ac8da7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"102": {
+"key": "0c25a910b376de3239201a2d78562030",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 3591,
+"w_pred": 0,
+"w_gold": 1
+},
+"107": {
+"key": "2549427f29ab9d6fc5c64b33fe8eebfe",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"108": {
+"key": "ccd2c383c7d142e6307178aa0f129142",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"110": {
+"key": "ea7b785ab66198fede8a726fbfd1e8f9",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"114": {
+"key": "ba38c7cec283e40dac23391563cb2688",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"118": {
+"key": "6ce8f37187fdc3812436877089cdad92",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"119": {
+"key": "1dd3140df2d5a9c34c049450ed5795b0",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 21,
+"w_pred": 0,
+"w_gold": 3
+},
+"120": {
+"key": "9d7c549ce9945e7538fa9c68d28f1736",
+"rel": "extra_columns_rows_superset",
+"n_pred": 2922,
+"n_gold": 364,
+"w_pred": 3,
+"w_gold": 2
+},
+"124": {
+"key": "dd5072e90ba34705410fa17d159559fc",
+"rel": "rows_disjoint",
+"n_pred": 145,
+"n_gold": 145,
+"w_pred": 3,
+"w_gold": 3
+},
+"125": {
+"key": "af86b43bd4a01871e9d7ff02fb01c070",
+"rel": "more_columns_other",
+"n_pred": 45,
+"n_gold": 45,
+"w_pred": 2,
+"w_gold": 1
+},
+"128": {
+"key": "14ac430b3e7e5312ed514e9ec6f80948",
+"rel": "rows_overlap",
+"n_pred": 9,
+"n_gold": 9,
+"w_pred": 2,
+"w_gold": 2
+},
+"129": {
+"key": "485762e0216d66ef75052b9917acfede",
+"rel": "more_columns_other",
+"n_pred": 10,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 1
+},
+"130": {
+"key": "425831b7c98026d8440c757b75234ee7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"131": {
+"key": "6d8287b79c4b32a762b5034f87d41a59",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"133": {
+"key": "61942ce28e5144a3bcd1a803d2a26448",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 2
+},
+"135": {
+"key": "fabf8ac6c47ba2f4c1a3f6fcb5536739",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"141": {
+"key": "0e9c58a89194281750e5b20b6821a605",
+"rel": "extra_columns",
+"n_pred": 77,
+"n_gold": 77,
+"w_pred": 2,
+"w_gold": 1
+},
+"142": {
+"key": "e88a8e62c8679793beafa9948ee218a1",
+"rel": "rows_superset",
+"n_pred": 33,
+"n_gold": 32,
+"w_pred": 1,
+"w_gold": 1
+},
+"144": {
+"key": "c694bdf2267d6d5e550ff464fbefaf58",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"145": {
+"key": "ad719e6e20875283a6afbbfd20525607",
+"rel": "rows_overlap",
+"n_pred": 660,
+"n_gold": 4484,
+"w_pred": 1,
+"w_gold": 1
+},
+"147": {
+"key": "7bda9fafb0e7814da101a1cd50c55a41",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"150": {
+"key": "306d071cdedec26e0c87417565f4b823",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"152": {
+"key": "71a63ffa0a4e2eb287c1ba5aca889f0e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"153": {
+"key": "492e4473d26a1d4ceefe0bba856876e4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"159": {
+"key": "ee7eafdc44edb97e7fa4397150bec174",
+"rel": "extra_columns",
+"n_pred": 140,
+"n_gold": 140,
+"w_pred": 10,
+"w_gold": 1
+},
+"165": {
+"key": "3778b11a2adf64ea68bbe0acd1f17151",
+"rel": "extra_columns",
+"n_pred": 15140,
+"n_gold": 15140,
+"w_pred": 10,
+"w_gold": 1
+},
+"169": {
+"key": "9c5f03dd5574c3a3ea5b0b9adeda749f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"171": {
+"key": "fd139ed2549a06e8b811ef69ce4dcb32",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"172": {
+"key": "9555875abde9f9d4a3014b77499747fe",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"173": {
+"key": "4c4b373981aeda180c1d54fe1f1b0100",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"180": {
+"key": "a73c08a814ddf921c3880f114bd2ea8f",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 3,
+"w_pred": 0,
+"w_gold": 2
+},
+"182": {
+"key": "7861c6aa1ced576452f7c972ab36b440",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"185": {
+"key": "d5cfb188ece90fb5eb7d7ffae20d3e5f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"186": {
+"key": "946fb21e93ea46a9cafae6134967451e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"188": {
+"key": "64a7d3a283ee5a79f4c68aab635c03e0",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 1
+},
+"189": {
+"key": "a88681955a927b724fb5c5e4d025827e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"192": {
+"key": "ab4c94a8af9ad29b5e4b01f369ffe2b5",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"193": {
+"key": "e4c283cf90783e17c7e572239e7277a4",
+"rel": "fewer_columns_other",
+"n_pred": 4500,
+"n_gold": 4500,
+"w_pred": 2,
+"w_gold": 3
+},
+"194": {
+"key": "f77564bda7015af30f3b1adb86e26a4b",
+"rel": "rows_disjoint",
+"n_pred": 88,
+"n_gold": 88,
+"w_pred": 2,
+"w_gold": 2
+},
+"197": {
+"key": "67a5f9c22f0c50a41abe08503934badb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"198": {
+"key": "4e801d269630b55b624ae4333c2919ab",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"201": {
+"key": "6c1e4e4edae38f1cb0cdb979da81bfc5",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"205": {
+"key": "3ccae68311c2d01b450d54907b78d880",
+"rel": "rows_subset",
+"n_pred": 340,
+"n_gold": 4605,
+"w_pred": 1,
+"w_gold": 1
+},
+"207": {
+"key": "85b4311b4a5f3933747b2bf1d93b5c18",
+"rel": "extra_columns_rows_subset",
+"n_pred": 15,
+"n_gold": 14,
+"w_pred": 2,
+"w_gold": 1
+},
+"211": {
+"key": "79b986497251bb3c18309be44679d618",
+"rel": "extra_columns",
+"n_pred": 10882,
+"n_gold": 5399,
+"w_pred": 2,
+"w_gold": 1
+},
+"215": {
+"key": "73b4d7ba171170fca456f004ef3db47e",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"217": {
+"key": "d85595760245dd302f9ffa16415b8e00",
+"rel": "missing_columns",
+"n_pred": 40,
+"n_gold": 82,
+"w_pred": 1,
+"w_gold": 2
+},
+"218": {
+"key": "407737510e4e12fcb4d7cc0eb2f4038b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"219": {
+"key": "254c717912ff254bb36bcb48f75b954d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"221": {
+"key": "fe5ae91c7d4603e6e60e00379ce19eba",
+"rel": "extra_columns_rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 2
+},
+"223": {
+"key": "607eba288ed1c0c818105aa554a6ce7e",
+"rel": "extra_columns",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 2,
+"w_gold": 1
+},
+"225": {
+"key": "4e20042a1d3e72f88beec1eab7962453",
+"rel": "rows_overlap",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"231": {
+"key": "6a3c6f7341c0977ae3c6505e58647f68",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"234": {
+"key": "bd68016384d4046470f30ae5b45e9b66",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"237": {
+"key": "b695b4c5c03a0bcad8baaef065606caa",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"244": {
+"key": "d26d5cc765bee0d0b4962afad98e5029",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"247": {
+"key": "3114f357d4881c057e4d05c46d47c9c6",
+"rel": "rows_superset",
+"n_pred": 49,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"248": {
+"key": "6b467e1420d7aed4c20b3ae0bb47824d",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 2,
+"w_gold": 2
+},
+"252": {
+"key": "20a25473bb30e71383e9648061d750a4",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 2,
+"w_gold": 2
+},
+"253": {
+"key": "7397da7e920228e5f47bfd8dcc5c285e",
+"rel": "extra_columns",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 2,
+"w_gold": 1
+},
+"254": {
+"key": "29e75b9fcee12804f9c914238d035d71",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"255": {
+"key": "21a572c3af7314a2d0522912eb46899c",
+"rel": "rounding",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"257": {
+"key": "37fe97f2b47bcd0d58babf1a1d8913ae",
+"rel": "rows_overlap",
+"n_pred": 287,
+"n_gold": 268,
+"w_pred": 1,
+"w_gold": 1
+},
+"259": {
+"key": "94df9591bc6f2549d0dacb68db6bc8a0",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"260": {
+"key": "de5a8a4277d33439cd4ece227af985ba",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"263": {
+"key": "8786c80d6cdecb2a37d5c2dc5e3ef4af",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"267": {
+"key": "76f8f83ead69c6c0341d18818cb1972d",
+"rel": "missing_columns",
+"n_pred": 3,
+"n_gold": 1153,
+"w_pred": 1,
+"w_gold": 2
+},
+"269": {
+"key": "48043202b5b0fcec21a472a5e793bd62",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"271": {
+"key": "f7e881a39398a7f7005ca99c2c3eb986",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 3
+},
+"280": {
+"key": "d3ab3a6914d0f2dd80916e47239f31dd",
+"rel": "rows_disjoint",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 2,
+"w_gold": 2
+},
+"281": {
+"key": "8fe0fbaf7c839549204b78920705732e",
+"rel": "extra_columns_rows_superset",
+"n_pred": 9,
+"n_gold": 8,
+"w_pred": 2,
+"w_gold": 1
+},
+"282": {
+"key": "f618f5db44cd036bf6b0bddf65b0563b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"286": {
+"key": "3994f5274bf01346151bdceff914235b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"290": {
+"key": "2cde9ceffa631049a774bebdd7c327c5",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"296": {
+"key": "6d0a0fc3fc8e76005767aef467a10793",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 3
+},
+"297": {
+"key": "3d995bc80a72e898f1105d20e5e0909f",
+"rel": "rows_disjoint",
+"n_pred": 189,
+"n_gold": 2000,
+"w_pred": 1,
+"w_gold": 1
+},
+"298": {
+"key": "cc2c8f83699fd81946ec703f3bb773f8",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"300": {
+"key": "82edb7609c0019890f7d825dff83092e",
+"rel": "extra_columns",
+"n_pred": 41,
+"n_gold": 41,
+"w_pred": 2,
+"w_gold": 1
+},
+"305": {
+"key": "66ec915b324df3a02651f98ccc70bc69",
+"rel": "more_columns_other",
+"n_pred": 21056,
+"n_gold": 21056,
+"w_pred": 4,
+"w_gold": 3
+},
+"306": {
+"key": "66b1ee9b4cb98f33e0913c5e0e775788",
+"rel": "rows_subset",
+"n_pred": 6,
+"n_gold": 13,
+"w_pred": 2,
+"w_gold": 2
+},
+"307": {
+"key": "ad8d10908e754b1e128e97a72362dcb1",
+"rel": "extra_columns",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 2,
+"w_gold": 1
+},
+"309": {
+"key": "2e500922d16dec8e49f49d4a46d6d41e",
+"rel": "fewer_columns_other",
+"n_pred": 8,
+"n_gold": 5,
+"w_pred": 2,
+"w_gold": 3
+},
+"310": {
+"key": "e39bd4b6cca8fa201c08638d7601f5e7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"311": {
+"key": "c2d00ecdd546e6b3293b6c26b3e2f1ca",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"317": {
+"key": "047c0ba29c36cbfc9f84d1144fe80208",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"319": {
+"key": "25294c0cc527eca3d31aedd569f321b7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"321": {
+"key": "ff2d97db6b4fc1f4ca43dbb6ca288a0f",
+"rel": "extra_columns",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"326": {
+"key": "486325c6a492a89e21fc9768e5dbaaf9",
+"rel": "rows_subset",
+"n_pred": 41,
+"n_gold": 68,
+"w_pred": 1,
+"w_gold": 1
+},
+"328": {
+"key": "96c985a7016658e01260ad4cac11a0f5",
+"rel": "rows_subset",
+"n_pred": 2,
+"n_gold": 76,
+"w_pred": 1,
+"w_gold": 1
+},
+"330": {
+"key": "53aaeb46764df6f43b82de73e4808f59",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"335": {
+"key": "eb2b8f0c12bb838cf71026a23f105684",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"337": {
+"key": "cbea9f9e243a77b2e64351fde1be50c2",
+"rel": "rows_subset",
+"n_pred": 4,
+"n_gold": 6,
+"w_pred": 2,
+"w_gold": 2
+},
+"338": {
+"key": "94d16885b3a7aa8daaffe4ec5659b03b",
+"rel": "rows_subset",
+"n_pred": 2,
+"n_gold": 12,
+"w_pred": 1,
+"w_gold": 1
+},
+"340": {
+"key": "793ac6b6130ba18f6a5daaf6403fcc4b",
+"rel": "extra_columns",
+"n_pred": 25061,
+"n_gold": 25061,
+"w_pred": 74,
+"w_gold": 1
+},
+"341": {
+"key": "74899c34ee58d8b7fb7e2b209b7efa30",
+"rel": "extra_columns_rows_subset",
+"n_pred": 37,
+"n_gold": 67,
+"w_pred": 74,
+"w_gold": 1
+},
+"342": {
+"key": "e497231dada4f6162b5f099a63a0f89b",
+"rel": "more_columns_other",
+"n_pred": 22,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"343": {
+"key": "8a4f43af724313c72a86c0fbebd9c122",
+"rel": "rows_disjoint",
+"n_pred": 92,
+"n_gold": 654,
+"w_pred": 1,
+"w_gold": 1
+},
+"344": {
+"key": "560e10ad7d0f6055629be34a767a571b",
+"rel": "extra_columns_rows_superset",
+"n_pred": 3200,
+"n_gold": 5,
+"w_pred": 74,
+"w_gold": 1
+},
+"345": {
+"key": "0665259d3b33c7daa7ef5ce82cdf9675",
+"rel": "extra_columns",
+"n_pred": 2977,
+"n_gold": 3,
+"w_pred": 4,
+"w_gold": 1
+},
+"346": {
+"key": "2e14e46666b2ee5937db82f7823d74da",
+"rel": "rows_disjoint",
+"n_pred": 29936,
+"n_gold": 29936,
+"w_pred": 2,
+"w_gold": 2
+},
+"348": {
+"key": "5e7db48ddb9f6646a86ab34f619f9d43",
+"rel": "extra_columns",
+"n_pred": 15,
+"n_gold": 15,
+"w_pred": 4,
+"w_gold": 1
+},
+"349": {
+"key": "837369c4770852e796a04e41af3f1b33",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"350": {
+"key": "142605ed43ffc3f6447bd6bd0b8358cf",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 6,
+"w_pred": 0,
+"w_gold": 1
+},
+"352": {
+"key": "bbdc51de349f8ca8593640f87ef4772c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"353": {
+"key": "09c60233334b9522823ac1d4ebf6f397",
+"rel": "fewer_columns_other",
+"n_pred": 55,
+"n_gold": 121,
+"w_pred": 1,
+"w_gold": 2
+},
+"354": {
+"key": "b96342605d8f87b3091c1ab6d9624467",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"356": {
+"key": "e98d2b955fd8894de2837c41320b46a4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"357": {
+"key": "be2b4c2cc07da334db9ba5b6cc28eb9c",
+"rel": "rows_superset",
+"n_pred": 29,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"359": {
+"key": "ffc2241d9547bf86173be34eff4a7192",
+"rel": "rows_superset",
+"n_pred": 4,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"360": {
+"key": "29f77391347459581b3c67f4c5139456",
+"rel": "rows_superset",
+"n_pred": 10,
+"n_gold": 2,
+"w_pred": 1,
+"w_gold": 1
+},
+"361": {
+"key": "dbcc22f61e359ad46e06d494f334258b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"363": {
+"key": "be45877f38d153a0d74bb5ede1f1293d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"364": {
+"key": "5246f2eb0a4071b77a87c45e133333e8",
+"rel": "more_columns_other",
+"n_pred": 3,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"366": {
+"key": "a2530c4394a88b2e3ad279b9e6a0033f",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 32,
+"w_pred": 1,
+"w_gold": 1
+},
+"371": {
+"key": "5ddd22db4f7382945f8160570144fa51",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"373": {
+"key": "72531393efbecdb0e1425deafa6ada51",
+"rel": "rows_disjoint",
+"n_pred": 12,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"376": {
+"key": "60e20e6c9e3aca1f524ae4f7963aa6b8",
+"rel": "rows_superset",
+"n_pred": 9,
+"n_gold": 3088,
+"w_pred": 1,
+"w_gold": 1
+},
+"381": {
+"key": "7202931ccbc2759613a9c6bfbfd049e6",
+"rel": "rows_overlap",
+"n_pred": 559,
+"n_gold": 20106,
+"w_pred": 1,
+"w_gold": 1
+},
+"382": {
+"key": "6bcef15f62d42ae153f668e47bc3e60d",
+"rel": "extra_columns",
+"n_pred": 4991,
+"n_gold": 4991,
+"w_pred": 74,
+"w_gold": 1
+},
+"383": {
+"key": "f48ebe7ec1f2a72f6dbefb8c079eac20",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"384": {
+"key": "11e32c10ff8ea41f57437b88025176a2",
+"rel": "pred_error",
+"error": "no such column: cards.format"
+},
+"386": {
+"key": "4b4800ee9ae55322d9203298a2667009",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"387": {
+"key": "4b96564fe0088225f52dc30cc22641f7",
+"rel": "rows_disjoint",
+"n_pred": 183,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 2
+},
+"388": {
+"key": "681d351716951e210dd094ac892ab348",
+"rel": "rows_disjoint",
+"n_pred": 10,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"389": {
+"key": "95529e016ee3ff57e6ff84ab12be8b15",
+"rel": "rows_disjoint",
+"n_pred": 49,
+"n_gold": 49,
+"w_pred": 2,
+"w_gold": 2
+},
+"390": {
+"key": "99e4ee0b234be7bf5f73ce94f1fd4b22",
+"rel": "more_columns_other",
+"n_pred": 20,
+"n_gold": 157,
+"w_pred": 3,
+"w_gold": 2
+},
+"391": {
+"key": "3ba10890785418c828a584c6461cd3e1",
+"rel": "extra_columns",
+"n_pred": 10,
+"n_gold": 8,
+"w_pred": 74,
+"w_gold": 1
+},
+"392": {
+"key": "0cee31cb27245ff9302fb776d4b35a6c",
+"rel": "rows_disjoint",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"393": {
+"key": "eb4a1502865ce4ec0ef832b935deae45",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"398": {
+"key": "f408ac10047362d71fd8b0c4ee1f48b6",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 565,
+"w_pred": 1,
+"w_gold": 1
+},
+"399": {
+"key": "83225c46c459b4cf22792a65b41111ff",
+"rel": "missing_columns_rows_superset",
+"n_pred": 593,
+"n_gold": 46,
+"w_pred": 1,
+"w_gold": 2
+},
+"402": {
+"key": "d4719b06f5a2b9ed2894159ba91f5bde",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"403": {
+"key": "9879b368985993cc3d211ee9d7b7fbbf",
+"rel": "rows_disjoint",
+"n_pred": 21738,
+"n_gold": 28639,
+"w_pred": 2,
+"w_gold": 2
+},
+"405": {
+"key": "b2d0caa1360a93901e1837b2f0962067",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"406": {
+"key": "1cb4eab12d3315193aee5959723ba376",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 278230,
+"w_pred": 0,
+"w_gold": 1
+},
+"407": {
+"key": "548a8d520e3a86e3db73442fb60894cc",
+"rel": "missing_columns_rows_superset",
+"n_pred": 470,
+"n_gold": 1693,
+"w_pred": 1,
+"w_gold": 2
+},
+"408": {
+"key": "c8383a4b3752de96a79e62e45428bace",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 2059,
+"w_pred": 1,
+"w_gold": 1
+},
+"409": {
+"key": "52ca64bd3c490d3946901f7094d13cf6",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"410": {
+"key": "643eab1c577895ec868471011ff33888",
+"rel": "rows_overlap",
+"n_pred": 4,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"411": {
+"key": "88c1554a2acf9d691fc10ec84202abb9",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"412": {
+"key": "caef1500525d69e07a2fb439c858929b",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 50,
+"w_pred": 0,
+"w_gold": 1
+},
+"416": {
+"key": "c3b992d5da2d320e505eb514c3d12f84",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"417": {
+"key": "6b2ca447184f19195e030625cec56dbd",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"421": {
+"key": "96a1ba5dbbe5f08a7319a2463e78cf9c",
+"rel": "extra_columns",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 74,
+"w_gold": 1
+},
+"424": {
+"key": "0b16a4dcb6bf5772d6eb241a01c90a0c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"425": {
+"key": "6806bfa8cb4543ad609786a9d557c90d",
+"rel": "rows_disjoint",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"428": {
+"key": "8c411a564afcd787e3ef22db2467d711",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"429": {
+"key": "7712f4960be95c1351af988a89b2a24b",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"431": {
+"key": "3c2308027f3d7c087fb75b8a86b8824c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 10,
+"w_pred": 0,
+"w_gold": 2
+},
+"432": {
+"key": "3cd3574c77bfd7a9f8e9dbd7662abbe2",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 21,
+"w_gold": 1
+},
+"433": {
+"key": "9466f1c022893d5ab2d0f57acf712962",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"434": {
+"key": "c3786c2ca99d6d994247691e32e76d6c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"435": {
+"key": "2356932f44e1c4f2a714b8c5882fecc9",
+"rel": "extra_columns_rows_subset",
+"n_pred": 1,
+"n_gold": 49729,
+"w_pred": 2,
+"w_gold": 1
+},
+"436": {
+"key": "91f37af2db2996f65ade638ce25ed300",
+"rel": "extra_columns",
+"n_pred": 383,
+"n_gold": 383,
+"w_pred": 2,
+"w_gold": 1
+},
+"437": {
+"key": "d44e16546d2ecd29e34327f91ec01afa",
+"rel": "rows_disjoint",
+"n_pred": 471,
+"n_gold": 471,
+"w_pred": 1,
+"w_gold": 1
+},
+"441": {
+"key": "442b645fe2eda3b7079bd9a1e8750590",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 10,
+"w_pred": 1,
+"w_gold": 1
+},
+"442": {
+"key": "6aa4599246d9000f149e9586a77eabbd",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 3,
+"w_pred": 0,
+"w_gold": 2
+},
+"443": {
+"key": "0f3a673157291f90e953f74267fb41f5",
+"rel": "rows_superset",
+"n_pred": 87,
+"n_gold": 61,
+"w_pred": 1,
+"w_gold": 1
+},
+"444": {
+"key": "df5a22a354a96c713326a58520b6814b",
+"rel": "rows_overlap",
+"n_pred": 1052,
+"n_gold": 95,
+"w_pred": 2,
+"w_gold": 2
+},
+"445": {
+"key": "cdf09ccb20175941f7617a72fd75e5ed",
+"rel": "extra_columns",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 3,
+"w_gold": 2
+},
+"446": {
+"key": "0037558f08b5aef5f4356096c8f4bd5f",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"447": {
+"key": "31f4bc06763e919ca0c0e807e8e456cc",
+"rel": "rows_superset",
+"n_pred": 14,
+"n_gold": 70,
+"w_pred": 1,
+"w_gold": 1
+},
+"448": {
+"key": "6fd346705395a01e357b52de583a2064",
+"rel": "rows_disjoint",
+"n_pred": 480,
+"n_gold": 47,
+"w_pred": 2,
+"w_gold": 2
+},
+"449": {
+"key": "49d53d9221349954232fb312ef27200c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 250,
+"w_pred": 0,
+"w_gold": 2
+},
+"451": {
+"key": "eb6cb68f7bfef8e7e6b03a17ea683c91",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"453": {
+"key": "d62c44233fb7d0b75d3bc3fa17727184",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"454": {
+"key": "a44c655d9a2cf226b528fad0e3e90759",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"458": {
+"key": "7257406fad491c7c62df8295c92ede54",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"463": {
+"key": "bf8428eefc3c655905d8f304d2210abf",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"465": {
+"key": "e61d0a192413cb05f787b02fb716c6f6",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"469": {
+"key": "73283df69e2ba2d46f1e997e8608dd49",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 15,
+"w_pred": 1,
+"w_gold": 1
+},
+"473": {
+"key": "04b39eca04844384f669141d2c0f11b9",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"474": {
+"key": "ff9f47085e492ccdfcdbc8d4e27033f0",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"476": {
+"key": "8241e3a5c618ccd99542b3acfd7767a5",
+"rel": "rows_superset",
+"n_pred": 1515,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"480": {
+"key": "b0ca5de632938add2fc1753d3c51b06a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 1
+},
+"482": {
+"key": "def2b038acf772e8cd075018039ebdb2",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"484": {
+"key": "963217b5f1bbaa6ea9ed4acbf7eccc90",
+"rel": "rows_overlap",
+"n_pred": 12,
+"n_gold": 155,
+"w_pred": 1,
+"w_gold": 1
+},
+"494": {
+"key": "fb44c204eb712f20b105a92c6cfd5e52",
+"rel": "more_columns_other",
+"n_pred": 58,
+"n_gold": 113,
+"w_pred": 3,
+"w_gold": 2
+},
+"498": {
+"key": "bf6183fea5998174e53aec5347965512",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"499": {
+"key": "cc086bb5da91504f78c934f572ce62a3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"500": {
+"key": "3e1ba1c6d7e1bf0e11ae815bdbbfb58a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 5,
+"w_pred": 0,
+"w_gold": 1
+},
+"507": {
+"key": "39f800f1bba54110066469f720121ca9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"511": {
+"key": "ea96726b30421d03473c85fdf8cc354a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"514": {
+"key": "0fa93c85218ac36df41d422aec108338",
+"rel": "more_columns_other",
+"n_pred": 10,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 1
+},
+"515": {
+"key": "5702361f320966366e4308a8e0a276b2",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"517": {
+"key": "aed98decc086324ca14f706c271e816b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"518": {
+"key": "fbed9fae7854499257ccd96d9425c6c9",
+"rel": "gold_error",
+"error": "query timed out (check for a missing JOIN condition)"
+},
+"519": {
+"key": "4b7fa4b7c001a3b71b7bfd4fba4ca1d3",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"520": {
+"key": "54a3f3ee8fc29bf6044ab8d5fc010775",
+"rel": "rows_disjoint",
+"n_pred": 190,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"521": {
+"key": "444ab92cde0f5f64f18329a38b953958",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"522": {
+"key": "abec03ee06dbf626dccfbdd7e852cb65",
+"rel": "missing_columns",
+"n_pred": 33,
+"n_gold": 2,
+"w_pred": 1,
+"w_gold": 2
+},
+"523": {
+"key": "7d5935af909df0d461fb5549fa0a85eb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"525": {
+"key": "43de32052f07f1cd1d729a3a4fc1bd21",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 173,
+"w_pred": 0,
+"w_gold": 1
+},
+"529": {
+"key": "7565300339a440c80f815da31d7acbce",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 121,
+"w_pred": 0,
+"w_gold": 1
+},
+"530": {
+"key": "c112e3ab0b7da261980e8cc339ec7a5e",
+"rel": "missing_columns",
+"n_pred": 4,
+"n_gold": 83,
+"w_pred": 1,
+"w_gold": 3
+},
+"531": {
+"key": "83bae6554e90b61aae354dc92645f855",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"533": {
+"key": "af562bcebf678da53d7c93d473486974",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"537": {
+"key": "f97961c8f08667111cc366bcfa9321f7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"538": {
+"key": "b3aff20281088904d5c685073d357b35",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 121,
+"w_pred": 0,
+"w_gold": 1
+},
+"539": {
+"key": "f4e40a85ed19ef1f23bd5846406d8dd9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"540": {
+"key": "760f6230a889de1c79b4b5cfc63b6332",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"542": {
+"key": "967b7442d441a63ec176989d70d01690",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"543": {
+"key": "f35a8818f9ce445d688210d3e679755d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"545": {
+"key": "d55fbebf5f7668546655966b4d25d695",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"555": {
+"key": "6f412617f080de8b817e78224d5a9c47",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"563": {
+"key": "df007d79f2e41e33dfd275b5e447f0c1",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"565": {
+"key": "ca7400c81bb186b3c53e473e64716b67",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"567": {
+"key": "6736a2a797fd06f47290b11904f9827e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"571": {
+"key": "47eafcc9a2585a935766dd6abec0850b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"577": {
+"key": "59b7d6efba770b2d38fca0b7cc2133bf",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 4,
+"w_pred": 0,
+"w_gold": 1
+},
+"578": {
+"key": "6feb97b5aadc5ab8099bb437331211cb",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"581": {
+"key": "826b53bf5a8cc56f29d6be528bc5a932",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"582": {
+"key": "449cba5ca1615f6ace306c497e6d510b",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 4,
+"w_pred": 0,
+"w_gold": 1
+},
+"583": {
+"key": "6394749cc7df209e38aeec2f19d7d516",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"584": {
+"key": "9c675749f3a10fcc1d69ff6fb212aedc",
+"rel": "rows_disjoint",
+"n_pred": 10,
+"n_gold": 8,
+"w_pred": 1,
+"w_gold": 1
+},
+"586": {
+"key": "dc26f56eeb2f48e15b53cc86418f0843",
+"rel": "missing_columns",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 1,
+"w_gold": 2
+},
+"587": {
+"key": "450593394290e46eafd579567ef81929",
+"rel": "rows_disjoint",
+"n_pred": 19,
+"n_gold": 9,
+"w_pred": 3,
+"w_gold": 3
+},
+"593": {
+"key": "ee7e5cb6566497f13d968278f970cc63",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"595": {
+"key": "f2cb903c24f235f1e06addd9ffced2fa",
+"rel": "rows_overlap",
+"n_pred": 5200,
+"n_gold": 94,
+"w_pred": 1,
+"w_gold": 1
+},
+"596": {
+"key": "86c2d1d2c9c34969ff245da76fb38565",
+"rel": "extra_columns_rows_superset",
+"n_pred": 456,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"598": {
+"key": "77a2051e9e7af2284fe2fc9d49ff5d76",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"600": {
+"key": "c453e3b2946cefdc02cb5df26e88b829",
+"rel": "more_columns_other",
+"n_pred": 10,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 1
+},
+"602": {
+"key": "d9055e614ef4adbcc764c965a5d9b1ce",
+"rel": "rows_subset",
+"n_pred": 96,
+"n_gold": 535,
+"w_pred": 2,
+"w_gold": 2
+},
+"603": {
+"key": "364574905d7b17a378e1c917818e242e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"604": {
+"key": "65c5cc66ea46f1b329da1c02dc9230f0",
+"rel": "rows_disjoint",
+"n_pred": 1165,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"605": {
+"key": "b86be2efe6865d3cd650c5a4d0bc7363",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"608": {
+"key": "2ccfb931bdbf00eb9d7fb816e8f70d0b",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"610": {
+"key": "f82210a162b569f9ebfd91c8640cef8f",
+"rel": "rows_superset",
+"n_pred": 80,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"616": {
+"key": "b3cec9f3ff4e3d580ef3da55825ac04c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"620": {
+"key": "9a412a70da2d060a49ce4fe80646249e",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 13,
+"w_pred": 1,
+"w_gold": 1
+},
+"628": {
+"key": "02d5f823daef25238b725782effe984c",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"630": {
+"key": "191a1cd1f75ba37b7b5d2afedc41792d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 86,
+"w_pred": 0,
+"w_gold": 1
+},
+"631": {
+"key": "c64c813e9c97a9711abcc196f373cd15",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"632": {
+"key": "8f402cf963883e7d21324d7ca2f56a89",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"633": {
+"key": "b82a76c94f874a1c8fd43b746bdf906c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"634": {
+"key": "b82626ecb70f9335bfd67e1fc6b87722",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"635": {
+"key": "608b3b9113ebb9bd9ee314af75373a1a",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 12,
+"w_pred": 1,
+"w_gold": 1
+},
+"636": {
+"key": "f3b9fa37bcecfd9beb387aa6f4e03767",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"637": {
+"key": "558e6e493d69f5ead29f713ba73b8963",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 5,
+"w_pred": 0,
+"w_gold": 1
+},
+"639": {
+"key": "4df5c795167e95c92214dd073670a2c1",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"640": {
+"key": "d41c7ed1264351c3258b262bce53bce8",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"642": {
+"key": "0772f4a11af0466eca63ccb62fa911b3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"646": {
+"key": "22b9fea7f25c94c339be7cc56ac29314",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 192,
+"w_pred": 2,
+"w_gold": 2
+},
+"649": {
+"key": "b60ea95732703024863325c63513367f",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 12,
+"w_pred": 2,
+"w_gold": 2
+},
+"650": {
+"key": "c0e8a73ebc810db42aef7fe32123c065",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"653": {
+"key": "2998fc96b5dc955c4032860336acb1ba",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"656": {
+"key": "cdb3a431de85be8438d1ab295da39c3b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"657": {
+"key": "79df4e674eabdbdf6e5086af5495e571",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"662": {
+"key": "7df11c5e381b75993cb850a529a41995",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"667": {
+"key": "f28bd4648b85fc688bba42cec824d96e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"671": {
+"key": "5e041cde902a6729d33e57f140bfc167",
+"rel": "rows_superset",
+"n_pred": 12,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"672": {
+"key": "7d1b77b6bd409f8da2a27d2b516563bb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"673": {
+"key": "af0a0164ddb931d1880c7149187cc315",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"677": {
+"key": "c9bfde4342450e49cd8f1e166dd3ae1d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"678": {
+"key": "8534bd48766bf53aee359e3884739727",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"679": {
+"key": "c87175a7111cdccb0cdff5c83418f049",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"680": {
+"key": "4a7a3b7664850f50813f7e331f25eb3a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"682": {
+"key": "d02bcaf630295210dc90f2ebf1fec7e4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"683": {
+"key": "7a5e4b5542fbb2585cc9682d3e05195b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"685": {
+"key": "6e972c051a2ff2a44c2fa2957269ecc5",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"686": {
+"key": "a059e36e1d2e51bb760b58ce72d0b854",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 7689,
+"w_pred": 1,
+"w_gold": 1
+},
+"687": {
+"key": "4d1bdefcf7cc226d2fb9ed224fc4330e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"689": {
+"key": "282dac471b16cda7787158c6a55b448d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"693": {
+"key": "3cd729da56272c4ec6c8a47815b9f57b",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 1
+},
+"694": {
+"key": "b54b51a70b39546e2bfcea06dd5c2f86",
+"rel": "rows_disjoint",
+"n_pred": 10,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 2
+},
+"696": {
+"key": "334df59f7cf547a8f5c95b88a202ec2a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"700": {
+"key": "1cb8ebfc74ab6ca080540a5791e124c7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"701": {
+"key": "51fea273d02cd4c448fcee809b3d25d6",
+"rel": "gold_error",
+"error": "query timed out (check for a missing JOIN condition)"
+},
+"709": {
+"key": "c2cb03030f26985c5d3d252c551ecc51",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"710": {
+"key": "9e9ee1d8644273e70da01a6f94035f43",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"711": {
+"key": "831d51eb0c4984e36f5ac37ce0f773b4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"714": {
+"key": "a076770ef515c2cef049b1c8848a0cbf",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 118,
+"w_pred": 0,
+"w_gold": 1
+},
+"715": {
+"key": "5bb7423dd956769be87435740a218163",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 5476,
+"w_pred": 1,
+"w_gold": 1
+},
+"720": {
+"key": "e23c98434f017b5697f61a3f0abbf23a",
+"rel": "rows_subset",
+"n_pred": 102,
+"n_gold": 71,
+"w_pred": 1,
+"w_gold": 1
+},
+"726": {
+"key": "a4f51c645b8a57b4d68f704f382154fd",
+"rel": "missing_columns",
+"n_pred": 387,
+"n_gold": 387,
+"w_pred": 2,
+"w_gold": 3
+},
+"728": {
+"key": "2ecbc25b5751f5ef8ba642da4a027ef0",
+"rel": "missing_columns",
+"n_pred": 19,
+"n_gold": 19,
+"w_pred": 2,
+"w_gold": 3
+},
+"729": {
+"key": "a968243d87482fbd34299bad56e8563e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"736": {
+"key": "39bf461903e8d4747fc8f760f6ddece0",
+"rel": "rows_superset",
+"n_pred": 3,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"741": {
+"key": "5a1e3c2cb8e1f68b5d7691913979c01d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"743": {
+"key": "27bf78518f0d1e0b38445d483cb3c10e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"750": {
+"key": "38c15c2084d1fc42761e1035dc0ade12",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"758": {
+"key": "9ecab1707ccc083ae5ccedd074ba2866",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 5,
+"w_pred": 0,
+"w_gold": 1
+},
+"764": {
+"key": "a5477a44cc01239cd9f46df4bac30dd7",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"765": {
+"key": "232f35701fc424e377f9533283a00878",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"766": {
+"key": "4c2bc6530aacd9fc49b9ec8c40fe1e9a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"767": {
+"key": "17e8f352cc0263a47f04e875446ec361",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"769": {
+"key": "1b9e49c5d30acdc1f86fc69ec3c3813e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"772": {
+"key": "0b1a8bddf91821d0096b3d41b34d9e9d",
+"rel": "rows_disjoint",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 3,
+"w_gold": 3
+},
+"788": {
+"key": "e7b7019f73a7b4f3b3f358f13ff8fcba",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"789": {
+"key": "96e858ab4ae3990be36f295e373d88a4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"791": {
+"key": "437f0091721c43597437fc17f57033a1",
+"rel": "more_columns_other",
+"n_pred": 750,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"794": {
+"key": "7009b7d3a1cece588976719481af9b58",
+"rel": "rows_superset",
+"n_pred": 40,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"798": {
+"key": "ff5428f394b161a2416208ccce7e865b",
+"rel": "extra_columns",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 2,
+"w_gold": 1
+},
+"802": {
+"key": "251158ad6604354c4258a5bbc7a0e3ac",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"803": {
+"key": "d96a04ee7996a75795b81d3deec8dd75",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"805": {
+"key": "cd2eba1264d093a4c19ef81276c08ad8",
+"rel": "rows_superset",
+"n_pred": 236,
+"n_gold": 107,
+"w_pred": 1,
+"w_gold": 1
+},
+"809": {
+"key": "2295fcfd7f0313849e1a7126bb3793ef",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"810": {
+"key": "cd046f0593764a3635b30eb8a3b0a42a",
+"rel": "rows_superset",
+"n_pred": 278,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"812": {
+"key": "ad59781b733f39b0bf18b4546abe12ff",
+"rel": "rows_overlap",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"817": {
+"key": "a9415863f2d8180bd7f86be2f2e775dc",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 3,
+"w_pred": 0,
+"w_gold": 1
+},
+"827": {
+"key": "ef7782ce6096304fe1c92eee6da8019f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"829": {
+"key": "15b0369d4f81e94e7fa4361718c6753d",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"832": {
+"key": "251158ad6604354c4258a5bbc7a0e3ac",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"842": {
+"key": "a7c2086787e734b11bc9abcd1350acf2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"845": {
+"key": "39b7455c6370b5e6834197db76aea0e4",
+"rel": "rows_disjoint",
+"n_pred": 80,
+"n_gold": 472,
+"w_pred": 1,
+"w_gold": 1
+},
+"847": {
+"key": "030699614a58fe8052653b58a0aa6157",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"849": {
+"key": "68af364eb9fbe1ad0c7c5c470b272009",
+"rel": "rows_disjoint",
+"n_pred": 27,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"851": {
+"key": "75c580525ad617c8049caf6a073da9dd",
+"rel": "more_columns_other",
+"n_pred": 633,
+"n_gold": 18,
+"w_pred": 2,
+"w_gold": 1
+},
+"852": {
+"key": "692c1b8251df29728a37b429ab9dfd4b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"855": {
+"key": "09c85e763d00a931eb984d4ed4ef3822",
+"rel": "rows_disjoint",
+"n_pred": 19,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"858": {
+"key": "73538accda43a0ff1eb4d71f5d11e8e2",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"860": {
+"key": "51044bcd9089d64e54108050ac31a2d7",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 8,
+"w_pred": 0,
+"w_gold": 1
+},
+"865": {
+"key": "0815e78fa8791fbc9701cd9f30e172f1",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"866": {
+"key": "dd27dc062d1f388859b6e77b7a282a38",
+"rel": "missing_columns",
+"n_pred": 82,
+"n_gold": 9,
+"w_pred": 1,
+"w_gold": 3
+},
+"871": {
+"key": "0424fc48aab9354605aa80738bd46ef4",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 5,
+"w_pred": 0,
+"w_gold": 1
+},
+"873": {
+"key": "aabd567ce3ad3cffc9022be860780837",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"877": {
+"key": "cc1164690aae85a34396a836bb6fb55d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"881": {
+"key": "b3361f3bf8927590012983f8d4834aae",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"882": {
+"key": "a2db939a9b5968ba3b81c08c7e0fb08e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"883": {
+"key": "fd47cb89c0b24af0b05b6d06629f0985",
+"rel": "extra_columns",
+"n_pred": 19,
+"n_gold": 19,
+"w_pred": 2,
+"w_gold": 1
+},
+"888": {
+"key": "33c52603439a01712a8427f546bf15f5",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"889": {
+"key": "70fc13819a7be88bdf94f1112443c626",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"891": {
+"key": "ac0de4f3b8fe4ac5d631a46c3f58bfe7",
+"rel": "fewer_columns_other",
+"n_pred": 27,
+"n_gold": 27,
+"w_pred": 1,
+"w_gold": 2
+},
+"894": {
+"key": "4a904ee57e41888eea21f7a746e1e58a",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 4
+},
+"898": {
+"key": "68b6a7b24c86d5219c8da6d9094be4cb",
+"rel": "column_order",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"899": {
+"key": "aa84ba96e8b4b577c1d36bd382735b70",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 2,
+"w_pred": 1,
+"w_gold": 1
+},
+"903": {
+"key": "d25e0f3cadfec0029f349303a41412fa",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"905": {
+"key": "a2092612a763afe62af9ceba70f2b34c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"906": {
+"key": "4c36f022bfb539695c16c4e947cd1327",
+"rel": "rows_superset",
+"n_pred": 17,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"907": {
+"key": "ea434a1f7fbab55727ed034a69064576",
+"rel": "rows_disjoint",
+"n_pred": 20,
+"n_gold": 19,
+"w_pred": 2,
+"w_gold": 2
+},
+"908": {
+"key": "c17f1fd95b1b6f15627a2ff45cccf488",
+"rel": "rows_disjoint",
+"n_pred": 18,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 4
+},
+"911": {
+"key": "80455cf4d8409925b3a064545ec3b138",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"913": {
+"key": "0737c6dc87d31919e02cb1b7f9d6612d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"916": {
+"key": "463bf18a3a64eaf2d0a9ca3777ae9e1d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 99,
+"w_pred": 0,
+"w_gold": 1
+},
+"917": {
+"key": "a95c2a6b75448354c8f7bf0d8311983e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"921": {
+"key": "8e5061f55119d367f5159bacec6bd8fd",
+"rel": "rows_disjoint",
+"n_pred": 51,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"922": {
+"key": "743de0d3fc2b40ee47f80c3358e158c8",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"924": {
+"key": "bb4f5087f4d4a2218e6d650e0f92870c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 27,
+"w_pred": 0,
+"w_gold": 1
+},
+"926": {
+"key": "7dfc733f438e2eecb02bd0775143affe",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"927": {
+"key": "f512ac5a9842e69cfc5ac695c61e534f",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"928": {
+"key": "4cd231ca8fb9d9fe42b033b9956b5cfa",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 3
+},
+"929": {
+"key": "81d553dbc6622dc1d4056e4b508b8033",
+"rel": "rows_overlap",
+"n_pred": 26,
+"n_gold": 202,
+"w_pred": 1,
+"w_gold": 1
+},
+"930": {
+"key": "a6ea31c065bae2e89c5d5cf31e530862",
+"rel": "rows_subset",
+"n_pred": 3,
+"n_gold": 38,
+"w_pred": 1,
+"w_gold": 1
+},
+"931": {
+"key": "01a3d236a95cfad46b82d7afa4ec949d",
+"rel": "case_or_format",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"936": {
+"key": "408eaec196cdea61921c3866ba2cdeda",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"937": {
+"key": "6b793f936ba0c702da72381722770055",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"941": {
+"key": "e1224c7a4a3d1a128455d647273f7387",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"942": {
+"key": "5265e3e79e2e4eee5f9a1952f871e8fd",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"943": {
+"key": "cb882fa54a6f214b932fe8870872340d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"944": {
+"key": "eb4ba3b2854d731cf2eeec7530d5f1a9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"950": {
+"key": "7db590357e6a00761608f6bea2e3b7f1",
+"rel": "rows_disjoint",
+"n_pred": 6,
+"n_gold": 6,
+"w_pred": 1,
+"w_gold": 1
+},
+"951": {
+"key": "cb396ee4956275d4b6c49aefbf6d97ff",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"952": {
+"key": "d9916047f1038190af0b53422f1787af",
+"rel": "rows_disjoint",
+"n_pred": 24,
+"n_gold": 13,
+"w_pred": 1,
+"w_gold": 1
+},
+"955": {
+"key": "2c3c411d079dfc435a626273393a80ea",
+"rel": "rows_disjoint",
+"n_pred": 25,
+"n_gold": 25,
+"w_pred": 2,
+"w_gold": 2
+},
+"956": {
+"key": "f25e7c355807c1a0ddc258464e701476",
+"rel": "rows_subset",
+"n_pred": 11,
+"n_gold": 224,
+"w_pred": 2,
+"w_gold": 2
+},
+"958": {
+"key": "35459102ba958aad5416dc8db142e2d8",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"959": {
+"key": "bd393f3d68ff476a64ad1f8f77b24181",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 17,
+"w_pred": 1,
+"w_gold": 1
+},
+"962": {
+"key": "d15b16ec0b8e5876475b65d221ca6047",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"963": {
+"key": "7de1955907815c76167aa6d8462bdd17",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"964": {
+"key": "a296867f731ab75ea60fda5619df1fe6",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 157,
+"w_pred": 0,
+"w_gold": 1
+},
+"966": {
+"key": "c49cbd29421234753f7d4b132a29d450",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"970": {
+"key": "c83f030be502fb09b4dcb12716fd3a54",
+"rel": "more_columns_other",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 2,
+"w_gold": 1
+},
+"973": {
+"key": "3af07095acb54d8a8e784c7bc968562c",
+"rel": "extra_columns_rows_superset",
+"n_pred": 3,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 1
+},
+"974": {
+"key": "ceb5edc2ee4a4dbb371ffb7e63fa7920",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 5268,
+"w_pred": 1,
+"w_gold": 1
+},
+"975": {
+"key": "f94e20f5960ac929c78ed6378b241025",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"978": {
+"key": "f20e877f290e1938def9e4395678b2f4",
+"rel": "extra_columns",
+"n_pred": 3,
+"n_gold": 2,
+"w_pred": 4,
+"w_gold": 3
+},
+"979": {
+"key": "3b9f926a333255f0e8c44a07c9965a67",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"981": {
+"key": "705975bf7a1544612109560529ab8c16",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 4
+},
+"983": {
+"key": "e834aab63391eb5c54d3ce6c9c886eb5",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"984": {
+"key": "f5996ee6d8a1ce39924be0b6288b5874",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"985": {
+"key": "cf2a482308e4fad5e417324b9ff49bf7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"986": {
+"key": "d0f6fac1700f2b1b9a034be2e800d67d",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"988": {
+"key": "afbf2fa56ac300303267c31b2ea28a43",
+"rel": "extra_columns",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 3,
+"w_gold": 2
+},
+"989": {
+"key": "20aa0f7906b7e82278451775951d90ff",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 1
+},
+"992": {
+"key": "790b1c60de0e7b29848f593f616c47be",
+"rel": "fewer_columns_other",
+"n_pred": 7,
+"n_gold": 7,
+"w_pred": 3,
+"w_gold": 4
+},
+"993": {
+"key": "1856ace6f91e6abdeba2736076b741b7",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 3
+},
+"994": {
+"key": "f39377406b01081c0392454d5312b331",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 3
+},
+"996": {
+"key": "8b44b93ab4de807edaa43a475ed7ba6d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"998": {
+"key": "323776640f22ec696bc4f7d7c2ff6d31",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1000": {
+"key": "1bce47d06a74c48096cef9e28b840106",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1002": {
+"key": "c95e8d2d2e0e688bf228f4dd0aa10293",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 4
+},
+"1003": {
+"key": "b3b5aaeda43567dd2ac28fc33ed37bf2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1004": {
+"key": "20c1d867d22b4eef5a1540834bcb3468",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"1005": {
+"key": "408c1feb9ff0bf351f5af80d6ba6ced5",
+"rel": "case_or_format",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1006": {
+"key": "d3fbcc486762a8d48df2eedab4ebabe3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1007": {
+"key": "3c955dbfb2f56901b4c2a9baa8624765",
+"rel": "case_or_format",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1009": {
+"key": "b3d39712f4cac2213b9b0a746816aaa4",
+"rel": "extra_columns",
+"n_pred": 45,
+"n_gold": 45,
+"w_pred": 3,
+"w_gold": 1
+},
+"1010": {
+"key": "3f4c7694fd149a7d55fd1f47247a15f9",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 11340,
+"w_pred": 1,
+"w_gold": 1
+},
+"1011": {
+"key": "8db24bb75f1f601c85e75ed37563ed9f",
+"rel": "missing_columns_rows_subset",
+"n_pred": 1,
+"n_gold": 20,
+"w_pred": 2,
+"w_gold": 3
+},
+"1013": {
+"key": "636051f360f06b47c170c935488876a9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1014": {
+"key": "140ad38982797e9413ee4f2d674dc89e",
+"rel": "more_columns_other",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1015": {
+"key": "9b81d382d7f8901d8b7464fc76ef4e49",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1016": {
+"key": "9181645241adaec4e0672f18a08303c7",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1021": {
+"key": "6c40e69a670198d435aea5edbe070a4d",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1024": {
+"key": "5030f6cbb26e9cbcdbc2d59e2d8080a1",
+"rel": "rows_disjoint",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"1026": {
+"key": "d7b34b9cd1fd17e8b4c04330146137ad",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1027": {
+"key": "131352045b0b2a04bf48093a8cb25970",
+"rel": "rows_disjoint",
+"n_pred": 10,
+"n_gold": 10,
+"w_pred": 1,
+"w_gold": 1
+},
+"1028": {
+"key": "02b1c18b90e5b71d54e43b09db2b6a50",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1029": {
+"key": "7db4a43342268f5ed146de95dabc1b50",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"1031": {
+"key": "c57c206de328e6abafcd1e7f423a7fbe",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1034": {
+"key": "24370c4b0d4b9dda2fdc32034fd12d71",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1037": {
+"key": "cc066d3908f36215490d9562fea6e19c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1038": {
+"key": "e2c317c75462a78303623466716ae7be",
+"rel": "rows_disjoint",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 2,
+"w_gold": 2
+},
+"1041": {
+"key": "1da8598dc963816e8d03d4114f189682",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 220,
+"w_pred": 0,
+"w_gold": 1
+},
+"1051": {
+"key": "dcdc04d7ef8d78a1e2e0ab1eae32ae8a",
+"rel": "rows_disjoint",
+"n_pred": 6,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1052": {
+"key": "32efab4012d8616ce7fc3c4a30b4375b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1058": {
+"key": "402223a491d75b3e8f9c8a720c323f5b",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1061": {
+"key": "8a534fbc3f0ed8a58c8f685f9bd64930",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1062": {
+"key": "f429f47b66bee0d02210818ad4d3f347",
+"rel": "rows_subset",
+"n_pred": 408,
+"n_gold": 409,
+"w_pred": 1,
+"w_gold": 1
+},
+"1064": {
+"key": "fa42d74eb351ca7e6e6ef9523d7853c5",
+"rel": "missing_columns",
+"n_pred": 44733,
+"n_gold": 3202,
+"w_pred": 1,
+"w_gold": 2
+},
+"1067": {
+"key": "f6c15e966e241ae3606dbdc80233846c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 16,
+"w_pred": 0,
+"w_gold": 1
+},
+"1068": {
+"key": "2cb8659f3c3abd7d3443403fde47ef2d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1069": {
+"key": "d8393107abf67da9bd73ba9336265797",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 7,
+"w_gold": 1
+},
+"1074": {
+"key": "ef933f70ee168295d51630a22c5aff0d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 1
+},
+"1075": {
+"key": "d8963a7787f8556613bb4e6d7923724f",
+"rel": "more_columns_other",
+"n_pred": 4,
+"n_gold": 1,
+"w_pred": 42,
+"w_gold": 1
+},
+"1078": {
+"key": "2c37fc0ebba8d1ebfab30daf1e5fcfa3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1083": {
+"key": "18415e8c552de23fcb066f2ff6105e12",
+"rel": "more_columns_other",
+"n_pred": 12,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1084": {
+"key": "a953383fe776c19129fe5c51ceb93872",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1085": {
+"key": "48293b483968458e071d7dd2e46932c1",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 2
+},
+"1088": {
+"key": "6b7d2a0548377c1f088059247a176567",
+"rel": "rows_disjoint",
+"n_pred": 1109,
+"n_gold": 1105,
+"w_pred": 1,
+"w_gold": 1
+},
+"1090": {
+"key": "88c79df6ff11d42ea1b6f97afef1cb19",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1092": {
+"key": "fde0a6b3a50ddcf0fa4b5f80a12fd399",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"1093": {
+"key": "bee822d1329d4ab5262fa0cdaad7fda2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1094": {
+"key": "74d035f439d4702949acce94992c04e1",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1098": {
+"key": "b2baf391cccdfe0f2e572533b527d5a1",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1107": {
+"key": "d5b080b7ffae59e6639f836ab96ec034",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1108": {
+"key": "d24672369687670f941acee00c124c51",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1113": {
+"key": "6d3182991e3f01b972f67f676b4418d9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1115": {
+"key": "f1d6d69ba426391ee7e14c84bba0a207",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1118": {
+"key": "6c06ce6c537183608c7b813e3e134921",
+"rel": "rows_superset",
+"n_pred": 8731,
+"n_gold": 8701,
+"w_pred": 1,
+"w_gold": 1
+},
+"1119": {
+"key": "f954e11d7661e5d8f8d6259cba7a2d98",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1120": {
+"key": "0f22f00f4cc79cad04c7fb951800efbf",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1121": {
+"key": "2247db2519486c6396a21b566fe8ca1a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1122": {
+"key": "4a9ef28464fe26b6379f3f428865941c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1123": {
+"key": "dcfb8991aecb714cb18f1d09f92ca865",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1124": {
+"key": "162369e2707945610e4403573b889352",
+"rel": "rows_disjoint",
+"n_pred": 3360,
+"n_gold": 3339,
+"w_pred": 1,
+"w_gold": 1
+},
+"1126": {
+"key": "02b2cdc40874eea42950d7ab39918146",
+"rel": "pred_error",
+"error": "no such column: nationality"
+},
+"1127": {
+"key": "38821f4e7d2493baa28baa6f408c52f9",
+"rel": "rows_disjoint",
+"n_pred": 26,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"1128": {
+"key": "bc433f6bfb20323a7ec1bdd4d29d8a77",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1129": {
+"key": "7dbf9f1a4a95dd89933ebf4bfd0b2922",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 77,
+"w_pred": 0,
+"w_gold": 1
+},
+"1131": {
+"key": "f580fa809b9d5120975212d0a335869e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1133": {
+"key": "0351ba16c9e1fa1e502279da5ac978e4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1135": {
+"key": "11ae16a3ad776650c9b912fd86174d28",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"1137": {
+"key": "2297a52368a9e31ada7341daf746c144",
+"rel": "rounding",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1140": {
+"key": "99819ff788bcb9be4b9d1381142cc744",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 9,
+"w_pred": 3,
+"w_gold": 3
+},
+"1143": {
+"key": "fb6c0e547916e2a8f7f9002245220327",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1144": {
+"key": "d93a81cb520d3bab16ad39ca86597045",
+"rel": "missing_columns_rows_superset",
+"n_pred": 367956,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"1145": {
+"key": "bd8107adc4e7941ecdc60c2b46406b53",
+"rel": "extra_columns",
+"n_pred": 4,
+"n_gold": 4,
+"w_pred": 2,
+"w_gold": 1
+},
+"1147": {
+"key": "025f3b6cded055508550fcb635f57811",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1148": {
+"key": "024a13d1df46c90ab5644c1021bd8b1f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1149": {
+"key": "0d4204bc03330e4f5902967d2ef5cf4a",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 1
+},
+"1152": {
+"key": "581c56bcc8e8400df65653f48f953dd7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1158": {
+"key": "bd41c043313ec4a3b28ef1df7395eca2",
+"rel": "extra_columns",
+"n_pred": 14,
+"n_gold": 1,
+"w_pred": 7,
+"w_gold": 1
+},
+"1160": {
+"key": "84d50008d056e2207b669f0ed57a4a44",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1162": {
+"key": "a7a4275bdd54e6c3894de6af7a6c0cbf",
+"rel": "pred_error",
+"error": "near \"FROM\": syntax error"
+},
+"1164": {
+"key": "fc0c20438d8be7c43f227bccb136c4fa",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1165": {
+"key": "166d1068edb9f77a742e957645123a0f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1166": {
+"key": "10512e7246f229cee9956687ed2f826a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1168": {
+"key": "77fa9e2b1691c2952cc384e57b7f5b3f",
+"rel": "pred_error",
+"error": "near \"FROM\": syntax error"
+},
+"1169": {
+"key": "d91ab6a005b434e65c812b6ec618e804",
+"rel": "rounding",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1170": {
+"key": "2629e63c7893a2c0ad3f5f8bba57f2dc",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1171": {
+"key": "1b40696ee21b02c5f93ca90f757f879c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1172": {
+"key": "40340161f8fdb34faa67503048591e9f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1175": {
+"key": "b56ad57a21a940948cb56928a0d07e24",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"1177": {
+"key": "19546454f6068c0a74e1a80b3dd1bfee",
+"rel": "rows_disjoint",
+"n_pred": 13908,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1178": {
+"key": "1d83f5efe10fb2fb6847b6c07a6036f3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1179": {
+"key": "86676f5a411af58e69a738742317f038",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 3
+},
+"1185": {
+"key": "fd7589d844e29ef45b72d0d6f53f0e37",
+"rel": "rounding",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1186": {
+"key": "1c49082b10da0a212a5d91fa3f7794b0",
+"rel": "rows_subset",
+"n_pred": 3,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"1187": {
+"key": "48b5d325a13836d950e2716a5aee88fe",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 63,
+"w_pred": 1,
+"w_gold": 1
+},
+"1189": {
+"key": "419fc9e80cee0936a5062623894c914e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1190": {
+"key": "d2e6b4f07440dcf91a7f7a7b1eec9299",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1195": {
+"key": "a693eddfaf778fb71cbcaf957890091e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1196": {
+"key": "964628eb0fe1f116284abbd32a035027",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1197": {
+"key": "788fa0f79f41a13cc15ac303fb525d3d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1199": {
+"key": "cc102cdb46c4e11519ab20ad8d48aee9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1200": {
+"key": "9faa35952e2b67813dec33907ce23c1d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1203": {
+"key": "55d73b97d1834e9766108754a75bb0e2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1204": {
+"key": "af3c6c0e5d271e2497fbd16fd0a2e326",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1205": {
+"key": "4b99031b6bc9b44149b89d2410786d23",
+"rel": "rows_disjoint",
+"n_pred": 67,
+"n_gold": 67,
+"w_pred": 1,
+"w_gold": 1
+},
+"1206": {
+"key": "056093a2d68b04e3db32dc47632d9ad6",
+"rel": "rows_superset",
+"n_pred": 541,
+"n_gold": 7,
+"w_pred": 1,
+"w_gold": 1
+},
+"1207": {
+"key": "e39586a98987276741fd89864241454e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 97,
+"w_pred": 0,
+"w_gold": 2
+},
+"1211": {
+"key": "040a4f270a5bc5563cf7a0026fd1de7b",
+"rel": "rows_superset",
+"n_pred": 479,
+"n_gold": 65,
+"w_pred": 2,
+"w_gold": 2
+},
+"1213": {
+"key": "6d54af52254dc125fd2fae3df8d13b11",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 35,
+"w_pred": 0,
+"w_gold": 2
+},
+"1214": {
+"key": "5668ccc8f092b5cc9cd8a0613535b3c3",
+"rel": "rows_disjoint",
+"n_pred": 544,
+"n_gold": 68,
+"w_pred": 3,
+"w_gold": 3
+},
+"1216": {
+"key": "96afee6f55ba9f2d0a66ca642cf249c9",
+"rel": "extra_columns",
+"n_pred": 226,
+"n_gold": 15,
+"w_pred": 2,
+"w_gold": 1
+},
+"1217": {
+"key": "77f9c5a4e923371bca86597273bb2694",
+"rel": "pred_error",
+"error": "near \"FROM\": syntax error"
+},
+"1219": {
+"key": "106bd8eb90cdc3a55285de5a3b1099a7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1221": {
+"key": "4370e3ec10e4daa3999eb839d6aae944",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 38,
+"w_pred": 0,
+"w_gold": 3
+},
+"1223": {
+"key": "ae3d2d252bf5608b38796c8ad3622d8f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1224": {
+"key": "5b0710a82a98562e3c54f5e24956bf81",
+"rel": "missing_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 4
+},
+"1225": {
+"key": "5b984f943af10cbe693bc75182846206",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 2
+},
+"1226": {
+"key": "0c772b7d908e152708ae42eafeec832a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"1227": {
+"key": "d11ee7afab0b399795dc3cd034425c02",
+"rel": "pred_error",
+"error": "near \"FROM\": syntax error"
+},
+"1228": {
+"key": "f36d5c463c988424248add054c5aee77",
+"rel": "more_columns_other",
+"n_pred": 197,
+"n_gold": 197,
+"w_pred": 44,
+"w_gold": 2
+},
+"1230": {
+"key": "01610395f6c469892fcaff9a175c9a49",
+"rel": "rows_subset",
+"n_pred": 11,
+"n_gold": 154,
+"w_pred": 1,
+"w_gold": 1
+},
+"1233": {
+"key": "686605c345542b32d3a2c2a9f41480f5",
+"rel": "rows_overlap",
+"n_pred": 82,
+"n_gold": 74,
+"w_pred": 2,
+"w_gold": 2
+},
+"1235": {
+"key": "3feacb4a8a4347b174bd03b743cc24b6",
+"rel": "column_order",
+"n_pred": 759,
+"n_gold": 73,
+"w_pred": 3,
+"w_gold": 3
+},
+"1236": {
+"key": "a53479366de5911e6c485483c625f51c",
+"rel": "rows_overlap",
+"n_pred": 619,
+"n_gold": 77,
+"w_pred": 2,
+"w_gold": 2
+},
+"1238": {
+"key": "13d0ce7c2f41ba117d6f1c38f15bf3f3",
+"rel": "rows_disjoint",
+"n_pred": 24,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1239": {
+"key": "9f57fc0729cea98fa4a1f23f005666f0",
+"rel": "rows_subset",
+"n_pred": 2,
+"n_gold": 3,
+"w_pred": 2,
+"w_gold": 2
+},
+"1241": {
+"key": "b9117088838553d9e0dfc652674ca9a3",
+"rel": "more_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 1
+},
+"1242": {
+"key": "3163ff69b2761675bbc9d852a2e5ecc8",
+"rel": "extra_columns_rows_subset",
+"n_pred": 38,
+"n_gold": 76,
+"w_pred": 44,
+"w_gold": 1
+},
+"1243": {
+"key": "e7bae9938b04713635fda43cad19ddcc",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1245": {
+"key": "cea3adce335e992546e9687bdabb8c0f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1246": {
+"key": "10a2f407b21ede4d001c3f6891ed0254",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1247": {
+"key": "bcd848eaf6c11acfcc14f192926297f0",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1248": {
+"key": "97381b5161f0dd7fe3d0bded3c0157bb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1249": {
+"key": "f0b9c3df498dcdad7d51b998be44c680",
+"rel": "rows_subset",
+"n_pred": 37,
+"n_gold": 1359,
+"w_pred": 1,
+"w_gold": 1
+},
+"1250": {
+"key": "09ddff4928054242a4a4f800df9e7341",
+"rel": "rows_subset",
+"n_pred": 2,
+"n_gold": 24,
+"w_pred": 1,
+"w_gold": 1
+},
+"1251": {
+"key": "b07cad6e3a3aee729521eb9ea9f78c88",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1252": {
+"key": "137d7a986ac2bff03a4175b8d7778b6e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1253": {
+"key": "91fa1c6630246061d65e0af8b1efd288",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1254": {
+"key": "3acbf751e08af3f143e748e5330af3fb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1256": {
+"key": "83901cddd7c6f617654a21bdf56be28d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1258": {
+"key": "51753db815ba3c1ec95524a80a807c53",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1260": {
+"key": "7d7f8ed96a67d12f8b8ce7e5b9fe902e",
+"rel": "rows_overlap",
+"n_pred": 1346,
+"n_gold": 280,
+"w_pred": 1,
+"w_gold": 1
+},
+"1261": {
+"key": "8ca50bee79653ca537fa49000f840eb3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1262": {
+"key": "ced9e6a850cdaae02f348dc8e79dc718",
+"rel": "pred_error",
+"error": "no such column: Laboratory.Patient"
+},
+"1264": {
+"key": "384c879e751e32d893deb26715570f37",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1265": {
+"key": "d75a38e277917badb90b005c351fdeea",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1267": {
+"key": "2d2c1b0ce30a06906abfb296b14c1c48",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1269": {
+"key": "d112997ae9d6fa80d9931ae1a2911e06",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 24,
+"w_pred": 0,
+"w_gold": 1
+},
+"1271": {
+"key": "89834f2690439a26cb7193e7bf14fe64",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1273": {
+"key": "ee475ef2f43063b9a92d2d117d9fe2f1",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1274": {
+"key": "0433e3efdc7a83eef1281cc8e2f86a64",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1275": {
+"key": "71e5058521e99daab2940390b4789736",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1276": {
+"key": "0b3f177efffe93684eb6488c53d86aa3",
+"rel": "rows_superset",
+"n_pred": 8,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"1279": {
+"key": "8a5e9b502aed4077ea678e77733dc947",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1283": {
+"key": "65d529182acc36ea15b960062d9723fb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1284": {
+"key": "c92c0a1775af856d8a30aa099226a41b",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1285": {
+"key": "d08225c4cf2c9f085556df8c1a31452d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1286": {
+"key": "bb3fc1cbf276672069d71f6c26eb2a51",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1287": {
+"key": "3c5e91ce32bebb1541eb493c433185d2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1289": {
+"key": "ff6c15ddb1f0cdff7857ec2bb4cf9f8f",
+"rel": "pred_error",
+"error": "no such column: Patient_ID"
+},
+"1290": {
+"key": "628ad724b224cc40d4d9efb104365a7d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1291": {
+"key": "fb72f0b23181398a48ab6fdd55f3a5a5",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1292": {
+"key": "9db0d7aad5d67f866a8ddb942cba435d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 3
+},
+"1294": {
+"key": "7cf1d697ab7790306f3f0d5f7f48c13d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1295": {
+"key": "5ac6c847f7a8a79c7369a0b192f0a437",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1296": {
+"key": "e2cc58e042505bb79a5012e8e4ca9284",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1297": {
+"key": "703212d9b254994b7e5d975e3f18de8c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1298": {
+"key": "694454d78efa6b9b00660e6a06d6f93d",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1299": {
+"key": "4463650826402ff5351e8c8aefe903d3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1300": {
+"key": "7d4122a862016f8186e656e719f8d03d",
+"rel": "rows_superset",
+"n_pred": 23,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1302": {
+"key": "95ee43ad40b4ee0c54323d9f62317f66",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1304": {
+"key": "c624118a9709a8a36f295b283a76c132",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1305": {
+"key": "bc6c956d3d2741fbc509733836978fe6",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1306": {
+"key": "f6fcab6d6f123e3c9d4af6c2e6427251",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1308": {
+"key": "e2dbcc13fb08691bf22f56883fb5b985",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1309": {
+"key": "9fe9e3950ee76394966bceaff018b16b",
+"rel": "rows_superset",
+"n_pred": 10079,
+"n_gold": 141,
+"w_pred": 1,
+"w_gold": 1
+},
+"1318": {
+"key": "d77c675c7bf11c0b6c2e714e1d45db5c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1321": {
+"key": "f0a489a10daf85aacda3e5e384c138f0",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1322": {
+"key": "6dfea2474c2620ee635de70f1814f998",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 9,
+"w_pred": 1,
+"w_gold": 1
+},
+"1324": {
+"key": "7de4589cfbba8d3cc934dd87557ea8f8",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1325": {
+"key": "b20ec1b3c27ee35793c4446cefe59971",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1330": {
+"key": "7719aa17b9c814e376dfd8f5d167056d",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1338": {
+"key": "25e95293c9d858af6b3c0486083e04d8",
+"rel": "extra_columns",
+"n_pred": 3,
+"n_gold": 3,
+"w_pred": 2,
+"w_gold": 1
+},
+"1340": {
+"key": "3046e6ce322030b1df10eb5fdc18cffa",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1342": {
+"key": "5fbcbbe99ea1459cd338d119658756b7",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1350": {
+"key": "0ec7ade8e7995ccb2829c70957c8ad6b",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1359": {
+"key": "fbe058687305af6065fbca1f3f5feaeb",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1365": {
+"key": "caa7bc970b7087b450481b8f4cf0aba1",
+"rel": "rows_superset",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1366": {
+"key": "40451cce5f83f2cbb9fe9e2c210f988e",
+"rel": "extra_columns",
+"n_pred": 23,
+"n_gold": 23,
+"w_pred": 9,
+"w_gold": 1
+},
+"1370": {
+"key": "9934e5a46feaf7844a42734b6d51bb8c",
+"rel": "missing_columns",
+"n_pred": 11,
+"n_gold": 11,
+"w_pred": 1,
+"w_gold": 2
+},
+"1376": {
+"key": "1e8f7a6c75ac7eacf98fb44c1672052f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1387": {
+"key": "f9b3c47d5637b9237e6484a7a7095a8f",
+"rel": "fewer_columns_other",
+"n_pred": 2,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 2
+},
+"1388": {
+"key": "d3951491be7b10bbd7e67381474b5428",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 3
+},
+"1389": {
+"key": "c22c9f5095b2bab8b73c1a1a30c7b68a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1391": {
+"key": "ca51ef6a0eddcc4cd2d050d0d5461e77",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1399": {
+"key": "390107b5bb80581f22df32127a8f70bb",
+"rel": "rows_subset",
+"n_pred": 1,
+"n_gold": 14,
+"w_pred": 1,
+"w_gold": 1
+},
+"1404": {
+"key": "6f1095bb3896462af1e49d27870a6ad2",
+"rel": "rows_disjoint",
+"n_pred": 2,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1406": {
+"key": "afaa7594c56f313ce9ccb8e6d3c99511",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1407": {
+"key": "c9e040036fda532e172a9ef0f6d8cc27",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 3,
+"w_pred": 0,
+"w_gold": 1
+},
+"1410": {
+"key": "7bb00906c6249b70bb1867c285271bcd",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"1418": {
+"key": "41247cbbbb4e466fa38918749414543c",
+"rel": "rows_disjoint",
+"n_pred": 3,
+"n_gold": 45,
+"w_pred": 1,
+"w_gold": 1
+},
+"1419": {
+"key": "db7e00e453ab901470a2517c65af34b1",
+"rel": "rows_disjoint",
+"n_pred": 1,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"1421": {
+"key": "aaa393c6f65641415b17809739e8ecf1",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1422": {
+"key": "428a0cf5f757bd1b6ca5fd746fa403fd",
+"rel": "rows_disjoint",
+"n_pred": 3,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 1
+},
+"1427": {
+"key": "69b2e815cda173f54a9ed224f2a40cf1",
+"rel": "missing_columns",
+"n_pred": 16,
+"n_gold": 4,
+"w_pred": 1,
+"w_gold": 2
+},
+"1433": {
+"key": "b7ccdeb16313bc694fecdd6e2be01c33",
+"rel": "rows_overlap",
+"n_pred": 52,
+"n_gold": 1424,
+"w_pred": 1,
+"w_gold": 1
+},
+"1437": {
+"key": "322144f12a5dbf25d65bc7f48a3ec42c",
+"rel": "extra_columns",
+"n_pred": 46,
+"n_gold": 46,
+"w_pred": 4,
+"w_gold": 2
+},
+"1441": {
+"key": "7d7922173683d4f6f427c398d4f3c7c9",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1442": {
+"key": "769d491602953d35356128c71eb845a2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1445": {
+"key": "5d1eb387bbdcc1ce468a5412d8e793ad",
+"rel": "fewer_columns_other",
+"n_pred": 8,
+"n_gold": 8,
+"w_pred": 1,
+"w_gold": 2
+},
+"1450": {
+"key": "1e04675e0baddaa67325a937d7578f1a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 31,
+"w_pred": 0,
+"w_gold": 2
+},
+"1451": {
+"key": "645b4e488e8286b28f359f087455ded8",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 4,
+"w_gold": 1
+},
+"1453": {
+"key": "504bfe531a4185eb68a1d34a59d0d474",
+"rel": "rows_disjoint",
+"n_pred": 4,
+"n_gold": 3,
+"w_pred": 1,
+"w_gold": 1
+},
+"1454": {
+"key": "85592dbde11ca5171f48bde12b52e89f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1455": {
+"key": "4a1e448f47b97303c179be9f9fef8a9c",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1456": {
+"key": "9a27e532fdb3faff7062dca162091db9",
+"rel": "extra_columns_rows_superset",
+"n_pred": 3,
+"n_gold": 5,
+"w_pred": 3,
+"w_gold": 2
+},
+"1458": {
+"key": "502ebfdfad70abc42f3e4ac038c8e61f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1464": {
+"key": "7f56026da2bdef6affd7896d31b8509c",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 3
+},
+"1466": {
+"key": "2b1fa2f666c126ee3c6a9395c3b8bb5a",
+"rel": "fewer_columns_other",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"1467": {
+"key": "ea2181c0e213873d19b4eda6e70cb9a8",
+"rel": "column_order",
+"n_pred": 7,
+"n_gold": 7,
+"w_pred": 2,
+"w_gold": 2
+},
+"1470": {
+"key": "bf7615078d25c27e3b92af1aa2c4069a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1474": {
+"key": "9a515aff3bf75dbd863571643db30972",
+"rel": "extra_columns",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 1
+},
+"1475": {
+"key": "108b4b3285f7834b8e3da5baef09a8b3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1481": {
+"key": "9a6b142173a9016bedee16f57cf5e473",
+"rel": "fewer_columns_other",
+"n_pred": 3,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"1482": {
+"key": "0ff8ab9c25145b554e2b243f5b2f8fa7",
+"rel": "fewer_columns_other",
+"n_pred": 3,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 3
+},
+"1484": {
+"key": "f72674eb65d1a663f65128635380a430",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1487": {
+"key": "fab6473f19ff483ef9c84c7f6644098a",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1490": {
+"key": "88dd42ee66e3878e52e6733ab8357b34",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1491": {
+"key": "9b3689efbb2a6d39e285f733e49075e2",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 2
+},
+"1494": {
+"key": "88bb71703e0c60e1d7faf11a6df29fc3",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1496": {
+"key": "f3307ec4fe8bc2d4e768ccd224cdb173",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1499": {
+"key": "757fa05043986f51f1a0fc62eb30bf90",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1500": {
+"key": "17ca6d652418ea865bd982d27948db1e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 976,
+"w_pred": 0,
+"w_gold": 1
+},
+"1501": {
+"key": "94b58dcc7791e8a1a1d9a80ecaad049e",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 1
+},
+"1502": {
+"key": "16951c4c9e341f405bfec6b98028fcf3",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 10,
+"w_pred": 0,
+"w_gold": 1
+},
+"1503": {
+"key": "51476334d2b43de1d75714f1e369e7e9",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 7,
+"w_pred": 0,
+"w_gold": 2
+},
+"1505": {
+"key": "7267f9564d9573ffebb99f032bcffab1",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1510": {
+"key": "22cc459547502fef63ef5642b657d36f",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1511": {
+"key": "6e2cc79e452653612108fecbc35750e6",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1512": {
+"key": "9ef2ab2e97da5029f4cdf6e97268b76a",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1517": {
+"key": "2674dc5e78e680425baedc02dee9333c",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1520": {
+"key": "7c537ad53555d007dcf31ea6dd9ad6b3",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 2,
+"w_pred": 0,
+"w_gold": 3
+},
+"1524": {
+"key": "510a2ca828a8f509baeaf337b52fc408",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1525": {
+"key": "5f1338725c8754d944cc4c1e8bff065e",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1526": {
+"key": "d8c8c6da1e7139d43d833b1afa2c0173",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1527": {
+"key": "0eef815b2f2a09c3c69456f99b2145b2",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1528": {
+"key": "b8e4f073408ac2bbc9931b96e1fc3741",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 1,
+"w_gold": 1
+},
+"1529": {
+"key": "ca4baa2379c4dee864f4a04eb6049bf4",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 2,
+"w_gold": 2
+},
+"1530": {
+"key": "f972b24db91849df1e2a79a492b5d23a",
+"rel": "rows_superset",
+"n_pred": 5,
+"n_gold": 5,
+"w_pred": 1,
+"w_gold": 1
+},
+"1531": {
+"key": "faad83828248cc713bccda2eaf4bbbea",
+"rel": "scalar_differs",
+"n_pred": 1,
+"n_gold": 1,
+"w_pred": 3,
+"w_gold": 3
+},
+"1532": {
+"key": "e3d915028f86e05a6839ad7f88b3ff93",
+"rel": "pred_empty",
+"n_pred": 0,
+"n_gold": 1,
+"w_pred": 0,
+"w_gold": 1
+},
+"1533": {
+"key": "11a30d6388bb8ba8ccfeee3ccce8f7ca",
+"rel": "more_columns_other",
+"n_pred": 7,
+"n_gold": 10,
+"w_pred": 2,
+"w_gold": 1
+}
+}

@@ -1,0 +1,694 @@
+sample_index	category	subtype	arguable	also	note
+0	M	wrong_formula	0		pct x100 (100.0*free/enroll) although the evidence defines the rate as the plain ratio
+1	M	evidence_ignored	0	wrong_column	uses the precomputed Percent column (NULL here) instead of the evidence formula; EdOpsCode instead of Educational Option Type
+2	M	wrong_column	0		County/DOC filters instead of frpm.`District Name`='Fresno County Office of Education'; Charter from schools
+3	M	wrong_join_path	0		"joins frpm.""School Code"" to schools.CDSCode (frpm.CDSCode not retrieved) -> empty"
+4	M	wrong_column	0		schools.FundingType instead of frpm.`Charter Funding Type` (not retrieved); 4 rows differ
+8	M	wrong_join_path	0		"satscores.cds = frpm.""Charter School Number"" (wrong key, frpm.CDSCode not retrieved) -> empty"
+10	M	wrong_join_path	0		"frpm.""School Code"" used as the CDSCode key -> empty"
+11	M	wrong_join_path	0		"frpm.""School Code"" used as the CDSCode key -> empty"
+12	H	rounding	0		same value computed from the precomputed percent column; differs at the 15th digit
+15	M	wrong_join_path	0	wrong_aggregate	joins satscores.cds to schools.NCESDist (wrong key) -> empty; also groups and averages
+16	G	gold_incorrect	0	wrong_column	question says Alameda, gold filters County='Lake'; pred (School LIKE '%Alameda%') is wrong too
+17	M	aggregation_grain	0	missing_projection	groups by CharterNum with AVG instead of ranking schools; rank column missing
+18	M	wrong_join_path	0		joins satscores to schools by school name, not CDSCode; schools.FundingType instead of frpm.`Charter Funding Type`
+20	M	wrong_column	0		District='Amador' and GSserved='9-12' instead of County and frpm Low/High Grade (not retrieved)
+21	M	wrong_column	0	extra_condition	City instead of County; extra GSserved LIKE '%K%'
+22	M	data_quirk	1		joins satscores.cds to schools.CDSCode, but cds drops the leading zero of county codes 01-09 -> empty; gold uses satscores.cname
+24	G	ambiguous_column	1		names from schools.School vs frpm.`School Name`; the percent column equals the evidence ratio
+25	M	wrong_column	0		School LIKE '%Riverside%' instead of the district name; no per-school AVG HAVING
+27	G	ambiguous_question	1		gold LEFT JOIN keeps schools without SAT scores; pred INNER JOIN
+28	G	ambiguous_column	1		pred returns DOCType (description) for 'DOC type'; gold returns the DOC code
+29	M	evidence_ignored	0		uses satscores.enroll12 (grade 12) although the evidence maps K-12 to Enrollment (K-12)
+32	M	extra_projection	0		returns School Name and FRPM count besides the rate
+33	M	missing_condition	0	column_order	no Website IS NOT NULL ('if there are any'); columns swapped
+34	M	wrong_column	0	wrong_join_path	"school name = 'Kacey Gibson' (an administrator, AdmFName1/AdmLName1); frpm.""School Code"" join"
+35	M	wrong_join_path	0		"joins frpm.""Charter School Number"" to schools.CharterNum instead of CDSCode; returns all ties/NULL"
+36	M	evidence_ignored	0	missing_projection	evidence says up to 3 administrators; pred returns only the first
+37	G	ties_limit	1	column_order	14 schools tie at rate 0; gold LIMIT 1 picks one, pred returns all; State/Zip order differs from gold
+39	M	wrong_column	0		City='Fresno' instead of County='Fresno'; avg 203.8 vs 137.9
+41	G	gold_null_quirk	1		gold RANK() keeps NULL-score schools; pred filters NULL and uses ROW_NUMBER
+43	M	data_quirk	1	superlative_logic	MIN over all satscores rows, whose minimum cds has no match in schools (leading zero) -> empty
+46	M	evidence_ignored	0	extra_projection	uses satscores.enroll12 instead of Enrollment (K-12) from the evidence; extra column
+49	G	ties_limit	1		several counties tie for most closed schools; pred returns all, gold picks one
+50	H	column_order	0		same row, columns swapped
+51	M	data_quirk	1	superlative_logic	MIN(AvgScrRead) over all satscores rows; that row has no match in schools (leading zero) -> empty
+53	G	gold_grain_quirk	1		gold lists NumTstTakr per school (no names); pred sums them
+55	M	integer_division	0		CAST(COUNT AS DECIMAL) stays integer in SQLite, so 18/100 -> 0
+56	M	value_mismatch	0		MailState='California', stored value is 'CA'
+57	M	wrong_join_path	0		joins satscores.sname = schools.School (name) instead of CDSCode; ties in AvgScrWrite
+58	H	column_order	0		same row, columns in another order
+59	M	extra_projection	0		returns School besides Website
+60	M	wrong_column	0		District='San Joaquin' instead of County (schools.County not retrieved)
+62	M	evidence_ignored	0		uses the precomputed Percent column (a 0-1 ratio) instead of the evidence formula Free*100/Enrollment
+63	G	projection_format	1	missing_condition	pred concatenates first+last name into one column and adds IS NOT NULL filters (7 vs 8 rows); gold returns separate columns
+65	G	gold_ignores_evidence	0		gold divides by non-locally-funded schools; the evidence says divide by all schools (pred follows the evidence: 25.0)
+66	G	evidence_wrong	1		evidence spells 'Directly Funded', stored value is 'Directly funded'; pred follows the evidence -> 0
+70	M	aggregation_grain	1		pred returns a count per StatusType; gold one total for active+closed
+71	M	wrong_join_path	0		"joins schools.District = frpm.""School Name""; MailCity instead of City"
+72	M	wrong_join_path	0		"frpm.""School Code"" = schools.NCESSchool instead of CDSCode; Academic Year compared with '2014-2015' -> NULL"
+74	M	wrong_column	0		schools.GSoffered instead of MIN(frpm.`Low Grade`) (frpm columns not retrieved)
+75	M	degenerate_sql	0	wrong_column	AND 1 = 0; frpm columns County Code / NSLP Provision Status not retrieved
+76	M	wrong_column	0	missing_condition	GSoffered='9-12' (en dash) instead of frpm Low/High Grade; Lunch Provision 2 condition dropped
+77	M	evidence_ignored	0		uses the precomputed Percent column (0-1 ratio) instead of FRPM*100/Enrollment; school name from frpm
+78	M	extra_projection	0		returns the count besides the grade span
+80	G	ties_limit	1	column_order	two schools share the max latitude; gold LIMIT 1 picks one; column order differs
+81	M	wrong_column	0		uses schools.GSoffered and schools only, not frpm Low Grade; different school at min latitude
+82	G	ties_limit	1		two schools tie at max |longitude|; pred returns both, gold LIMIT 1
+83	M	wrong_join_path	0		"joins schools.CharterNum = frpm.""Charter School Number"" (no CDSCode); counts distinct NCESSchool; extra columns"
+85	M	evidence_ignored	0	wrong_column	uses the precomputed Percent column (0-1 ratio) instead of Free*100/Enrollment; schools.DOC instead of frpm District Code
+87	M	wrong_column	0		City='San Bernardino City Unified' (a district name); only AdmEmail1
+88	H	column_order	0		same row, email and name columns swapped
+89	M	value_mismatch	1		stored region is 'east Bohemia'; question and pred use 'East Bohemia'
+93	M	value_mismatch	1		stored region is 'north Bohemia'; question and pred use 'North Bohemia'
+94	G	ambiguous_question	1		'oldest and lowest average salary': pred ANDs two global extremes -> empty; gold takes the oldest female's district
+95	G	ambiguous_question	1		'youngest and highest average salary': pred ANDs two global extremes -> empty; gold takes the youngest client
+97	M	wrong_column	0		trans.k_symbol = 'POPLATEK PO OBRATU' instead of account.frequency (not retrieved)
+101	M	wrong_table	0		account.date (opening date) instead of the first transaction date in trans
+102	M	date_handling	0	extra_condition	a.date < '970101' (not the stored date format) and an OWNER restriction -> empty
+107	M	superlative_logic	0		oldest client of the oldest account instead of ORDER BY highest A11, oldest birth_date
+108	M	wrong_join_path	0		joins trans.account = account.account_id (trans.account_id not retrieved) -> empty
+110	G	gold_incorrect	0		gold filters date 1997-08-20; the question says 1998/9/2
+114	M	wrong_join_path	1		uses the client's district (via disp) instead of the account's district
+118	G	evidence_wrong	1		evidence gives an amount-weighted formula; gold counts accounts (pred follows the evidence)
+119	M	wrong_column	0		trans.operation = 'POPLATEK PO OBRATU' instead of account.frequency (not retrieved)
+120	M	missing_condition	0	extra_projection	East Bohemia filter dropped, OWNER filter and client_id added
+124	M	wrong_column	0		district.A3 (region) instead of A2 (district name)
+125	G	gold_missing_projection	1	rounding	question asks for the district too; gold returns only the rate (pred also computes it in another order of operations)
+128	G	ambiguous_question	1		pred counts distinct accounts of female clients via disp; gold counts female clients per district
+129	G	gold_incorrect	1		gold lists the first ten district names alphabetically, not by withdrawals; pred sums withdrawals
+130	G	gold_incorrect	0	value_mismatch	gold treats 'not own credit cards' as disp.type != 'OWNER'; pred also uses 'South Bohemia' (stored 'south Bohemia')
+131	M	evidence_ignored	0	wrong_aggregate	COUNT(loan_id) by A2 instead of SUM(amount) by A3 as the evidence names
+133	M	extra_projection	0		returns A13 besides id and name
+135	M	wrong_join_path	0		joins trans.account = account.account_id (wrong column) through disp/card -> 0
+141	M	extra_projection	0		returns A2 besides district_id
+142	G	ambiguous_question	1		pred uses the order table; gold uses trans.k_symbol (33 vs 32 accounts)
+144	G	gold_incorrect	0		gold filters year 1998; the question says 2021 (pred -> NULL)
+145	M	wrong_column	0	wrong_formula	returns disp.client_id instead of account_id; the average is taken over credit-card transactions only (gold: all 1998 transactions)
+147	M	wrong_join_path	0		joins account and client only through district (no disp) and counts accounts
+150	M	value_mismatch	1		stored region is 'north Bohemia'; evidence and pred write 'North Bohemia'
+152	G	gold_grain_quirk	1		gold averages A15 over joined account rows (weighted by accounts per district); pred averages distinct districts
+153	M	extra_condition	0		adds EXISTS loan although the evidence only requires disp.type = 'OWNER'
+159	G	ambiguous_projection	1		pred returns trans.* for 'list all the withdrawals'; gold returns trans_id
+165	G	ambiguous_projection	1		pred returns trans.* for 'list all the transactions'; gold returns trans_id
+169	M	missing_condition	0		gold restricts disp.type = 'OWNER' (not retrieved); pred counts every disposition of male clients
+171	G	gold_ignores_evidence	0	value_mismatch	evidence defines north - east, gold computes east - north; pred also uses 'North Bohemia' (stored 'north Bohemia') -> NULL
+172	M	aggregation_grain	1		one total for owner+disponent; gold gives two counts
+173	M	wrong_table	0		counts SLUZBY transactions in trans; gold reads account.frequency and the order table's k_symbol
+180	M	value_mismatch	1	missing_projection	stored region is 'east Bohemia'; pred writes 'East Bohemia'; account_id column missing
+182	G	gold_incorrect	0		gold counts transactions (rows), the question asks for male customers; pred counts distinct clients
+185	G	gold_ignores_evidence	1		evidence says clients with accounts in the Prague branch; gold uses the client's own district
+186	G	gold_grain_quirk	1		gold counts joined rows, pred counts distinct clients (52.63 vs 52.13)
+188	M	extra_projection	0		returns amount and date besides account_id
+189	G	ambiguous_question	1		'oldest and lowest average salary': pred ANDs two global extremes -> empty; gold sorts by both
+192	M	wrong_column	0		trans.account/k_symbol instead of account.frequency (not retrieved) -> NULL
+193	G	ambiguous_projection	1		gold returns district_id and the district name A2; pred only district_id
+194	M	wrong_formula	0	gold_nondeterministic	returns birth_date instead of the age; gold age depends on CURRENT_TIMESTAMP
+197	G	gold_incorrect	0		gold joins bond and multiplies the oxygen count (116 atoms per molecule); pred counts atoms per molecule (3.35)
+198	G	gold_incorrect	0		gold joins atom and bond (fan-out, 732 bonds per molecule) and ignores the evidence formula; pred follows the evidence
+201	M	data_quirk	1		joins molecule, but 101 molecule ids exist only in atom/bond; gold does not join molecule (38.70 vs 38.81)
+205	M	data_quirk	1		needless JOIN molecule drops the 101 molecule ids that exist only in atom
+207	M	extra_projection	0	wrong_join_path	returns the element of both atoms of a connection; gold lists elements of molecules with a double bond
+211	M	extra_projection	0		returns atom_id2 besides atom_id
+215	M	aggregation_grain	1		one combined count for iodine+sulfur; evidence and gold give two counts
+217	G	ambiguous_projection	1		gold returns the (atom_id, atom_id2) pairs of TR181 atoms; pred the distinct neighbours
+218	G	gold_incorrect	0		gold counts molecules that have some non-fluorine atom (always 100%); pred counts molecules without fluorine
+219	G	evidence_wrong	1		evidence formula (share of triple bonds) contradicts the question; gold follows the question, pred the evidence
+221	M	extra_projection	0		returns both atoms with their elements, in both directions
+223	M	extra_projection	1		returns atom_id and atom_id2; gold only atom_id
+225	M	data_quirk	1		needless JOIN molecule drops molecule ids that exist only in bond
+231	G	gold_missing_projection	0		gold omits the carcinogenic status the question asks for; pred returns it
+234	G	gold_ignores_evidence	0		evidence: atom_id or atom_id2 = TR009_12 (pred, 3); gold tests atom_id = TR009_1 AND atom_id2 = TR009_2
+237	G	ambiguous_projection	1		gold maps the label to YES/NO; pred returns the raw '+'
+244	G	ambiguous_projection	1		gold returns the label '+'; pred returns 'Yes'
+247	G	gold_ignores_evidence	1		evidence: atoms whose atom_id is not in connected (pred); gold compares elements
+248	G	ambiguous_projection	1		gold returns atom pairs (atom_id, atom_id2); pred atom_id and element
+252	G	ambiguous_projection	1		gold returns (atom_id, atom_id2) pairs of connected; pred the neighbours with their elements
+253	M	extra_projection	0		returns the elements of both atoms of each bond (pairs)
+254	G	gold_incorrect	1		gold computes the share of the most common bond type, not of element combinations; pred follows the question
+255	M	rounding_ignored	0		CAST AS DECIMAL(10,5) does not round in SQLite; question asks for five decimals (39.75203)
+257	G	ambiguous_question	1		gold lists atom_id2 of connections whose atom_id is sulfur; pred lists atom_id2 values that are sulfur
+259	M	wrong_aggregate	0		counts distinct atoms (11854) instead of distinct elements (17)
+260	G	ambiguous_question	1		pred counts all atoms of qualifying molecules; gold counts the p/br atoms (with join fan-out)
+263	G	ambiguous_question	1		gold joins molecule (343 ids), pred uses all atoms and bonds (444 molecule ids); both fan out over bonds
+267	G	ambiguous_projection	1		gold returns (molecule_id, bond_type) pairs; pred the distinct bond types
+269	G	gold_loose_join	1		gold counts the bonds of any molecule that has an iodine atom; pred counts the bonds connected to iodine
+271	G	gold_incorrect	0		gold tests element = 'c1' (typo) and returns connection rows; pred answers with the bond or nothing
+280	G	ambiguous_projection	1		gold returns the raw label +/-; pred the text carcinogenic / non-carcinogenic
+281	G	gold_missing_projection	1		question asks to tally the elements; gold returns the distinct elements without counts
+282	M	integer_division	0		CAST(SUM(...) AS DECIMAL(10,4)) stays integer in SQLite, so 17/47 -> 0
+286	G	gold_incorrect	1		gold computes the share of bonds that are triple; the question asks for the share of compounds
+290	M	extra_condition	1		adds an invented list of 'toxic' elements; gold returns all elements of the molecule
+296	G	gold_extra_projection	0		gold also returns bond_id and atom_id; the question asks only for the molecule id
+297	M	wrong_column	0		returns distinct molecule_id instead of atom_id of carbon atoms in non-carcinogenic molecules
+298	M	evidence_misapplied	0		evidence divides by COUNT(molecule_id) of all molecules; pred restricts the denominator to label '+'
+300	G	ambiguous_projection	1		pred returns atom_id and element for 'what atoms comprise'; gold only atom_id
+305	G	ambiguous_projection	1		pred returns molecule_id and both atoms' elements; gold bond_id, atom_id, atom_id2
+306	M	wrong_join_path	0		restricts to atoms of the triple bond; the question asks for all elements of the molecules (6 vs 13 rows)
+307	M	extra_projection	1		returns the element pair of the bond; gold the element of one atom per connection
+309	G	gold_incorrect	0		gold filters molecule TR000; the question says TR346
+310	G	gold_incorrect	0		gold counts bond rows (634) as carcinogenic molecules; pred counts distinct molecules (121)
+311	G	gold_incorrect	0		gold counts molecules with any non-s atom and any non-= bond (442); pred counts molecules with neither (50)
+317	G	gold_integer_division	1		gold: integer division over all molecules (1); pred: share among carcinogenic molecules (28.9)
+319	M	wrong_aggregate	1		counts distinct atoms (2), not distinct elements; gold looks at atom_id only
+321	M	extra_projection	0		returns atom_id besides molecule_id
+326	G	gold_loose_join	1		gold: molecules that have a sulfur atom and some double bond; pred: sulfur atoms in a double bond
+328	G	gold_loose_join	1		gold lists every element of TR024 if it has a double bond; pred only elements of double-bonded atoms
+330	G	gold_loose_join	1		gold: molecules with h atoms and a triple bond anywhere (100.0); pred needs a triple-bonded h atom -> NULL
+335	G	gold_loose_join	1		gold counts molecules with an o atom and any double bond (273); pred oxygen in a double bond (205)
+337	G	gold_loose_join	1		gold pairs every element with every bond type of the molecule; pred the real pairs
+338	G	gold_loose_join	1		gold: every carbon atom of TR012 if it has a double bond; pred: carbons in a double bond
+340	G	ambiguous_projection	1		pred returns SELECT * (74 columns); gold only id
+341	G	gold_incorrect	0	ambiguous_projection	gold tests cardKingdomId IS NULL OR cardKingdomId IS NULL (typo); pred also SELECT *
+342	G	gold_incorrect	0	extra_projection	gold ORDER BY faceConvertedManaCost ASC LIMIT 1 although the evidence says MAX; pred returns an extra column
+343	G	gold_incorrect	1		question asks for card names; gold returns ids
+344	M	missing_condition	0	extra_projection	legalities (banned in gladiator) ignored: tables not retrieved; SELECT *
+345	M	extra_projection	0		returns legalities.* instead of the distinct status
+346	M	wrong_column	0		returns cards.uuid instead of cards.id (cards.id not retrieved)
+348	M	extra_projection	0		returns rulings.* although the evidence says information = text
+349	G	gold_ignores_evidence	0		evidence: card with max count of rulings (pred); gold picks the artist with most promo cards
+350	M	wrong_join_path	0	extra_condition	joins foreign_data by name instead of uuid and adds isAlternative = 1 -> empty
+352	M	wrong_table	0		uses set_translations (joined by cards.id = set_translations.id) instead of foreign_data; 10.0 vs 8.77
+353	M	wrong_join_path	0	missing_projection	joins sets.id = set_translations.id instead of code = setCode; returns no set name
+354	G	gold_incorrect	1		gold COUNT(type) counts cards; pred counts distinct types (2) as the question asks
+356	M	evidence_ignored	0		filters power = 'âˆž' although the evidence says power = '*'
+357	G	gold_null_quirk	1		gold filters promoTypes IS NOT NULL; pred returns the NULL row too
+359	G	gold_null_quirk	1		gold filters originalType IS NOT NULL; pred returns the NULL row too
+360	G	gold_incorrect	0		gold matches set_translations.id with cards.id (not the set); pred goes through setCode (10 languages)
+361	G	evidence_wrong	1		evidence says status = 'restricted', stored value is 'Restricted'; pred follows the evidence -> 0
+363	G	evidence_wrong	1		evidence says status = 'restricted', stored value is 'Restricted'; pred follows the evidence -> 0
+364	M	wrong_table	0		returns cards.name/type; the status lives in legalities (not retrieved)
+366	M	evidence_ignored	0		returns cards.text although the evidence says rule = format (legalities)
+371	G	gold_grain_quirk	1		gold INNER JOIN on foreign_data (card x language rows); pred LEFT JOIN over all Story Spotlight cards
+373	M	wrong_column	0		returns id instead of the card name
+376	G	gold_incorrect	1		gold keywords = 'Flying' only matches single-keyword cards; pred LIKE '%Flying%'
+381	M	wrong_join_path	0		joins cards.id = foreign_data.id instead of uuid (uuid not retrieved)
+382	G	ambiguous_projection	1		pred returns DISTINCT cards.* ; gold the card name
+383	M	missing_condition	0		banned status (legalities) ignored: legalities not retrieved
+384	M	execution_error	0	wrong_table	cards.format does not exist (format is in legalities, not retrieved); loop exhausted 4 attempts
+386	G	evidence_wrong	1		evidence says status = 'legal', stored 'Legal'; the gold has no status filter at all
+387	G	gold_incorrect	0		gold matches cards.id with set_translations.id; pred filters cards.setCode = 'OGW'
+388	M	missing_condition	0		ignores 'converted mana of 5'; returns all translations of set 10E
+389	G	gold_incorrect	1		question asks for the card names; gold returns ids
+390	M	wrong_column	0		returns layout instead of the legalities format (not retrieved); extra id
+391	G	ambiguous_projection	1		pred returns DISTINCT cards.*; gold the card name
+392	M	wrong_column	0		orders by cards.originalReleaseDate instead of rulings.date (not retrieved)
+393	M	set_logic	0		'non-powerful' = NOT(both ids set); pred requires cardKingdomFoilId NOT NULL AND cardKingdomId NULL
+398	M	evidence_ignored	0		SUM(convertedManaCost); evidence says unconverted mana = manaCost
+399	M	evidence_ignored	0	missing_projection	returns only subtypes; evidence says types = subtypes and supertypes
+402	M	evidence_misapplied	0	aggregation_grain	filters isTextless = 1 (evidence: 0) and groups by id
+403	M	wrong_join_path	0		joins foreign_data.multiverseid = cards.id; gold uses foreign_data alone
+405	G	evidence_wrong	1		evidence writes language 'Portuguese (Brasil)'; stored 'Portuguese (Brazil)'
+406	G	evidence_wrong	1		evidence says status = 'legal', stored 'Legal' -> empty; gold also joins rulings
+407	M	missing_condition	0	missing_projection	German language filter dropped (foreign_data not retrieved); only subtypes returned
+408	G	gold_incorrect	1		question asks how many; gold lists the ruling texts; pred counts cards using cards.text
+409	M	wrong_table	0	missing_condition	filters cards.text instead of rulings.text (rulings not retrieved)
+410	M	wrong_table	0		uses rarity = 'common' as a stand-in for the pauper format (legalities not retrieved)
+411	M	wrong_table	0		searches cards.originalText; the German text is foreign_data.flavorText (not retrieved)
+412	M	wrong_column	0		c.type = 'Creature' never matches the full type line; the gold uses cards.types
+416	M	wrong_join_path	0		joins cards.id = foreign_data.id instead of uuid (foreign_data.uuid not retrieved)
+417	G	gold_incorrect	1		gold = share of Japanese rows among the translations of expansion sets (reverse of the question); pred follows the question
+421	G	ambiguous_projection	1		pred returns SELECT * ; gold the card name
+424	M	wrong_formula	0		restricts the denominator to isTextless = 1 (100.0) instead of all cards
+425	G	gold_incorrect	1		question asks for card numbers; gold returns id
+428	G	gold_incorrect	1		gold matches set_translations.id = 5; pred uses sets.id = 5 (no translation row)
+429	G	gold_incorrect	1		gold matches set_translations.id = 206; pred uses sets.id = 206
+431	G	gold_ignores_evidence	0	wrong_join_path	evidence says isForeignOnly = 1, gold uses 0; pred also goes through cards/foreign_data instead of set_translations
+432	G	ambiguous_projection	1		pred returns sets.*; gold the set id
+433	M	wrong_table	0	wrong_formula	counts cards.isOnlineOnly over cards; the question is about sets (sets.isOnlineOnly)
+434	M	wrong_join_path	0		joins sets.mtgoCode = set_translations.setCode (sets.code not retrieved)
+435	G	ambiguous_projection	1		pred returns COUNT plus GROUP_CONCAT(id); gold lists the ids
+436	G	ambiguous_projection	1		pred adds a COUNT(*) column to the id list
+437	G	ambiguous_projection	1		pred returns the card name; gold the id
+441	G	gold_loose_join	1		gold joins set_translations and so drops sets without translations
+442	M	wrong_column	0	set_logic	treats Mirage as a set name and ANDs it with block = 'Masques'; gold: block IN (...)
+443	G	gold_loose_join	1		gold joins set_translations and drops sets without translations
+444	G	gold_incorrect	1		question asks for the foreign name; gold returns cards.name
+445	G	ambiguous_projection	1		gold omits the type the question asks for; pred adds it
+446	G	ambiguous_projection	1		same percentage (0.0); gold adds the card name column
+447	G	gold_loose_join	1		gold joins set_translations and drops sets without translations
+448	G	gold_incorrect	1		question asks for the foreign name; gold returns cards.name
+449	M	wrong_join_path	0		joins cards.uuid = foreign_data.multiverseid (foreign_data.uuid not retrieved)
+451	M	evidence_ignored	0		evidence says hand = '3'; pred uses hand LIKE '+%' and SUBSTR
+453	G	evidence_wrong	1		evidence writes the name with a backtick; stored name has an apostrophe
+454	G	gold_ignores_evidence	1		evidence says power = '*'; gold uses LIKE '%*%' (matches 1+*, 2+*)
+458	G	gold_incorrect	0		question asks how many artists; gold counts cards (COUNT of CASE)
+463	M	aggregation_grain	1		COUNT(*) over a join through cards multiplies rows; gold counts DISTINCT translations
+465	M	wrong_table	0	ambiguous_projection	uses foreign_data.multiverseid instead of set_translations; returns 0 instead of 'YES'
+469	G	ambiguous_projection	1		pred returns 0/1 via EXISTS; gold YES/NO per card
+473	G	ambiguous_projection	1		pred returns the isForeignOnly flag; gold YES/NO per card
+474	G	evidence_wrong	1		evidence says baseSetSize < 10 while the question says under 100; pred follows the evidence
+476	M	missing_condition	0		outer query is not restricted to the set Coldsnap (all cards with the max cost)
+480	M	wrong_join_path	0		joins cards.name = foreign_data.name instead of uuid (uuid not retrieved)
+482	M	wrong_join_path	0		reads foreign_data.type by the English name; gold joins cards via uuid (not retrieved)
+484	G	gold_incorrect	0		gold ignores 'highest converted mana cost' (returns all Coldsnap cards ordered); pred filters to the max
+494	M	wrong_table	0	ambiguous_projection	uses cards.text instead of rulings.text (rulings not retrieved); returns the raw flag instead of YES/NO
+498	M	wrong_join_path	0		joins foreign_data by multiverseid (uuid not retrieved) and filters foreign_data.name
+499	G	ambiguous_question	1		10 translation rows; gold counts DISTINCT strings (9)
+500	M	wrong_join_path	0		joins set_translations.language = foreign_data.language (setCode not retrieved)
+507	M	wrong_table	0	wrong_formula	computes the share over cards.isOnlineOnly; the question is about sets
+511	G	gold_null_quirk	1		pred returns NULL as the most common frame effect; gold's COUNT(frameEffects) skips NULL
+514	M	wrong_table	0	evidence_ignored	uses duelDeck IS NOT NULL instead of legalities.format = 'duel'; orders by convertedManaCost although the evidence says manaCost
+515	G	evidence_wrong	1		evidence says status = 'legal', stored 'Legal' -> empty
+517	G	gold_incorrect	1		gold counts card x format rows (35); pred counts distinct cards (5)
+518	H	gold_timeout	0		gold query exceeds the 30 s timeout; pred SQL looks correct
+519	G	gold_incorrect	1		gold matches set_translations.id with sets.id; pred goes through setCode (no translation row)
+520	M	wrong_table	0		returns cards.layout instead of legalities.format (not retrieved); ties for the minimum
+521	M	wrong_column	0		returns frameVersion instead of legalities.status (legalities not retrieved)
+522	M	missing_projection	0	wrong_table	returns only the names; banned formats need legalities (not retrieved)
+523	G	evidence_wrong	1		evidence says AVG(id); gold = SUM(id)/COUNT(id)/4 per release date; pred counts sets per year
+525	G	evidence_wrong	1		evidence says status = 'banned'/'restricted'; stored values are capitalised -> empty
+529	G	gold_incorrect	1		gold condition (Korean AND NOT LIKE Japanese on the same row) is vacuous; pred requires no Japanese translation for the set -> empty
+530	M	missing_projection	0	wrong_table	returns frameVersion only; names and banned status need legalities (not retrieved)
+531	G	ambiguous_projection	1		pred adds the Reputation column
+533	G	gold_ignores_evidence	1		evidence: LastAccessDate > '2014-09-01'; gold wraps it in date()
+537	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName (almost always NULL); gold joins users via OwnerUserId (users.id not retrieved)
+538	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users via OwnerUserId
+539	M	data_quirk	1	wrong_join_path	returns posts.OwnerDisplayName (NULL); gold joins users
+540	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+542	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+543	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+545	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+555	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+563	M	date_handling	0		timestamp literal without the stored '.0' suffix -> empty
+565	M	date_handling	0	ambiguous_projection	timestamp literal without the '.0' suffix -> empty; Yes/No instead of the gold labels
+567	M	data_quirk	1	wrong_join_path	uses posts.OwnerDisplayName; gold joins users
+571	G	gold_incorrect	0		gold COUNT(posts x votes rows) / COUNT(DISTINCT votes) = number of posts; pred computes posts / votes
+577	M	data_quirk	1	wrong_join_path	filters comments.UserDisplayName (filled in 1.6% of rows); gold joins users via UserId
+578	M	data_quirk	1	wrong_join_path	joins posts.OwnerDisplayName = users.DisplayName (filled in 2.7% of posts); gold joins OwnerUserId (not retrieved)
+581	G	gold_incorrect	1	data_quirk	question asks for the editor; gold returns the owner (OwnerUserId); pred reads LastEditorDisplayName (NULL)
+582	G	gold_ignores_evidence	0	data_quirk	evidence says LastEditorUserId; gold uses OwnerUserId; pred filters LastEditorDisplayName (NULL)
+583	M	data_quirk	1	wrong_column	filters posts.LastEditorDisplayName instead of users.DisplayName (users.displayname not retrieved)
+584	M	wrong_table	1		uses comments.Text; gold reads postHistory.Comment (edit comments)
+586	G	ambiguous_projection	1		gold also returns the post title
+587	M	evidence_ignored	1		evidence says Tags = '<humor>'; pred uses LIKE '%<humor>%' (and a different column order)
+593	G	gold_incorrect	1	evidence_wrong	gold uses IN (either badge); evidence names 'Teachers', stored name is 'Teacher'
+595	G	ambiguous_question	1		gold groups by user and counts distinct history types; pred counts history rows per user and post
+596	G	gold_incorrect	1	ambiguous_projection	gold LIMIT 1 over the user x badge join counts joined rows; pred returns all badges of every top user plus the id
+598	M	wrong_formula	1		restricts the denominator to the Student badges of 2010-2011 (evidence: all Student badges)
+600	G	gold_incorrect	1		gold returns the view count of post 61217 and not the related posts; pred lists the related posts
+602	G	gold_incorrect	1		gold returns the postHistory editors; pred returns the post owner as the question asks
+603	G	gold_incorrect	0	aggregation_grain	gold SUM(DISTINCT FavoriteCount) = 6; sum over distinct posts is 10; pred double counts posts per history row (16)
+604	M	aggregation_grain	0		GROUP BY user returns one row per user instead of one average over users with more than 10 posts
+605	G	gold_incorrect	1		gold counts badge rows (207); pred counts distinct users (98)
+608	G	evidence_wrong	1	date_handling	question says 7:25:47 PM, evidence 19:16:14.0; pred follows the question and drops the .0
+610	G	gold_incorrect	1		gold LIMIT 1 over the user x badge join returns a single badge; pred returns all badges of the top user
+616	G	gold_incorrect	1		question asks about the post creation date; gold filters comments.CreationDate; pred uses posts.CreaionDate
+620	M	wrong_aggregate	1		SUM of the users' views; gold lists the views of each user
+628	G	ambiguous_projection	1		gold also returns the user id
+630	M	wrong_table	1		reads tags.TagName via ExcerptPostId; gold reads posts.Tags of the posts the user edited
+631	G	gold_incorrect	0	data_quirk	gold counts postHistory rows (4); the user owns 1 post; pred uses posts.OwnerDisplayName (0)
+632	G	gold_incorrect	1		gold counts votes on posts the user edited (65); pred counts votes made by the user (2)
+633	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty); gold goes through postHistory.UserId
+634	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (all 0 -> 'Tie'); gold goes through postHistory.UserId
+635	G	gold_incorrect	1	data_quirk	gold GROUP BY returns one count per post-vote group (12 rows); pred filters posts.OwnerDisplayName and posts.Id > 4
+636	M	wrong_join_path	0	data_quirk	filters comments.UserDisplayName (comments written by the user) instead of comments on his posts
+637	M	data_quirk	1	wrong_table	filters posts.OwnerDisplayName and reads the tags table; gold reads posts.Tags via postHistory
+639	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty)
+640	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty); gold via postHistory.UserId
+642	G	gold_incorrect	1		gold counts postHistory rows (209); pred counts posts created that day (108)
+646	G	gold_incorrect	0		gold ON T2.PostId = T2.Id (self comparison on comments)
+649	G	gold_incorrect	1		gold lists postHistory ids per row; pred returns the count and the last edit date
+650	G	evidence_wrong	1		evidence says 'Outliers', stored 'outliers' -> empty
+653	M	data_quirk	1	wrong_join_path	reads posts.OwnerDisplayName (NULL); gold joins users via OwnerUserId (users.id not retrieved)
+656	M	data_quirk	1	wrong_join_path	reads parent.OwnerDisplayName (NULL); gold joins users via OwnerUserId
+657	M	missing_projection	0		returns only the display name; the website URL is asked as well (users.websiteurl not retrieved)
+662	G	ambiguous_question	1		gold filters votes.CreationDate = 2011; pred filters posts.CreaionDate
+667	M	evidence_ignored	1		evidence says MIN(CreaionDate) (posts column); pred uses postLinks.CreationDate
+671	G	ties_limit	1		12 users share the earliest badge date; gold takes one with LIMIT 1
+672	M	wrong_join_path	0	aggregation_grain	joins users to posts through postHistory.UserId (editors) instead of posts.OwnerUserId
+673	G	evidence_wrong	1		evidence defines the average as AVG(PostId) (post id); pred averages the vote count per user
+677	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty); gold joins users via OwnerUserId (not retrieved)
+678	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty)
+679	G	gold_incorrect	0		gold returns users.Id as the post id; pred returns the real posts.Id
+680	M	data_quirk	1	wrong_join_path	filters posts.OwnerDisplayName (empty)
+682	G	gold_incorrect	1	data_quirk	gold filters users.CreationDate and returns OwnerUserId as the id; pred reads posts.OwnerDisplayName (NULL)
+683	M	wrong_formula	1		restricts the denominator to posts of 2011; evidence divides by all posts
+685	M	evidence_ignored	0	wrong_join_path	evidence says Text = 'Computer Game Datasets' (postHistory); pred filters posts.Title and joins the owner
+686	G	gold_incorrect	1		question asks for the number of posts; gold lists the ids
+687	M	data_quirk	1		uses posts.CommentCount (3); the comments table holds 35 rows for the post
+689	G	gold_incorrect	1		question asks for the last editor; gold returns the owner (pred: LastEditorUserId is NULL)
+693	G	gold_incorrect	0		gold counts posts x comments rows without any grouping; pred returns the id, post count and comment count
+694	G	gold_incorrect	1	data_quirk	gold orders by users.CreationDate and returns the post owner; pred reads comments.UserDisplayName (NULL)
+696	G	gold_incorrect	1		gold counts the tag row (1); pred counts the posts that carry the tag (22)
+700	M	evidence_ignored	1		evidence says BountyAmount >= 30; pred uses > 30 and counts distinct posts
+701	H	gold_timeout	0		gold query exceeds the 30 s timeout; pred SQL looks correct
+709	G	gold_incorrect	1		gold filters posts.Score = 0; the question says comments with 0 score
+710	G	gold_incorrect	1		gold filters posts.Score = 0; the question says comments with 0 score
+711	G	gold_incorrect	0		gold counts distinct comments (1975); the question asks for users
+714	M	data_quirk	1	wrong_join_path	filters comments.UserDisplayName (empty); gold joins users via UserId
+715	M	data_quirk	1		joins users but selects comments.UserDisplayName (almost always NULL)
+720	G	gold_grain_quirk	1		gold groups by full_name and pools the powers of heroes sharing a name; pred groups by hero id
+726	G	ambiguous_projection	1		gold adds an explicit RANK() column
+728	G	ambiguous_projection	1		gold adds an explicit RANK() column
+729	G	gold_null_quirk	1		pred drops the 0 placeholder heights; gold averages them
+736	G	ties_limit	1		three heroes share the minimum intelligence; gold takes one with LIMIT 1
+741	G	gold_grain_quirk	1		gold groups by superhero_name and pools heroes that share a name; pred groups by hero id
+743	G	gold_loose_join	1		gold inner-joins publisher and drops heroes without a publisher; pred uses LEFT JOIN
+750	G	gold_null_quirk	1		pred drops the 0 placeholder weights; gold averages them
+758	G	evidence_wrong	1		evidence says race = 'human', stored 'Human' -> empty
+764	M	wrong_column	0		returns superpower.id; the question asks for power_name (not retrieved)
+765	G	evidence_wrong	1		evidence says power_name = 'stealth', stored 'Stealth' -> 0
+766	G	evidence_wrong	1		evidence says attribute_name = 'strength', stored 'Strength' -> empty
+767	M	wrong_formula	0		WHERE excludes skin_colour_id = 1 rows, so SUM(skin_colour_id = 1) is 0 -> NULL
+769	G	evidence_wrong	1		evidence says attribute_name = 'durability', stored 'Durability' -> empty
+772	M	evidence_ignored	1		evidence says eyes/hair/skin = *_colour_id; pred returns colour names
+788	G	evidence_wrong	1		evidence formula = female share among Marvel heroes; question and gold = Marvel share among female heroes
+789	G	gold_null_quirk	1		pred drops the 0 placeholder weights; gold averages them
+791	M	evidence_ignored	1		evidence defines one overall average; pred returns a per-hero list
+794	G	ties_limit	1		40 heroes share the maximum speed; gold takes one with LIMIT 1
+798	G	ambiguous_projection	1		pred adds the hero name column
+802	G	ties_limit	1		two heroes share the maximum height; gold takes one with LIMIT 1
+803	G	evidence_wrong	1		evidence says power_name = 'cryokinesis', stored 'Cryokinesis' -> empty
+805	G	gold_null_quirk	1		gold drops NULL full names and uses DISTINCT; pred keeps them
+809	M	wrong_column	0		returns publisher.id; the question asks for publisher_name (not retrieved)
+810	G	ties_limit	1		many heroes share the maximum attribute value; gold takes one with LIMIT 1
+812	M	evidence_ignored	1		evidence says superhero_name; pred returns full_name (LIMIT 5 without ORDER BY)
+817	G	evidence_wrong	1		evidence says 'blue' and 'male', stored 'Blue' and 'Male' -> empty
+827	G	gold_null_quirk	1		pred drops the 0 placeholder heights; gold averages them
+829	G	ambiguous_projection	1		pred returns the winner and the absolute difference; gold the signed difference
+832	G	ties_limit	1		two heroes share the maximum height; gold takes one with LIMIT 1
+842	G	gold_null_quirk	1		pred drops the 0 placeholder heights; gold averages them
+845	M	wrong_column	0	gold_null_quirk	returns superpower.id instead of power_name (not retrieved)
+847	G	gold_null_quirk	1		gold ORDER BY q2 ASC LIMIT 1 puts NULL q2 first; pred takes MIN(q2)
+849	M	wrong_table	1		returns races.url; gold returns circuits.url (circuits.name/id not retrieved, pred filters circuitRef)
+851	M	wrong_column	0		returns circuit names and locations; the question asks for the positions (constructorStandings not retrieved)
+852	M	missing_condition	0		ignores 'outside Asia and Europe' (circuits.country not retrieved); counts all races of 2010
+855	M	wrong_table	1		returns races.url of every race; gold returns circuits.url (circuits.url not retrieved)
+858	M	wrong_table	0		uses constructorStandings.points instead of constructorResults.points (not retrieved)
+860	M	value_mismatch	0		q2 = '0:01:40' never matches the stored 'M:SS.mmm' format; gold LIKE '1:40%'
+865	M	wrong_column	0		returns driverId instead of forename and surname (not retrieved)
+866	M	missing_projection	0		returns only the url; forename and surname are asked as well (not retrieved)
+871	M	value_mismatch	0		q2 = '0:01:15' never matches the stored 'M:SS.mmm' format; gold LIKE '1:15%'
+873	M	wrong_column	1		returns results.milliseconds; gold returns results.time
+877	M	wrong_column	0		returns driverId and dob instead of forename and surname (not retrieved)
+881	M	wrong_formula	1		returns the completion fraction (0.17); the evidence says 'as percentage' (gold x100)
+882	M	wrong_column	0		filters races.url LIKE '%Singapore Grand Prix%' (races.name not retrieved) -> NULL
+883	G	ambiguous_projection	1		pred adds a COUNT(*) column to the race names
+888	M	missing_condition	0		subquery MIN(year) is not restricted to the European Grand Prix
+889	G	ambiguous_projection	1		pred returns the year (1986); gold the full date
+891	M	wrong_column	0		returns driverId instead of forename and surname (not retrieved)
+894	M	missing_projection	0		omits the best lap time that the question asks for
+898	H	column_order	0		same values, the age column is last instead of first
+899	M	wrong_column	0		returns circuitId instead of the circuit name (circuits.name not retrieved)
+903	M	missing_condition	0	wrong_table	no filter on Michael Schumacher (forename/surname not retrieved); counts rows with the maximum points
+905	G	ambiguous_question	1		gold averages the cumulative driverStandings.points; pred averages results.points per race
+906	G	ties_limit	1		17 races in his first year; gold LIMIT 1 over the year order
+907	M	wrong_column	0		returns the race date instead of the hosting country (circuits.country not retrieved)
+908	G	ties_limit	1		18 races reach the maximum of 78 laps; gold LIMIT 1
+911	M	wrong_column	0		returns MAX(lat) instead of the circuit name (circuits.name not retrieved)
+913	G	gold_null_quirk	0		alt is NULL for the top rows; gold returns an arbitrary country, pred (= MAX(alt)) returns nothing
+916	G	evidence_wrong	1		evidence says nationality = 'italian', stored 'Italian' -> empty
+917	M	wrong_column	0		guesses driverRef = 'anthony_davidson' (forename/surname not retrieved)
+921	M	wrong_table	1		returns races.url of every race; gold returns circuits.url (not retrieved)
+922	M	wrong_table	0	missing_projection	filters circuits.name = 'Abu Dhabi Circuit' and returns only the time; gold uses races.name and year (not retrieved)
+924	M	value_mismatch	0		circuits.name = 'Barcelona-Catalunya' never matches 'Circuit de Barcelona-Catalunya'
+926	M	date_handling	0		CAST(fastestLapTime AS TIME) is a no-op in SQLite (returns 1)
+927	G	gold_incorrect	0	data_quirk	fastestLapSpeed is text; gold ORDER BY sorts it as text; pred compares text with a CAST value -> empty
+928	G	ambiguous_projection	1	wrong_table	gold also returns forename and surname; pred uses driverStandings.position instead of results.rank
+929	M	missing_condition	0		replaces the driver filter by a lapTimes subquery (forename/surname not retrieved)
+930	G	evidence_wrong	1		evidence says min(rank); rank 0 means unranked (3 races), gold uses rank = 1
+931	H	case_or_format	0		same number; pred casts to a number, gold stays text
+936	M	wrong_column	1		returns the fastest lap time; gold returns results.fastestLap (lap number)
+937	G	gold_incorrect	1		gold uses results.rank (fastest-lap rank); pred uses the finishing position
+941	M	wrong_table	0		sums driverStandings.points (cumulative) instead of results.points
+942	M	date_handling	0		CAST(fastestLapTime AS TIME) is a no-op; the time has to be converted to seconds
+943	M	integer_division	0		CAST(... AS DECIMAL) is a no-op in SQLite -> integer division 0; gold multiplies by 100
+944	M	wrong_formula	0		formula compares the champion with itself (MAX - MIN over position 1) -> 0
+950	M	wrong_column	0		returns constructorId instead of the constructor name (not retrieved)
+951	G	gold_incorrect	1		gold returns the race count of the first group (2); pred counts the constructors (1)
+952	M	wrong_column	0	wrong_table	returns constructorId from constructorStandings; gold returns names via results.rank = 1
+955	G	gold_incorrect	1		gold parses the time string and drifts by about 0.5 s from the exact milliseconds that pred averages
+956	G	ambiguous_question	1		'ranked 2': gold uses results.rank (fastest-lap rank); pred uses the standings position
+958	M	wrong_table	1	missing_projection	uses lapTimes.time; gold uses results.fastestLapTime and also returns the time
+959	G	ambiguous_question	1		gold returns the fastest lap of every champion time pattern (17 rows); pred picks one race with LIMIT 1
+962	M	wrong_table	0	aggregation_grain	uses lapTimes.lap and COUNT(DISTINCT driver); gold uses results.laps per result row
+963	G	gold_incorrect	1		gold counts lap rows (24465) with a flawed time parse; pred counts distinct drivers (9)
+964	G	evidence_wrong	1		evidence says nationality = 'America', stored 'American' -> empty
+966	M	wrong_table	1		counts distinct drivers in lapTimes (17); gold counts driverStandings rows (8)
+970	M	wrong_table	1	missing_projection	uses lapTimes.time; the evidence's pitStops.time was not retrieved; returns forename instead of driverId
+973	M	wrong_table	1	extra_projection	uses lapTimes.time; the evidence's pitStops.time was not retrieved
+974	M	evidence_ignored	1		evidence says fastestLapTime has values; pred orders by the time and takes one year
+975	G	gold_incorrect	1		gold orders the text column time lexicographically; pred uses numeric milliseconds
+978	G	ambiguous_projection	1		pred adds the number of races (COUNT) to the location and coordinates
+979	M	wrong_column	0		returns results.number (car number) instead of raceId
+981	M	missing_projection	0	wrong_column	returns the driver name instead of the race name and time (races.name/time not retrieved)
+983	G	ambiguous_projection	1		pred adds the constructor name
+984	G	ambiguous_question	1		gold takes the row with the largest cumulative wins; pred sums cumulative wins over all standings rows
+985	M	wrong_column	0		returns MAX(time) instead of the driver (who) with the slowest time
+986	M	missing_condition	0	extra_projection	ignores lap = 1; returns the race id as well
+988	G	ambiguous_projection	1		pred adds the average pit stop duration column
+989	G	ambiguous_projection	1		gold omits the champion; pred returns name and time
+992	G	ambiguous_projection	1		evidence says forename + surname; pred concatenates them into one column
+993	G	gold_incorrect	1		the question asks for the location; gold omits it
+994	M	wrong_table	0	value_mismatch	uses constructorStandings and circuits.name = 'Monaco'; gold uses constructorResults and races.name (not retrieved)
+996	M	evidence_ignored	1		evidence says date between 2000-01-01 and 2010-12-31; pred stops at 2010-01-01
+998	M	evidence_ignored	0		evidence says 91st refers to points; pred filters position = 91
+1000	G	gold_ignores_evidence	1		evidence says full location = location + country; gold returns the location only
+1002	G	ambiguous_projection	1		pred concatenates forename and surname into one column
+1003	M	wrong_join_path	0		raceId = (SELECT raceId ... name = 'Canadian Grand Prix') picks a single race out of many
+1004	G	gold_incorrect	0		gold SUM(wins) without GROUP BY sums all drivers (7890) next to an arbitrary name
+1005	H	case_or_format	0		same number; pred casts to a number, gold stays text
+1006	G	gold_incorrect	0	ambiguous_projection	gold returns '2:00.000' (its sort expression is wrong); pred returns the minimum milliseconds 67411
+1007	H	case_or_format	0		same number; pred casts to a number, gold stays text
+1009	G	ambiguous_projection	1		pred adds driverId and stop columns
+1010	G	gold_ignores_evidence	0		evidence says the lap record is the fastest time; gold lists all lap times of the driver
+1011	M	wrong_aggregate	0		'top 20' became LIMIT 20 on equality with the minimum -> a single driver
+1013	M	value_mismatch	0	wrong_table	filters the race name 'Austrian Grand Prix Circuit' (stored: 'Austrian Grand Prix', races.name not retrieved) -> NULL
+1014	G	ambiguous_question	1	wrong_table	gold returns one record over Italy; pred lists the lapTimes minimum per circuit id
+1015	M	value_mismatch	0		circuits.name = 'Austrian Grand Prix Circuit' does not exist (the race name is 'Austrian Grand Prix')
+1016	M	value_mismatch	0		races.name = 'Austrian Grand Prix Circuit' does not exist
+1021	G	gold_incorrect	1		the question asks for the height and the name; gold omits the height
+1024	G	ambiguous_projection	1		'player id': gold returns Player_Attributes.id; pred returns player_fifa_api_id
+1026	M	wrong_column	0		returns home_team_api_id instead of the team name (team.team_long_name not retrieved)
+1027	G	gold_incorrect	1		gold joins Player.id with Player_Attributes.id (row ids)
+1028	G	ties_limit	1		same query logic; the top two teams tie, gold takes one with LIMIT 1
+1029	G	gold_incorrect	0		'highest' build up play speed: gold orders ASC
+1031	M	wrong_join_path	0		joins Player.id = Player_Attributes.player_api_id (player_api_id not retrieved) -> empty
+1034	M	wrong_column	0		returns player_fifa_api_id; the question asks for the api id
+1037	M	wrong_join_path	1	aggregation_grain	joins on player_fifa_api_id with COUNT(DISTINCT) (player_api_id not retrieved)
+1038	M	wrong_column	0		returns League.id instead of the league name (league.name not retrieved)
+1041	G	gold_ignores_evidence	0		evidence restricts date to January 2014; gold uses the whole year 2014; pred follows the evidence
+1051	M	wrong_column	0		returns Player.id (6 rows) instead of the player name (player_name not retrieved)
+1052	M	aggregation_grain	0	wrong_join_path	COUNT(*) over a join on player_fifa_api_id repeats players per attribute row; gold COUNT(DISTINCT id)
+1058	G	ambiguous_question	1		gold returns the label 'Max'/'Min'; pred returns the player id and the average
+1061	G	gold_incorrect	1		gold LIKE 'Adam%' also matches Adams, Adamu...; pred matches the first name 'Adam '
+1062	M	wrong_join_path	0		joins on player_fifa_api_id instead of player_api_id (not retrieved): 408 vs 409 names
+1064	G	ambiguous_projection	1		gold also returns the player id; pred returns names only (and duplicates)
+1067	M	wrong_join_path	0		joins Team.id = Team_Attributes.id (team_api_id not retrieved) -> empty
+1068	G	gold_null_quirk	1		pred AVG skips NULL overall ratings; gold SUM / COUNT(id) counts them
+1069	G	ambiguous_projection	1		pred returns SELECT *; gold the player name
+1074	M	wrong_join_path	0		joins Team.team_fifa_api_id = Match.home_team_api_id (team_api_id not retrieved) -> empty
+1075	M	wrong_column	0		returns all Player_Attributes columns of 4 tied rows; gold the player name (not retrieved)
+1078	M	wrong_column	0		returns the birthday instead of the player name (not retrieved)
+1083	M	wrong_column	0		returns attribute row ids instead of the player name (not retrieved)
+1084	M	wrong_join_path	0		joins Player_Attributes.id = Player.id (row ids) instead of player_api_id
+1085	M	wrong_column	0		returns MAX(crossing) instead of the player
+1088	M	wrong_column	0		returns player_api_id instead of the names (player_name not retrieved)
+1090	M	wrong_join_path	0		joins Player_Attributes.id = Player.id (row ids) instead of player_api_id
+1092	G	ties_limit	1		4 leagues tie for the most matches; gold returns all, pred LIMIT 1
+1093	G	gold_integer_division	0		gold SUM/COUNT divides integers (69); pred returns 68.54
+1094	G	ambiguous_question	1		gold sums all rating rows of a player; pred compares maximum ratings
+1098	M	aggregation_grain	0		GROUP BY class returns one row per class instead of the single highest score
+1107	G	gold_incorrect	0		gold orders by date DESC (the latest row); the question asks for the first time of the highest crossing
+1108	G	evidence_wrong	1	date_handling	evidence says date = '2012-02-22' while the question says 2011; stored dates carry a time part
+1113	G	gold_incorrect	0		gold selects chanceCreationShootingClass; the question asks for the defence aggression class
+1115	M	wrong_join_path	0		joins Player.id = Player_Attributes.player_api_id (row id vs api id) -> NULL
+1118	G	gold_ignores_evidence	1		evidence: datetime(now) - datetime(birthday) > 34; gold uses JULIANDAY / 365 >= 35
+1119	G	gold_incorrect	0	wrong_join_path	gold joins only the away_player_9 slot for the home goals; pred compares player_fifa_api_id with the player slots -> NULL
+1120	G	gold_incorrect	0	wrong_join_path	gold uses only the away_player_5 slot; pred requires both players in slots 1 and 2 -> NULL
+1121	G	gold_incorrect	0	wrong_join_path	gold uses only the away_player_1 slot for the home goals; pred joins Player.id with three home slots
+1122	M	wrong_join_path	0		joins Player.id = Player_Attributes.id (row ids) instead of player_api_id (not retrieved) -> empty
+1123	M	wrong_join_path	0		joins Player.id = Player_Attributes.id (row ids) -> empty
+1124	M	wrong_column	0		returns player_api_id instead of the names (Player not joined: player_name/api_id not retrieved)
+1126	M	execution_error	0	wrong_column	Player has no nationality column; the loop exhausted 4 attempts
+1127	M	wrong_column	0		returns player names instead of countries (country.name not retrieved)
+1128	M	wrong_join_path	0		joins Player.id = Match.country_id -> empty (match.home_player_1 not retrieved)
+1129	M	wrong_join_path	0		joins Team.id = Team_Attributes.id (row ids) -> empty
+1131	M	missing_condition	0		no Italy filter (country and match not retrieved); averages all players
+1133	M	evidence_ignored	1		evidence says birthday > '1990'; pred uses > '1990-12-31'
+1135	G	gold_incorrect	0		'lowest potential': gold orders DESC
+1137	G	gold_null_quirk	1		pred drops rows with NULL stamina/strength from the denominator; gold divides by all rows (1.8557 vs 1.8641)
+1140	M	wrong_join_path	0		joins Player_Attributes.id = Player.id (row ids); gold uses player_api_id
+1143	M	wrong_join_path	0		compares Match.league_id with the league name; League is not joined (league.name not retrieved)
+1144	M	wrong_join_path	0		JOIN without ON condition (cross product of 367956 rows)
+1145	G	ambiguous_projection	1		pred adds the game_count column
+1147	M	wrong_join_path	0		joins Player.id = Player_Attributes.id (row ids) -> empty
+1148	M	wrong_join_path	1	wrong_formula	joins Player.id = Player_Attributes.player_api_id (row id vs api id); denominator over all players
+1149	G	ambiguous_projection	1		pred returns a label, both counts and the deviation; gold one number
+1152	M	integer_division	0		CAST(... AS DECIMAL) is a no-op in SQLite -> integer division gives 1 instead of 1.31
+1158	G	ambiguous_projection	1		pred returns Patient.*; gold the patient ids
+1160	M	aggregation_grain	1		counts distinct patients; the evidence formula counts laboratory rows
+1162	M	execution_error	0		EXTRACT(YEAR FROM ...) is not SQLite; the loop exhausted 4 attempts
+1164	M	wrong_column	0		uses Patient.First Date; the question is about the examination date (not retrieved)
+1165	G	evidence_wrong	1		evidence defines normal triglyceride as tg >= 200; pred uses < 200
+1166	G	ambiguous_question	1		pred returns Examination.Diagnosis ('SLE+Psy'); gold returns Patient.Diagnosis ('SLE')
+1168	M	execution_error	0		EXTRACT and FETCH FIRST are not SQLite; the loop exhausted 4 attempts
+1169	M	wrong_join_path	0		CROSS JOIN of Laboratory and Patient without a join condition
+1170	G	gold_incorrect	1		gold adds Admission = '+' that the question does not state
+1171	G	evidence_wrong	1		evidence says year(Birthday) < 18 (a birth year, not an age); pred follows it -> 0
+1172	M	aggregation_grain	0		COUNT(*) over laboratory rows instead of distinct patients
+1175	M	wrong_table	0		uses Examination.Examination Date (laboratory.date not retrieved) -> empty
+1177	M	missing_condition	0		no patient id and date filter (laboratory.id/date not retrieved); returns Yes/No for all rows
+1178	M	missing_condition	1		ORDER BY First Date ASC without excluding NULL puts a NULL-date patient first
+1179	G	gold_ignores_evidence	1		evidence says aCL IgM; gold returns the IgA, IgG and IgM columns
+1185	G	gold_incorrect	1		evidence only subtracts the two sums; gold divides by the December sum, pred by the November sum (usual decrease rate)
+1186	M	wrong_join_path	1		unnecessary join with Patient drops examination ids that are not in Patient
+1187	M	wrong_column	0		filters Examination.Examination Date instead of Laboratory.Date (not retrieved)
+1189	M	wrong_formula	1		the average aCL IgM is computed over all examinations; gold restricts it to Thrombosis = 2 and ANA = S
+1190	M	wrong_formula	1		adds UA IS NOT NULL and CASTs U-PRO, changing the denominator (88.4 vs 61.0)
+1195	M	missing_condition	0		drops Diagnosis = 'SLE' (patient.diagnosis not retrieved)
+1196	G	gold_null_quirk	1		pred's most common group is NULL symptoms; gold's COUNT(Symptoms) skips NULL
+1197	G	gold_ignores_evidence	0		evidence says first documented = Description; gold returns First Date (NULL)
+1199	G	gold_incorrect	0		gold filters ALB; the question and evidence are about total protein (TP)
+1200	M	wrong_column	0	wrong_formula	uses Laboratory.PLT < 100 as a proxy for thrombocytopenia; the symptom is in Examination.Symptoms (not retrieved)
+1203	G	gold_incorrect	1		gold counts laboratory rows (641); the question asks for patients (88)
+1204	G	gold_incorrect	0		gold subtracts the day-of-month numbers (-4); pred computes the day difference
+1205	G	ambiguous_projection	1		pred returns Yes/No; gold returns 1/0
+1206	M	missing_condition	0		drops the patient filter ID = 48473 (laboratory.id not retrieved)
+1207	M	wrong_table	0		uses Examination.Examination Date; the laboratory date was not retrieved -> empty
+1211	G	gold_ignores_evidence	1		evidence says LDH between 600 and 800 (inclusive); gold uses strict bounds
+1213	M	wrong_column	0		returns SELECT ... WHERE 1 = 0 (patient.birthday not retrieved)
+1214	M	wrong_column	0		returns Patient.Description instead of Birthday (birthday and sex not retrieved)
+1216	G	ambiguous_projection	1		pred also returns the birthday
+1217	M	execution_error	0	wrong_column	EXTRACT is not SQLite and the column PatientID does not exist; the loop exhausted 4 attempts
+1219	M	missing_condition	1		ignores the sex-specific normal ranges and the latest examination (patient.sex not retrieved)
+1221	M	wrong_table	0		filters Examination.Diagnosis instead of Patient.Diagnosis -> empty
+1223	M	wrong_join_path	0		CROSS JOIN of Laboratory and Patient without a join condition
+1224	M	missing_projection	0		returns only MAX(T-BIL); the patient id, sex and birthday are asked as well
+1225	G	gold_ignores_evidence	0		evidence says List = GROUP_CONCAT(DISTINCT ID); pred groups the ids; gold lists one row per patient
+1226	G	ambiguous_question	1		pred needs the globally oldest patient with the globally highest T-CHO -> empty; gold orders by T-CHO then birthday
+1227	M	execution_error	0		EXTRACT(YEAR FROM ...) is not SQLite; the loop exhausted 4 attempts
+1228	M	wrong_table	0		SELECT * FROM Laboratory; the patient id and diagnosis are asked (patient columns not retrieved)
+1230	M	wrong_join_path	0		unnecessary join with Examination drops patients without an examination
+1233	G	gold_ignores_evidence	1		evidence says year(Description) = 1991; gold uses First Date
+1235	H	column_order	0		same distinct rows (pred repeats them: 759 rows vs gold 73 DISTINCT rows); pred returns (ID, age, Diagnosis), gold (Diagnosis, ID, age)
+1236	G	ambiguous_projection	1		pred maps '+'/'-' to Admitted/Not admitted; gold returns the raw flag
+1238	M	wrong_column	0		orders by Description instead of Birthday (not retrieved) -> 24 patients
+1239	G	evidence_wrong	1		evidence says COUNT(ID) > 2; the question says two or more and gold uses >= 2
+1241	G	gold_ignores_evidence	1	ambiguous_projection	evidence calculation uses < 100 and > 400; gold uses <= 100 and >= 400; pred returns three columns
+1242	G	ambiguous_projection	1		pred returns Laboratory.*; gold the patient ids
+1243	G	gold_ignores_evidence	0		evidence divides by SUM(PT >= 14); gold divides by COUNT(*)
+1245	G	gold_ignores_evidence	1		evidence says Examination Date > '1997-01-01'; gold filters Laboratory.Date
+1246	M	wrong_join_path	0		joins Laboratory and Examination on rowid (laboratory.id not retrieved) -> 0
+1247	G	gold_incorrect	0	aggregation_grain	gold WHERE a OR b AND c AND d drops the male and WBC conditions (75); pred counts rows instead of distinct patients
+1248	G	gold_incorrect	0		gold WHERE a OR b AND c drops the birthday condition (75 vs 3)
+1249	G	gold_incorrect	1	data_quirk	U-PRO is a TEXT column: gold compares it as text ('TR' >= '30'); pred casts it to a number
+1250	M	wrong_table	0		filters Examination.Diagnosis instead of Patient.Diagnosis (patient.diagnosis not retrieved)
+1251	G	gold_loose_join	1		gold also inner-joins Examination (9 patients); pred counts 302 patients with a high IGG
+1252	M	missing_condition	0		drops the 'has symptoms' condition (examination.symptoms not retrieved) and counts laboratory rows
+1253	M	wrong_table	1		uses Examination.Diagnosis instead of Patient.Diagnosis (patient.id not retrieved)
+1254	G	gold_incorrect	1		gold counts joined laboratory rows (1590); the question asks for patients
+1256	G	gold_incorrect	1		gold counts joined laboratory rows (208); the question asks for patients
+1258	M	wrong_join_path	0		joins Examination and Laboratory on rowid (laboratory.id not retrieved)
+1260	G	gold_incorrect	1	data_quirk	RF is a TEXT column ('<40', '<20.5'...): gold compares it as text; pred casts it to a number (1346 vs 280 rows)
+1261	M	wrong_join_path	0		EXISTS subquery is not correlated to the patient (laboratory.id not retrieved) -> 726
+1262	M	execution_error	0	wrong_join_path	hallucinated join column Laboratory.Patient; the loop exhausted 4 attempts
+1264	M	evidence_ignored	0	wrong_join_path	evidence says APS diagnosis; pred uses Thrombosis IN (1, 2, 3) and a rowid join
+1265	M	wrong_join_path	0		joins Patient.Admission = Laboratory.RNP and counts DISTINCT Admission -> 0
+1267	M	wrong_join_path	0	evidence_misapplied	uncorrelated EXISTS; uses SM IN ('-', '+-') although the evidence maps them to 'negative'/'0'
+1269	G	gold_incorrect	1		gold filters Laboratory.Date > 1997-01-01 (unquoted, = 1995) while the evidence uses Examination Date
+1271	G	evidence_wrong	1		evidence says SSA IN ('-', '+-'); stored values are 'negative'/'0'; gold also filters Laboratory.Date
+1273	G	gold_incorrect	1	evidence_misapplied	gold SSB = 'negative' OR '0' AND ... drops the SLE condition; pred uses '-' and '+-'
+1274	G	gold_incorrect	1		gold SSB = 'negative' OR '0' AND Symptoms IS NOT NULL drops the symptom condition (4 vs 0)
+1275	G	evidence_wrong	1		evidence says CENTROMEA/SSB IN ('-', '+-'); stored values are 'negative'/'0'
+1276	G	gold_incorrect	1	data_quirk	DNA is a TEXT column: gold compares it as text; pred casts it to a number
+1279	G	gold_incorrect	0		gold COUNT(CASE ... ELSE 0 END) counts every row and divides integers (1); pred computes the percentage
+1283	M	wrong_join_path	0		JOIN without ON (cross product) -> 2.1 million
+1284	M	wrong_join_path	0		compares Patient.Description with MAX(LDH) (laboratory.id not retrieved) -> NULL
+1285	M	wrong_formula	0		takes the globally latest First Date patient and then requires LDH >= 500 -> NULL
+1286	M	wrong_join_path	0		CROSS JOIN without a key -> 182024
+1287	M	wrong_join_path	0		CROSS JOIN without a key -> 7.7 million
+1289	M	execution_error	0	wrong_join_path	hallucinated columns Patient_ID and Laboratory.Diagnosis; the loop exhausted 4 attempts
+1290	M	wrong_column	0		uses Examination.Examination Date; the evidence says Date (laboratory.date not retrieved)
+1291	M	evidence_ignored	0		evidence says TP between 6.0 and 8.5 (inclusive); pred uses strict bounds
+1292	M	evidence_ignored	0	wrong_join_path	uses UA <= 6.5 and a Sex column of Examination; evidence says UA > 6.5
+1294	M	wrong_formula	0		the MAX(aCL IgA) is taken over all examinations, not over the patients with a normal CRE -> empty
+1295	M	wrong_join_path	0		joins Laboratory and Examination on rowid -> 1
+1296	M	wrong_join_path	0		joins Examination and Laboratory on rowid -> empty
+1297	M	wrong_join_path	0		joins Laboratory and Examination on rowid -> 7
+1298	M	wrong_join_path	0		joins Laboratory and Examination on rowid -> 118
+1299	M	wrong_join_path	0		CROSS JOIN without a key -> 450560
+1300	G	ties_limit	1		23 diagnoses share the maximum TG below 200; gold takes one with LIMIT 1
+1302	M	wrong_join_path	0		joins Laboratory and Examination on ROWID -> 23
+1304	M	wrong_join_path	0		comma join without a key -> 1.1 million
+1305	M	evidence_ignored	0		evidence says WBC between 3.5 and 9.0 (inclusive); pred uses strict bounds
+1306	M	missing_condition	0		drops Diagnosis = 'SLE' (patient.diagnosis not retrieved)
+1308	M	wrong_join_path	0	evidence_ignored	JOIN without ON and Symptoms IS NOT NULL; evidence says Diagnosis IS NOT NULL
+1309	M	missing_condition	0		drops Diagnosis = 'MCTD' (patient.diagnosis not retrieved)
+1318	G	gold_grain_quirk	1		gold groups attendance by event_name and pools events with the same name; pred groups by event id
+1321	M	extra_condition	0		adds event_name = 'Student_Club' (the club's name, not an event name) -> 0
+1322	G	gold_incorrect	0		gold EXCEPT returns the names of the non-meeting events; the question asks how many are meetings
+1324	G	evidence_wrong	1		evidence divides COUNT(event_id) by COUNT(DISTINCT event_name); gold divides by distinct events
+1325	M	extra_condition	0		invents expense_description LIKE '%club event%' -> empty
+1330	M	wrong_column	0		compares member_id with 'Tyler Hewitt' (first_name/last_name not retrieved)
+1338	G	ambiguous_projection	1		pred also returns the expense id
+1340	M	extra_condition	0		adds event_name LIKE '%Student_Club%' (the club's name) -> NULL
+1342	G	evidence_wrong	1		evidence calls 'Posters' an event description and the date an event_date; gold uses expense_description and expense_date
+1350	G	evidence_wrong	1	evidence_ignored	evidence date '2019-8-20' is stored as '2019-08-20'; evidence says event_status (budget), pred uses event.status
+1359	M	missing_condition	1		ignores type = 'Meeting' (the question says meeting)
+1365	G	ties_limit	1		two expenses share the lowest remaining budget; gold takes one with LIMIT 1
+1366	G	ambiguous_projection	1		pred returns member.*; gold the member ids
+1370	G	ambiguous_projection	1		gold also returns expense_id
+1376	M	evidence_ignored	1		evidence says MAX(spent / amount) per budget; pred divides the per-event sums
+1387	G	ambiguous_projection	1		evidence says first_name, last_name; pred concatenates them into one column
+1388	G	gold_ignores_evidence	1		evidence says MAX(income.amount); gold sums the amount per member and source; the largest income has no member -> pred empty
+1389	M	evidence_ignored	1		evidence says MIN(cost); pred sums the cost per event
+1391	G	gold_incorrect	1		gold counts rows of the major table; pred counts members per major (no Physics member -> NULL)
+1399	G	ambiguous_projection	1		pred returns Yes/No; gold returns 'YES' (and NULL rows)
+1404	G	ambiguous_question	1		gold returns event.type and one total; pred groups the approved expenses by budget category
+1406	M	wrong_column	0		returns the amount (350) instead of the budget id
+1407	M	evidence_ignored	0		evidence says category = 'Advertisement'; pred filters 'advertising'
+1410	G	ambiguous_projection	1		pred concatenates the full name into one column
+1418	M	wrong_table	1		returns event.type; the question and gold use budget.category
+1419	M	wrong_table	1		returns event.type; the question and gold use budget.category
+1421	G	gold_ignores_evidence	1		evidence divides by COUNT(member_id) of all members; gold restricts the denominator to position = 'Member'
+1422	M	wrong_table	1		returns event.type; the question and gold use budget.category
+1427	G	ambiguous_projection	1		gold also returns the event type
+1433	M	wrong_column	1		returns state; gold returns county
+1437	G	ambiguous_projection	1		pred also returns the member's first and last name
+1441	M	value_mismatch	0	missing_condition	major_name = 'education' (exact, lower case) never matches; position = 'Member' is dropped
+1442	G	ambiguous_question	1		pred counts events (incl. events without a budget); gold counts budget rows
+1445	G	ambiguous_projection	1		pred concatenates first and last name into one column
+1450	M	wrong_join_path	0		joins income.income_id = event.event_id (zip_code and member ids not retrieved) -> empty
+1451	G	ambiguous_projection	1		pred also returns the name and the total amount
+1453	M	wrong_column	0	wrong_join_path	uses budget.spent instead of expense.cost (budget.budget_id not retrieved)
+1454	G	evidence_wrong	1		evidence formula SUM(cost) / COUNT(event_id) * 100 is not a percentage; gold uses the share of meeting costs
+1455	G	ambiguous_projection	1		pred also returns the budget amount
+1456	G	gold_incorrect	0		gold orders expense rows by budget.spent; pred returns the top members by total spending
+1458	M	wrong_formula	1		restricts both sums to position = 'Member'; gold divides by all members
+1464	M	value_mismatch	0	ambiguous_projection	date_received = '9/9/2019' never matches the stored '2019-09-09'
+1466	G	ambiguous_projection	1		pred concatenates the full name into one column
+1467	H	column_order	0		same rows; pred returns (event_name, total), gold (total, event_name)
+1470	M	wrong_table	0		filters products.Description = 'Premium'; the segment is gasstations.Segment
+1474	G	ambiguous_projection	1		pred also returns the total consumption
+1475	M	aggregation_grain	0		checks single months below 30000; the question needs the yearly sum per customer
+1481	G	ambiguous_projection	1		gold returns one row with three differences; pred returns three rows
+1482	G	gold_ignores_evidence	1	ambiguous_projection	evidence divides by the 2013 consumption; gold divides by 2012; pred returns one row per segment
+1484	M	value_mismatch	1		Segment = 'discount' never matches the stored 'Discount'
+1487	M	value_mismatch	0		Currency = 'Euro'; the stored code is 'EUR'
+1490	G	gold_incorrect	1		gold counts customer-month rows; the evidence counts customers
+1491	M	value_mismatch	1		Segment = 'value for money' never matches 'Value for money'
+1494	M	value_mismatch	0		Country = 'Slovakia' (stored 'SVK') and Segment = 'premium' (stored 'Premium') -> NULL
+1496	G	gold_incorrect	1		gold groups by customer and returns the segment of the lowest customer; pred groups by segment
+1499	M	value_mismatch	0		Currency = 'euro' (stored 'EUR') -> NULL
+1500	M	evidence_ignored	0		evidence says yearmonth date '201309'; pred filters the transaction date
+1501	M	evidence_ignored	0		evidence says yearmonth '201306'; pred filters the transaction date
+1502	M	value_mismatch	0		Currency = 'euro' (stored 'EUR') -> empty
+1503	M	value_mismatch	0	missing_projection	Currency = 'euro' (stored 'EUR') -> empty; ProductID is not returned
+1505	G	gold_incorrect	1		gold counts customer-month rows (2730); the question asks for customers
+1510	M	wrong_formula	1		AVG(Amount * Price); Price is already the total price
+1511	M	value_mismatch	0	wrong_formula	Currency = 'euro' (stored 'EUR') -> NULL; also AVG(Amount * Price)
+1512	M	wrong_formula	1		orders by SUM(Amount * Price); Price is already the total
+1517	M	wrong_formula	1		'earliest customer' resolved by MIN(CustomerID); gold uses the earliest transaction date
+1520	M	value_mismatch	0	wrong_formula	yearmonth.Date LIKE '2012-01%' (stored '201201') and SUM(Amount * Price) -> empty
+1524	M	wrong_formula	1	wrong_column	SUM(Amount * Price) = 548.4 never matches; returns the currency instead of the gas station country
+1525	M	wrong_table	0		filters yearmonth.Date = '2012-08-25' (stored as YYYYMM); the day is in transactions_1k.Date
+1526	M	value_mismatch	0	wrong_formula	yearmonth.Date LIKE '2012-%' (stored '2012MM') and Amount * Price -> NULL
+1527	M	wrong_formula	1		SUM(Amount * Price); Price is already the total
+1528	M	wrong_table	0	value_mismatch	uses customers.Segment = 'premium'; the segment is gasstations.Segment = 'Premium'
+1529	M	wrong_formula	1		SUM(Amount * Price); Price is already the total (88612 vs 68740)
+1530	G	gold_incorrect	1		gold takes the five largest transaction amounts; pred sums the amount per product
+1531	G	ambiguous_question	1	wrong_formula	gold picks the customer by the largest yearmonth consumption; pred by total spending with Price * Amount
+1532	M	extra_condition	1		adds Amount = 1 -> empty
+1533	M	aggregation_grain	1	extra_projection	averages Price / Amount per customer (HAVING); gold compares each transaction; adds CustomerID

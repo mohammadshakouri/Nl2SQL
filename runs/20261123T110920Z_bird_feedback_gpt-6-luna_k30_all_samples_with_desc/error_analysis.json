@@ -1,0 +1,1528 @@
+{
+ "run": "20261123T110920Z_bird_feedback_gpt-6-luna_k30_all_samples_with_desc",
+ "dataset": "bird",
+ "k": 30,
+ "n_samples": 1534,
+ "label_problems": [],
+ "overview": {
+  "ex": 841,
+  "ex_pct": 54.82,
+  "single_pass_ex": 725,
+  "single_pass_ex_pct": 47.26,
+  "failing": 693
+ },
+ "loop": {
+  "attempts_distribution": {
+   "1": 1235,
+   "2": 225,
+   "3": 49,
+   "4": 25
+  },
+  "llm_calls": 1932,
+  "samples_retried": 299,
+  "recovered": 291,
+  "fallback_to_attempt_1": 8,
+  "rejections_by_stage": {
+   "execution": 361,
+   "static": 45
+  },
+  "first_attempt_rejection_kinds": {
+   "no such column": {
+    "samples": 101,
+    "final_ex": 24
+   },
+   "dialect: FETCH FIRST/NEXT n ROWS (not SQLite)": {
+    "samples": 79,
+    "final_ex": 42
+   },
+   "syntax error (other)": {
+    "samples": 49,
+    "final_ex": 24
+   },
+   "static validator: table not found": {
+    "samples": 33,
+    "final_ex": 12
+   },
+   "other execution error": {
+    "samples": 18,
+    "final_ex": 7
+   },
+   "dialect: ANSI function with FROM (EXTRACT/SUBSTRING/POSITION/TRIM)": {
+    "samples": 16,
+    "final_ex": 6
+   },
+   "dialect: ALL/ANY/SOME subquery comparison (not SQLite)": {
+    "samples": 3,
+    "final_ex": 1
+   }
+  },
+  "single_pass_wrong_final_right": 116,
+  "single_pass_right_final_wrong": 0,
+  "failing_samples_whose_sql_ran": 685
+ },
+ "taxonomy": {
+  "categories": {
+   "H": {
+    "count": 12,
+    "pct_of_all": 0.78,
+    "arguable": 0
+   },
+   "G": {
+    "count": 312,
+    "pct_of_all": 20.34,
+    "arguable": 255
+   },
+   "M": {
+    "count": 369,
+    "pct_of_all": 24.05,
+    "arguable": 95
+   }
+  },
+  "subtypes": {
+   "G/gold_incorrect": {
+    "description": "the gold query does not answer the question as asked",
+    "count": 103,
+    "arguable": 61,
+    "pct_of_all": 6.71,
+    "samples": [
+     16,
+     110,
+     129,
+     130,
+     144,
+     182,
+     197,
+     198,
+     218,
+     254,
+     271,
+     286,
+     309,
+     310,
+     311,
+     341,
+     342,
+     343,
+     354,
+     360,
+     376,
+     387,
+     389,
+     408,
+     417,
+     425,
+     428,
+     429,
+     444,
+     448,
+     458,
+     484,
+     517,
+     519,
+     529,
+     571,
+     581,
+     593,
+     596,
+     600,
+     602,
+     603,
+     605,
+     610,
+     616,
+     631,
+     632,
+     635,
+     642,
+     646,
+     649,
+     679,
+     682,
+     686,
+     689,
+     693,
+     694,
+     696,
+     709,
+     710,
+     711,
+     927,
+     937,
+     951,
+     955,
+     963,
+     975,
+     993,
+     1004,
+     1006,
+     1021,
+     1027,
+     1029,
+     1061,
+     1107,
+     1113,
+     1119,
+     1120,
+     1121,
+     1135,
+     1170,
+     1185,
+     1199,
+     1203,
+     1204,
+     1247,
+     1248,
+     1249,
+     1254,
+     1256,
+     1260,
+     1269,
+     1273,
+     1274,
+     1276,
+     1279,
+     1322,
+     1391,
+     1456,
+     1490,
+     1496,
+     1505,
+     1530
+    ]
+   },
+   "G/ambiguous_projection": {
+    "description": "the wording does not fix which or how many columns to return",
+    "count": 65,
+    "arguable": 65,
+    "pct_of_all": 4.24,
+    "samples": [
+     159,
+     165,
+     193,
+     217,
+     237,
+     244,
+     248,
+     252,
+     267,
+     280,
+     300,
+     305,
+     340,
+     382,
+     391,
+     421,
+     432,
+     435,
+     436,
+     437,
+     445,
+     446,
+     469,
+     473,
+     531,
+     586,
+     628,
+     726,
+     728,
+     798,
+     829,
+     883,
+     889,
+     928,
+     978,
+     983,
+     988,
+     989,
+     992,
+     1002,
+     1009,
+     1024,
+     1064,
+     1069,
+     1145,
+     1149,
+     1158,
+     1205,
+     1216,
+     1236,
+     1242,
+     1338,
+     1366,
+     1370,
+     1387,
+     1399,
+     1410,
+     1427,
+     1437,
+     1445,
+     1451,
+     1455,
+     1466,
+     1474,
+     1481
+    ]
+   },
+   "G/evidence_wrong": {
+    "description": "the evidence misdescribes the data or contradicts the gold; the prediction follows the evidence",
+    "count": 36,
+    "arguable": 36,
+    "pct_of_all": 2.35,
+    "samples": [
+     66,
+     118,
+     219,
+     361,
+     363,
+     386,
+     405,
+     406,
+     453,
+     474,
+     515,
+     523,
+     525,
+     608,
+     650,
+     673,
+     758,
+     765,
+     766,
+     769,
+     788,
+     803,
+     817,
+     916,
+     930,
+     964,
+     1108,
+     1165,
+     1171,
+     1239,
+     1271,
+     1275,
+     1324,
+     1342,
+     1350,
+     1454
+    ]
+   },
+   "G/gold_ignores_evidence": {
+    "description": "the gold query does not apply the formula or value mapping the evidence states",
+    "count": 25,
+    "arguable": 14,
+    "pct_of_all": 1.63,
+    "samples": [
+     65,
+     171,
+     185,
+     234,
+     247,
+     349,
+     431,
+     454,
+     533,
+     582,
+     1000,
+     1010,
+     1041,
+     1118,
+     1179,
+     1197,
+     1211,
+     1225,
+     1233,
+     1241,
+     1243,
+     1245,
+     1388,
+     1421,
+     1482
+    ]
+   },
+   "G/ambiguous_question": {
+    "description": "the question admits more than one reading; the prediction is a defensible one",
+    "count": 24,
+    "arguable": 24,
+    "pct_of_all": 1.56,
+    "samples": [
+     27,
+     94,
+     95,
+     128,
+     142,
+     189,
+     257,
+     260,
+     263,
+     499,
+     595,
+     662,
+     905,
+     956,
+     959,
+     984,
+     1014,
+     1058,
+     1094,
+     1166,
+     1226,
+     1404,
+     1442,
+     1531
+    ]
+   },
+   "G/ties_limit": {
+    "description": "tie for the top value; gold LIMIT 1 and the prediction pick different rows",
+    "count": 16,
+    "arguable": 16,
+    "pct_of_all": 1.04,
+    "samples": [
+     37,
+     49,
+     80,
+     82,
+     671,
+     736,
+     794,
+     802,
+     810,
+     832,
+     906,
+     908,
+     1028,
+     1092,
+     1300,
+     1365
+    ]
+   },
+   "G/gold_null_quirk": {
+    "description": "gold's handling of NULLs (ORDER BY ... LIMIT, aggregates over NULL) differs from the natural reading",
+    "count": 15,
+    "arguable": 14,
+    "pct_of_all": 0.98,
+    "samples": [
+     41,
+     357,
+     359,
+     511,
+     729,
+     750,
+     789,
+     805,
+     827,
+     842,
+     847,
+     913,
+     1068,
+     1137,
+     1196
+    ]
+   },
+   "G/gold_loose_join": {
+    "description": "gold relates two tables only through a shared id (e.g. molecule_id), so it matches every row of the parent, not the rows that are actually connected; the prediction follows the real connection",
+    "count": 12,
+    "arguable": 12,
+    "pct_of_all": 0.78,
+    "samples": [
+     269,
+     326,
+     328,
+     330,
+     335,
+     337,
+     338,
+     441,
+     443,
+     447,
+     743,
+     1251
+    ]
+   },
+   "G/gold_grain_quirk": {
+    "description": "gold groups at another grain than the question states",
+    "count": 7,
+    "arguable": 7,
+    "pct_of_all": 0.46,
+    "samples": [
+     53,
+     152,
+     186,
+     371,
+     720,
+     741,
+     1318
+    ]
+   },
+   "G/gold_missing_projection": {
+    "description": "gold omits a column the question asks for",
+    "count": 3,
+    "arguable": 2,
+    "pct_of_all": 0.2,
+    "samples": [
+     125,
+     231,
+     281
+    ]
+   },
+   "G/ambiguous_column": {
+    "description": "several columns fit the wording (e.g. Maker vs FullName)",
+    "count": 2,
+    "arguable": 2,
+    "pct_of_all": 0.13,
+    "samples": [
+     24,
+     28
+    ]
+   },
+   "G/gold_integer_division": {
+    "description": "gold divides integers (no CAST), so its numbers are truncated; the prediction computes the real ratio",
+    "count": 2,
+    "arguable": 1,
+    "pct_of_all": 0.13,
+    "samples": [
+     317,
+     1093
+    ]
+   },
+   "G/projection_format": {
+    "description": "one concatenated column versus separate columns",
+    "count": 1,
+    "arguable": 1,
+    "pct_of_all": 0.07,
+    "samples": [
+     63
+    ]
+   },
+   "G/gold_extra_projection": {
+    "description": "gold returns columns the question does not ask for",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     296
+    ]
+   },
+   "H/column_order": {
+    "description": "same rows, columns in another order (rejected by a rule that compares columns by position: BIRD's, or Spider's before it ignored column order)",
+    "count": 6,
+    "arguable": 0,
+    "pct_of_all": 0.39,
+    "samples": [
+     50,
+     58,
+     88,
+     898,
+     1235,
+     1467
+    ]
+   },
+   "H/case_or_format": {
+    "description": "same rows after trimming / lower-casing text and reading NULL as empty (rejected by BIRD's exact comparison)",
+    "count": 3,
+    "arguable": 0,
+    "pct_of_all": 0.2,
+    "samples": [
+     931,
+     1005,
+     1007
+    ]
+   },
+   "H/gold_timeout": {
+    "description": "the gold query exceeds the 30 s limit, so it can never be scored",
+    "count": 2,
+    "arguable": 0,
+    "pct_of_all": 0.13,
+    "samples": [
+     518,
+     701
+    ]
+   },
+   "H/rounding": {
+    "description": "same numbers at another precision (e.g. ROUND, or percentages with a different number of decimals)",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     12
+    ]
+   },
+   "M/wrong_join_path": {
+    "description": "wrong tables or join keys, missing join condition",
+    "count": 69,
+    "arguable": 4,
+    "pct_of_all": 4.5,
+    "samples": [
+     3,
+     8,
+     10,
+     11,
+     15,
+     18,
+     35,
+     57,
+     71,
+     72,
+     83,
+     108,
+     114,
+     135,
+     147,
+     306,
+     350,
+     353,
+     381,
+     403,
+     416,
+     434,
+     449,
+     480,
+     482,
+     498,
+     500,
+     636,
+     672,
+     1003,
+     1031,
+     1037,
+     1062,
+     1067,
+     1074,
+     1084,
+     1090,
+     1115,
+     1122,
+     1123,
+     1128,
+     1129,
+     1140,
+     1143,
+     1144,
+     1147,
+     1148,
+     1169,
+     1186,
+     1223,
+     1230,
+     1246,
+     1258,
+     1261,
+     1265,
+     1267,
+     1283,
+     1284,
+     1286,
+     1287,
+     1295,
+     1296,
+     1297,
+     1298,
+     1299,
+     1302,
+     1304,
+     1308,
+     1450
+    ]
+   },
+   "M/wrong_column": {
+    "description": "a different column than the question needs",
+    "count": 65,
+    "arguable": 3,
+    "pct_of_all": 4.24,
+    "samples": [
+     2,
+     4,
+     20,
+     21,
+     25,
+     34,
+     39,
+     60,
+     74,
+     76,
+     81,
+     87,
+     97,
+     119,
+     124,
+     145,
+     192,
+     297,
+     346,
+     373,
+     390,
+     392,
+     412,
+     442,
+     521,
+     764,
+     809,
+     845,
+     851,
+     865,
+     873,
+     877,
+     882,
+     891,
+     899,
+     907,
+     911,
+     917,
+     936,
+     950,
+     952,
+     979,
+     985,
+     1026,
+     1034,
+     1038,
+     1051,
+     1075,
+     1078,
+     1083,
+     1085,
+     1088,
+     1124,
+     1127,
+     1164,
+     1187,
+     1200,
+     1213,
+     1214,
+     1238,
+     1290,
+     1330,
+     1406,
+     1433,
+     1453
+    ]
+   },
+   "M/wrong_table": {
+    "description": "a different table than the one the question needs (similar tables)",
+    "count": 39,
+    "arguable": 13,
+    "pct_of_all": 2.54,
+    "samples": [
+     101,
+     173,
+     352,
+     364,
+     409,
+     410,
+     411,
+     433,
+     465,
+     494,
+     507,
+     514,
+     520,
+     584,
+     630,
+     849,
+     855,
+     858,
+     921,
+     922,
+     941,
+     958,
+     962,
+     966,
+     970,
+     973,
+     994,
+     1175,
+     1207,
+     1221,
+     1228,
+     1250,
+     1253,
+     1418,
+     1419,
+     1422,
+     1470,
+     1525,
+     1528
+    ]
+   },
+   "M/evidence_ignored": {
+    "description": "the evidence gives the formula, column or value mapping and the prediction does not use it",
+    "count": 33,
+    "arguable": 11,
+    "pct_of_all": 2.15,
+    "samples": [
+     1,
+     29,
+     36,
+     46,
+     62,
+     77,
+     85,
+     131,
+     356,
+     366,
+     398,
+     399,
+     451,
+     587,
+     667,
+     685,
+     700,
+     772,
+     791,
+     812,
+     974,
+     996,
+     998,
+     1133,
+     1264,
+     1291,
+     1292,
+     1305,
+     1376,
+     1389,
+     1407,
+     1500,
+     1501
+    ]
+   },
+   "M/data_quirk": {
+    "description": "a reasonable query fails on a data peculiarity the schema does not show (leading zeros in codes, numbers stored as text)",
+    "count": 31,
+    "arguable": 31,
+    "pct_of_all": 2.02,
+    "samples": [
+     22,
+     43,
+     51,
+     201,
+     205,
+     225,
+     537,
+     538,
+     539,
+     540,
+     542,
+     543,
+     545,
+     555,
+     567,
+     577,
+     578,
+     583,
+     633,
+     634,
+     637,
+     639,
+     640,
+     653,
+     656,
+     677,
+     678,
+     680,
+     687,
+     714,
+     715
+    ]
+   },
+   "M/missing_condition": {
+    "description": "a condition of the question is dropped",
+    "count": 23,
+    "arguable": 3,
+    "pct_of_all": 1.5,
+    "samples": [
+     33,
+     120,
+     169,
+     344,
+     383,
+     388,
+     407,
+     476,
+     852,
+     888,
+     903,
+     929,
+     986,
+     1131,
+     1177,
+     1178,
+     1195,
+     1206,
+     1219,
+     1252,
+     1306,
+     1309,
+     1359
+    ]
+   },
+   "M/value_mismatch": {
+    "description": "literal differs from the stored value (case, punctuation, abbreviation, LIKE vs =)",
+    "count": 23,
+    "arguable": 6,
+    "pct_of_all": 1.5,
+    "samples": [
+     56,
+     89,
+     93,
+     150,
+     180,
+     860,
+     871,
+     924,
+     1013,
+     1015,
+     1016,
+     1441,
+     1464,
+     1484,
+     1487,
+     1491,
+     1494,
+     1499,
+     1502,
+     1503,
+     1511,
+     1520,
+     1526
+    ]
+   },
+   "M/wrong_formula": {
+    "description": "a different formula than the evidence or question states (percentage vs ratio, scale)",
+    "count": 19,
+    "arguable": 12,
+    "pct_of_all": 1.24,
+    "samples": [
+     0,
+     194,
+     424,
+     598,
+     683,
+     767,
+     881,
+     944,
+     1189,
+     1190,
+     1285,
+     1294,
+     1458,
+     1510,
+     1512,
+     1517,
+     1524,
+     1527,
+     1529
+    ]
+   },
+   "M/extra_projection": {
+    "description": "returns a column the question does not ask for",
+    "count": 15,
+    "arguable": 2,
+    "pct_of_all": 0.98,
+    "samples": [
+     32,
+     59,
+     78,
+     133,
+     141,
+     188,
+     207,
+     211,
+     221,
+     223,
+     253,
+     307,
+     321,
+     345,
+     348
+    ]
+   },
+   "M/aggregation_grain": {
+    "description": "aggregates at the wrong grain",
+    "count": 12,
+    "arguable": 6,
+    "pct_of_all": 0.78,
+    "samples": [
+     17,
+     70,
+     172,
+     215,
+     463,
+     604,
+     1052,
+     1098,
+     1160,
+     1172,
+     1475,
+     1533
+    ]
+   },
+   "M/execution_error": {
+    "description": "the final SQL does not run (the feedback loop ran out of attempts)",
+    "count": 8,
+    "arguable": 0,
+    "pct_of_all": 0.52,
+    "samples": [
+     384,
+     1126,
+     1162,
+     1168,
+     1217,
+     1227,
+     1262,
+     1289
+    ]
+   },
+   "M/missing_projection": {
+    "description": "omits a column the question asks for",
+    "count": 7,
+    "arguable": 0,
+    "pct_of_all": 0.46,
+    "samples": [
+     522,
+     530,
+     657,
+     866,
+     894,
+     981,
+     1224
+    ]
+   },
+   "M/extra_condition": {
+    "description": "an unrequested condition is added",
+    "count": 6,
+    "arguable": 2,
+    "pct_of_all": 0.39,
+    "samples": [
+     153,
+     290,
+     1321,
+     1325,
+     1340,
+     1532
+    ]
+   },
+   "M/date_handling": {
+    "description": "wrong date/time function, format or range (strftime, SUBSTR, year bounds)",
+    "count": 5,
+    "arguable": 0,
+    "pct_of_all": 0.33,
+    "samples": [
+     102,
+     563,
+     565,
+     926,
+     942
+    ]
+   },
+   "M/integer_division": {
+    "description": "a ratio or percentage is computed with integer division (no CAST AS REAL)",
+    "count": 4,
+    "arguable": 0,
+    "pct_of_all": 0.26,
+    "samples": [
+     55,
+     282,
+     943,
+     1152
+    ]
+   },
+   "M/wrong_aggregate": {
+    "description": "wrong aggregate (COUNT vs COUNT DISTINCT, SUM vs COUNT, AVG vs ratio)",
+    "count": 4,
+    "arguable": 2,
+    "pct_of_all": 0.26,
+    "samples": [
+     259,
+     319,
+     620,
+     1011
+    ]
+   },
+   "M/evidence_misapplied": {
+    "description": "the evidence is used, but wrongly (wrong column, operator or formula)",
+    "count": 2,
+    "arguable": 0,
+    "pct_of_all": 0.13,
+    "samples": [
+     298,
+     402
+    ]
+   },
+   "M/degenerate_sql": {
+    "description": "an always-empty query (WHERE 1 = 0, LIMIT 0)",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     75
+    ]
+   },
+   "M/superlative_logic": {
+    "description": "wrong direction or missing top-1 restriction",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     107
+    ]
+   },
+   "M/rounding_ignored": {
+    "description": "the question asks for a number of decimals and the prediction does not round to it (e.g. CAST AS DECIMAL does not round in SQLite)",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     255
+    ]
+   },
+   "M/set_logic": {
+    "description": "INTERSECT / EXCEPT / NOT IN / both-and logic is wrong",
+    "count": 1,
+    "arguable": 0,
+    "pct_of_all": 0.07,
+    "samples": [
+     393
+    ]
+   }
+  },
+  "column_order_verification": {
+   "full": 6
+  }
+ },
+ "adjusted_ex": {
+  "reported": 54.82,
+  "scorer_fixed (+H)": 55.61,
+  "plus_certain_gold_issues (+H +G not arguable)": 59.32,
+  "plus_all_G (+H +G)": 75.95,
+  "model_error_rate (M only)": 24.05
+ },
+ "difficulty_title": "BIRD difficulty",
+ "by_difficulty": {
+  "simple": {
+   "n": 925,
+   "ex_pct": 61.51,
+   "single_pass_ex_pct": 56.0,
+   "H": 7,
+   "G": 159,
+   "M": 190
+  },
+  "moderate": {
+   "n": 464,
+   "ex_pct": 45.47,
+   "single_pass_ex_pct": 34.27,
+   "H": 4,
+   "G": 112,
+   "M": 137
+  },
+  "challenging": {
+   "n": 145,
+   "ex_pct": 42.07,
+   "single_pass_ex_pct": 33.1,
+   "H": 1,
+   "G": 41,
+   "M": 42
+  }
+ },
+ "retrieval": {
+  "k": 30,
+  "column_recall_pct": {
+   "5": 42.58,
+   "10": 54.94,
+   "15": 63.27,
+   "20": 68.86,
+   "30": 75.86
+  },
+  "samples_with_all_gold_columns_pct": {
+   "5": 14.28,
+   "10": 23.6,
+   "15": 32.07,
+   "20": 40.94,
+   "30": 51.17
+  },
+  "table_coverage_pct": 94.46,
+  "column_recall_by_role_pct": {},
+  "gold_with_star_projection": 0,
+  "complete_samples": 785,
+  "incomplete_samples": 749,
+  "ex_pct_when_complete": 65.86,
+  "ex_pct_when_incomplete": 43.26,
+  "model_error_pct_when_complete": 13.12,
+  "model_error_pct_when_incomplete": 35.51,
+  "m_errors_with_incomplete_retrieval": 266,
+  "m_errors_with_complete_retrieval": 103,
+  "avg_units_per_database": 92.7,
+  "samples_where_k_covers_whole_schema": 209,
+  "gold_columns_not_in_units": 0,
+  "m_subtype_with_incomplete_retrieval": {
+   "aggregation_grain": [
+    5,
+    12
+   ],
+   "data_quirk": [
+    25,
+    31
+   ],
+   "date_handling": [
+    3,
+    5
+   ],
+   "degenerate_sql": [
+    1,
+    1
+   ],
+   "evidence_ignored": [
+    18,
+    33
+   ],
+   "evidence_misapplied": [
+    0,
+    2
+   ],
+   "execution_error": [
+    5,
+    8
+   ],
+   "extra_condition": [
+    2,
+    6
+   ],
+   "extra_projection": [
+    4,
+    15
+   ],
+   "integer_division": [
+    1,
+    4
+   ],
+   "missing_condition": [
+    22,
+    23
+   ],
+   "missing_projection": [
+    6,
+    7
+   ],
+   "rounding_ignored": [
+    0,
+    1
+   ],
+   "set_logic": [
+    1,
+    1
+   ],
+   "superlative_logic": [
+    1,
+    1
+   ],
+   "value_mismatch": [
+    10,
+    23
+   ],
+   "wrong_aggregate": [
+    2,
+    4
+   ],
+   "wrong_column": [
+    59,
+    65
+   ],
+   "wrong_formula": [
+    8,
+    19
+   ],
+   "wrong_join_path": [
+    63,
+    69
+   ],
+   "wrong_table": [
+    30,
+    39
+   ]
+  }
+ },
+ "by_database": {
+  "california_schools": {
+   "n": 89,
+   "ex_pct": 32.58,
+   "single_pass_ex_pct": 23.6,
+   "H": 4,
+   "G": 13,
+   "M": 43,
+   "complete_retrieval_pct": 21.35,
+   "units": 94
+  },
+  "card_games": {
+   "n": 191,
+   "ex_pct": 46.6,
+   "single_pass_ex_pct": 43.46,
+   "H": 1,
+   "G": 53,
+   "M": 48,
+   "complete_retrieval_pct": 32.98,
+   "units": 125
+  },
+  "codebase_community": {
+   "n": 186,
+   "ex_pct": 58.06,
+   "single_pass_ex_pct": 55.38,
+   "H": 1,
+   "G": 37,
+   "M": 40,
+   "complete_retrieval_pct": 65.05,
+   "units": 92
+  },
+  "debit_card_specializing": {
+   "n": 64,
+   "ex_pct": 50.0,
+   "single_pass_ex_pct": 35.94,
+   "H": 0,
+   "G": 8,
+   "M": 24,
+   "complete_retrieval_pct": 100.0,
+   "units": 28
+  },
+  "european_football_2": {
+   "n": 129,
+   "ex_pct": 55.81,
+   "single_pass_ex_pct": 48.06,
+   "H": 0,
+   "G": 24,
+   "M": 33,
+   "complete_retrieval_pct": 22.48,
+   "units": 237
+  },
+  "financial": {
+   "n": 106,
+   "ex_pct": 57.55,
+   "single_pass_ex_pct": 41.51,
+   "H": 0,
+   "G": 19,
+   "M": 26,
+   "complete_retrieval_pct": 50.94,
+   "units": 71
+  },
+  "formula_1": {
+   "n": 174,
+   "ex_pct": 49.43,
+   "single_pass_ex_pct": 42.53,
+   "H": 4,
+   "G": 33,
+   "M": 51,
+   "complete_retrieval_pct": 26.44,
+   "units": 126
+  },
+  "student_club": {
+   "n": 158,
+   "ex_pct": 72.15,
+   "single_pass_ex_pct": 66.46,
+   "H": 1,
+   "G": 25,
+   "M": 18,
+   "complete_retrieval_pct": 73.42,
+   "units": 64
+  },
+  "superhero": {
+   "n": 129,
+   "ex_pct": 75.19,
+   "single_pass_ex_pct": 73.64,
+   "H": 0,
+   "G": 25,
+   "M": 7,
+   "complete_retrieval_pct": 46.51,
+   "units": 52
+  },
+  "thrombosis_prediction": {
+   "n": 163,
+   "ex_pct": 38.04,
+   "single_pass_ex_pct": 19.02,
+   "H": 1,
+   "G": 40,
+   "M": 60,
+   "complete_retrieval_pct": 41.72,
+   "units": 69
+  },
+  "toxicology": {
+   "n": 145,
+   "ex_pct": 62.76,
+   "single_pass_ex_pct": 57.93,
+   "H": 0,
+   "G": 35,
+   "M": 19,
+   "complete_retrieval_pct": 100.0,
+   "units": 20
+  }
+ },
+ "result_relations": {
+  "scalar_differs": {
+   "count": 277,
+   "H": 0,
+   "G": 120,
+   "M": 157,
+   "description": "one value against one value, and they differ"
+  },
+  "pred_empty": {
+   "count": 115,
+   "H": 0,
+   "G": 34,
+   "M": 81,
+   "description": "the prediction returns no rows, gold does"
+  },
+  "rows_disjoint": {
+   "count": 78,
+   "H": 0,
+   "G": 32,
+   "M": 46,
+   "description": "same columns, no row in common"
+  },
+  "extra_columns": {
+   "count": 45,
+   "H": 0,
+   "G": 32,
+   "M": 13,
+   "description": "all gold columns are there, plus extra column(s); the rows match"
+  },
+  "rows_superset": {
+   "count": 32,
+   "H": 0,
+   "G": 26,
+   "M": 6,
+   "description": "same columns, a strict superset of gold's rows"
+  },
+  "more_columns_other": {
+   "count": 26,
+   "H": 0,
+   "G": 11,
+   "M": 15,
+   "description": "more columns than gold, and the gold columns are not reproduced"
+  },
+  "rows_subset": {
+   "count": 24,
+   "H": 0,
+   "G": 16,
+   "M": 8,
+   "description": "same columns, a strict subset of gold's rows"
+  },
+  "missing_columns": {
+   "count": 20,
+   "H": 0,
+   "G": 11,
+   "M": 9,
+   "description": "a gold column is missing; the remaining columns match"
+  },
+  "fewer_columns_other": {
+   "count": 19,
+   "H": 0,
+   "G": 13,
+   "M": 6,
+   "description": "fewer columns than gold, and they do not reproduce a part of gold"
+  },
+  "rows_overlap": {
+   "count": 18,
+   "H": 0,
+   "G": 9,
+   "M": 9,
+   "description": "same columns, the rows overlap partly"
+  },
+  "pred_error": {
+   "count": 8,
+   "H": 0,
+   "G": 0,
+   "M": 8,
+   "description": "the predicted SQL does not run"
+  },
+  "extra_columns_rows_superset": {
+   "count": 7,
+   "H": 0,
+   "G": 3,
+   "M": 4,
+   "description": "extra column(s), and more rows than gold"
+  },
+  "column_order": {
+   "count": 6,
+   "H": 6,
+   "G": 0,
+   "M": 0,
+   "description": "same rows, the columns are in another order"
+  },
+  "rounding": {
+   "count": 5,
+   "H": 1,
+   "G": 2,
+   "M": 2,
+   "description": "same numbers at another precision (2-4 decimals)"
+  },
+  "extra_columns_rows_subset": {
+   "count": 4,
+   "H": 0,
+   "G": 3,
+   "M": 1,
+   "description": "extra column(s), and fewer rows than gold"
+  },
+  "missing_columns_rows_superset": {
+   "count": 3,
+   "H": 0,
+   "G": 0,
+   "M": 3,
+   "description": "a gold column is missing, and more rows than gold"
+  },
+  "case_or_format": {
+   "count": 3,
+   "H": 3,
+   "G": 0,
+   "M": 0,
+   "description": "same rows after trimming / lower-casing text and reading NULL as empty"
+  },
+  "gold_error": {
+   "count": 2,
+   "H": 2,
+   "G": 0,
+   "M": 0,
+   "description": "the gold SQL does not run (error or 30 s timeout)"
+  },
+  "missing_columns_rows_subset": {
+   "count": 1,
+   "H": 0,
+   "G": 0,
+   "M": 1,
+   "description": "a gold column is missing, and fewer rows than gold"
+  }
+ },
+ "signals": {
+  "empty_result": {
+   "samples": 115,
+   "wrong": 115,
+   "precision_pct": 100.0,
+   "m_errors_caught": 81,
+   "gold_also_empty_and_correct": 0
+  },
+  "degenerate_sql (WHERE 1 = 0 / LIMIT 0)": {
+   "samples": 1,
+   "wrong": 1,
+   "ids": [
+    1213
+   ]
+  },
+  "NULL AS placeholder column": {
+   "samples": 0,
+   "wrong": 0,
+   "ids": []
+  }
+ },
+ "cost": {
+  "tokens": {
+   "prompt": 2161854,
+   "completion": 103701,
+   "reasoning": 0,
+   "cached": 165456
+  },
+  "tokens_per_sample": {
+   "prompt": 1409,
+   "completion": 68,
+   "reasoning": 0,
+   "cached": 108
+  },
+  "reasoning_share_of_completion_pct": 0.0,
+  "mean_call_latency_ms": 1439,
+  "p95_call_latency_ms": 1942
+ }
+}
