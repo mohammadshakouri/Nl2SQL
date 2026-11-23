@@ -1,6 +1,6 @@
-# Spider run log format (version 2)
+# Run log format (version 2, Spider and BIRD)
 
-Every `cli_spider_eval.py` run writes one directory, `runs/<UTC timestamp>_<mode>_<model>_k<K>[_<tag>]/`:
+Every `cli_eval.py` run writes one directory, `runs/<UTC timestamp>_<dataset>_<mode>_<model>_k<K>[_<tag>]/` (`<dataset>` is `spider` or `bird`; directories written before BIRD was supported have no `<dataset>` part and no `dataset` entry in the manifest, and are read as Spider):
 
 | file | what it is |
 |---|---|
@@ -17,41 +17,51 @@ The metrics (EX, failures, tokens) are **recomputed from `samples.jsonl`**, neve
 ## Running, checking, resuming
 
 ```bash
-# 1. small pilot: proves the model, the log and the token counts work
-python cli_spider_eval.py --spider_path ./spider --exec-feedback --limit 20 --tag pilot
+# 1. small pilot: proves the model, the log and the token counts work (--dataset spider is the default)
+python cli_eval.py --dataset bird --exec-feedback --limit 20 --tag pilot
 
 # 2. verify the log (also works on a partial run)
-python -m app.spider_eval.run_log check runs/<run_dir>
+python -m app.evaluation.run_log check runs/<run_dir>
 
 # 3. continue the same run to the whole dev set (finished samples are NOT re-run)
-python cli_spider_eval.py --spider_path ./spider --resume runs/<run_dir>
+python cli_eval.py --resume runs/<run_dir>
 ```
 
 Other commands:
 
 ```bash
-python -m app.spider_eval.run_log brief  runs/<run_dir>                  # rewrite brief.jsonl
-python -m app.spider_eval.run_log prompt runs/<run_dir> <sample_index> [attempt]   # show the exact prompt sent
+python -m app.evaluation.run_log brief  runs/<run_dir>                  # rewrite brief.jsonl
+python -m app.evaluation.run_log prompt runs/<run_dir> <sample_index> [attempt]   # show the exact prompt sent
 ```
 
 * A run that stops for any reason (Ctrl-C, SIGTERM, crash, network loss) leaves a valid log; `--resume` continues it.
-  `--limit` is not remembered: without it a resumed run goes on to the whole dev set.
+  `--limit` is not remembered: without it a resumed run goes on to the whole dev set. The dataset and its options (`--no-evidence`, `--descriptions`) are taken from the manifest; a flag that contradicts them is refused. `--data_path` (default `./Spider` or `./BIRD`) must still be given if the data is somewhere else.
 * On resume, samples that failed on **infrastructure** (`llm_error`, `retrieval_error`, `internal_error`, `schema_build_failed`) are re-run; their old records stay in the file and the newer record supersedes them. Model failures such as an empty response are kept as the model's answer.
-* `--resume` takes model, temperature, reasoning effort, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the retrieval-unit text templates, the embedding model, the scorer or `dev.json` changed (the *fingerprint* in the manifest), or if the log was written in another format version.
+* `--resume` takes dataset, dataset options, model, temperature, reasoning effort, K, mode and max attempts from the manifest, and refuses to continue if the prompts, the prompt-building code, the retrieval-unit text templates, the embedding model, the scorer or the dataset files (`dev.json`, and with `--descriptions` the `database_description/*.csv` files) changed (the *fingerprint* in the manifest), or if the log was written in another format version.
 * A feedback-mode run also contains the single-pass answer: attempt 1 uses the single-pass prompt, and `scoring.first_*` scores it, so one run gives both numbers, paired.
 * Chroma collections left by earlier runs are reused only if they hold exactly the units the current code produces; a collection with outdated units (e.g. from an older text template) is rebuilt automatically and the run prints a note. `schema_units.json` records `collection.reused` / `collection.rebuilt_stale`. The collection does not record which embedding *model* made its vectors, so after changing the embedding model use `--rebuild-index` once.
 * `check` warns when `code.dirty` is true: the run used uncommitted changes to tracked or new source files (the `runs/` directory itself is not counted). Commit before a run you intend to report.
 
 ## How a prediction is scored
 
-`EX` compares the result of the predicted SQL with the result of the gold SQL, both executed on the SQLite database (`app/spider_eval/spider_sqlite_executor.py`, `results_match`):
+`EX` compares the result of the predicted SQL with the result of the gold SQL, both executed on the SQLite database (`app/evaluation/executor.py`). The comparison rule belongs to the dataset (`dataset.scoring` in the manifest, a key of `executor.MATCHERS`); the execution itself (read-only connection, 30 s timeout per query, invalid UTF-8 dropped) is the same for both.
+
+**Spider** (`spider_results_match`):
 
 * rows are compared as a multiset: their order does not matter, duplicates do;
 * values are compared as trimmed, lower-case text, NULL as the empty string;
 * **the order of the columns does not matter** (Spider's own `result_eq` does the same), but every gold column must appear exactly once;
 * TEXT values with invalid UTF-8 are decoded with the bad bytes dropped (also what Spider's test-suite does), so a gold query over such a database (e.g. `wta_1`) can run; the same decoding applies to the executions of the feedback loop.
 
-Not handled: ties at `ORDER BY ... LIMIT 1` (gold and prediction may legitimately pick different rows) and gold queries that are themselves wrong.
+**BIRD** (`bird_results_match`, BIRD's official rule `set(predicted_rows) == set(gold_rows)`):
+
+* rows are compared as a set: neither their order nor duplicates matter;
+* values are compared as they are, with no normalisation: `'A'` is not `'a'`, NULL is not `''`, and **the order of the columns matters**;
+* `scoring.permuted` is therefore always false for BIRD.
+
+The two rules are not the same strictness, so a Spider EX and a BIRD EX are not directly comparable.
+
+Not handled (either dataset): ties at `ORDER BY ... LIMIT 1` (gold and prediction may legitimately pick different rows) and gold queries that are themselves wrong or too slow (two BIRD gold queries exceed the 30 s timeout and are always `gold_failed`). Only EX is computed; BIRD's R-VES is not.
 
 ## `samples.jsonl` records
 
@@ -69,6 +79,7 @@ for line in open("runs/<run_dir>/samples.jsonl", encoding="utf-8"):
 |---|---|
 | `sample_index` | 0-based position in `dev.json` (add 1 for the row numbers used in earlier analyses) |
 | `db_id`, `question`, `gold_sql` | the sample |
+| `evidence`, `difficulty` | only when the dataset gives them: BIRD's external-knowledge hint (absent with `--no-evidence` or when the sample has none) and its `simple` / `moderate` / `challenging` label. Spider records have neither key |
 | `status` | `scored` (SQL produced and scored), `no_sql` (no usable SQL), `skipped` (SQLite file missing or schema build failed), `internal_error` (a bug inside the sample; traceback in `error`) |
 | `failure_kind` | for `no_sql`/`internal_error`: `llm_error`, `empty_response`, `retrieval_error`, `no_retrieval`, `internal_error` |
 | `skip_reason` | for `skipped`: `sqlite_missing`, `schema_build_failed` |
@@ -103,14 +114,16 @@ It is what makes the per-sample records small, and it is the universe needed for
 
 ## `manifest.json`
 
-`config` (mode, k, max_attempts, execution_feedback), `llm` (provider, model, temperature, reasoning_effort, host, timeout, retries; never the API key), `embedding`, `prompts` (full system prompts + hashes), `retrieval_units` (hash of the unit text templates), `scorer` (hash of the comparison code), `dataset` (`dev.json` sha256, sample count), `code` (git commit, branch, `dirty`), `environment` (Python, SQLite, package versions), `fingerprint` (what must match to resume), `sessions[]` (one per process: argv, limit, start/end, status `complete` / `interrupted` / `failed`, wall time, code version), and `results` (metrics, token totals, status counts).
+`config` (dataset, dataset_options, mode, k, max_attempts, execution_feedback; `dataset_options` is `{}` for Spider and `{evidence, descriptions}` for BIRD), `llm` (provider, model, temperature, reasoning_effort, host, timeout, retries; never the API key), `embedding`, `prompts` (full system prompts + hashes), `retrieval_units` (hash of the unit text templates), `scorer` (hash of the comparison code of this dataset's rule and of the execution code), `dataset` (`name`, `n_samples`, `scoring`, `options`, and `files`: sha256 of `dev.json`, plus one combined hash of `database_description/*.csv` when `--descriptions` is on), `code` (git commit, branch, `dirty`), `environment` (Python, SQLite, package versions), `fingerprint` (what must match to resume), `sessions[]` (one per process: argv, limit, start/end, status `complete` / `interrupted` / `failed`, wall time, code version), and `results` (metrics, token totals, status counts).
 
 ## Error analysis of a finished run
 
 ```bash
-python -m app.spider_eval.error_analysis runs/<run_dir> --check-only                  # validate error_labels.tsv
-python -m app.spider_eval.error_analysis runs/<run_dir> --spider_path ./spider        # tables + error_analysis.json
+python -m app.evaluation.error_analysis runs/<run_dir> --check-only                  # validate error_labels.tsv
+python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider        # tables + error_analysis.json
 ```
+
+The analysis is **Spider-only** (it needs Spider's `tables.json` and its hardness classes, and the labels are Spider's); it refuses a BIRD log. For BIRD, `results.metrics.by_difficulty` in the manifest (and the per-difficulty lines printed at the end of a run) give EX per `simple` / `moderate` / `challenging`.
 
 Two files are kept next to the log: `error_labels.tsv` (one hand-made label per failing sample: category `H` scorer / `G` gold or ambiguity / `M` model, a subtype, an `arguable` flag) and `error_analysis.json` (every number of the analysis, recomputed from the log, `dev.json`/`tables.json` and the labels: retry and dialect statistics, Recall@K, hardness, per-database results, adjusted EX). The labels are judgement; everything else is a pure function of the log. The report built from them is `docs/thesis/Error_Analysis_Full_Run_fa.md`.
 

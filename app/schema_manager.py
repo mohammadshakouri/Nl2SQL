@@ -147,7 +147,7 @@ class SchemaManager:
         Load database schema from a dict (identical structure to the JSON file).
 
         This is the in-memory counterpart of ``load_schema_from_json`` and is
-        used by the Spider evaluation pipeline, which builds schema dicts
+        used by the evaluation pipeline (Spider and BIRD), which builds schema dicts
         programmatically from SQLite PRAGMA queries rather than from files on
         disk.
 

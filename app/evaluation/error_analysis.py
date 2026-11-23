@@ -27,8 +27,12 @@ Categories (see ``TAXONOMY``):
 
 Usage::
 
-    python -m app.spider_eval.error_analysis runs/<run_dir> --spider_path ./spider
-    python -m app.spider_eval.error_analysis runs/<run_dir> --check-only
+    python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider
+    python -m app.evaluation.error_analysis runs/<run_dir> --check-only
+
+Spider only: it reads Spider's parsed gold SQL (``dev.json``) and applies
+Spider's hardness rules. BIRD runs have no such analysis; their summary reports
+EX per BIRD difficulty label instead.
 """
 
 import argparse
@@ -41,8 +45,8 @@ import sys
 from collections import Counter, defaultdict
 from typing import Dict, List, Optional, Set, Tuple
 
-from app.spider_eval.run_log import latest_by_index, read_records
-from app.spider_eval.spider_sqlite_executor import results_match
+from app.evaluation.run_log import latest_by_index, read_records
+from app.evaluation.executor import spider_results_match
 
 # category -> subtype -> what it means
 TAXONOMY: Dict[str, Dict[str, str]] = {
@@ -112,7 +116,7 @@ def load_labels(path: str) -> Dict[int, dict]:
 
 def column_order_check(record: dict) -> str:
     """
-    Would a column-order-tolerant comparison (the scorer's ``results_match``)
+    Would a column-order-tolerant comparison (the Spider scorer's ``spider_results_match``)
     accept this sample's stored results?
 
     ``"full"``         yes, checked on the complete stored results
@@ -129,7 +133,7 @@ def column_order_check(record: dict) -> str:
     truncated = bool(gold.get("truncated") or pred.get("truncated"))
     if gold["n_rows"] != pred["n_rows"] or gold["n_cols"] != pred["n_cols"]:
         return "no_match"
-    match, permuted = results_match(
+    match, permuted = spider_results_match(
         [tuple(r) for r in pred["rows"]], [tuple(r) for r in gold["rows"]]
     )
     if match and permuted:
@@ -629,6 +633,12 @@ def format_report(a: dict) -> str:
     return "\n".join(lines)
 
 
+def _run_dataset(run_dir: str) -> str:
+    """The dataset a run was made on (logs written before BIRD have no name: Spider)."""
+    with open(os.path.join(run_dir, "manifest.json"), encoding="utf-8") as f:
+        return (json.load(f).get("dataset") or {}).get("name", "spider")
+
+
 def main(argv: Optional[List[str]] = None) -> int:
     parser = argparse.ArgumentParser(description="Error analysis of a Spider run log")
     parser.add_argument("run_dir")
@@ -638,6 +648,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     parser.add_argument("--no-write", action="store_true", help="do not write error_analysis.json")
     args = parser.parse_args(argv)
 
+    dataset = _run_dataset(args.run_dir)
+    if dataset != "spider":
+        parser.error(f"this analysis is Spider-only (it needs Spider's parsed gold SQL and hardness "
+                     f"rules); the run is a {dataset!r} run. `run_log check` and the run summary "
+                     "(EX per difficulty) work for every dataset.")
     if args.check_only:
         problems = check_labels(args.run_dir, args.labels)
         for p in problems:

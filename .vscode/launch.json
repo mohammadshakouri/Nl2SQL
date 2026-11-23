@@ -2,31 +2,41 @@
 	"version": "0.2.0",
 	"configurations": [
 		{
-			"name": "Spider Eval (single-pass)",
+			"name": "Eval (single-pass)",
 			"type": "debugpy",
 			"request": "launch",
-			"program": "${workspaceFolder}/cli_spider_eval.py",
-			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}"],
+			"program": "${workspaceFolder}/cli_eval.py",
+			"args": ["--dataset", "${input:dataset}", "--limit", "${input:limit}"],
 			"cwd": "${workspaceFolder}",
 			"console": "integratedTerminal",
 			"justMyCode": false
 		},
 		{
-			"name": "Spider Eval (feedback loop)",
+			"name": "Eval (feedback loop)",
 			"type": "debugpy",
 			"request": "launch",
-			"program": "${workspaceFolder}/cli_spider_eval.py",
-			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}", "--feedback"],
+			"program": "${workspaceFolder}/cli_eval.py",
+			"args": ["--dataset", "${input:dataset}", "--limit", "${input:limit}", "--feedback"],
 			"cwd": "${workspaceFolder}",
 			"console": "integratedTerminal",
 			"justMyCode": false
 		},
 		{
-			"name": "Spider Eval (compare modes)",
+			"name": "Eval (feedback loop + execution)",
 			"type": "debugpy",
 			"request": "launch",
-			"program": "${workspaceFolder}/cli_spider_eval.py",
-			"args": ["--spider_path", "${input:spiderPath}", "--limit", "${input:limit}", "--compare"],
+			"program": "${workspaceFolder}/cli_eval.py",
+			"args": ["--dataset", "${input:dataset}", "--limit", "${input:limit}", "--exec-feedback"],
+			"cwd": "${workspaceFolder}",
+			"console": "integratedTerminal",
+			"justMyCode": false
+		},
+		{
+			"name": "Eval (compare modes)",
+			"type": "debugpy",
+			"request": "launch",
+			"program": "${workspaceFolder}/cli_eval.py",
+			"args": ["--dataset", "${input:dataset}", "--limit", "${input:limit}", "--compare"],
 			"cwd": "${workspaceFolder}",
 			"console": "integratedTerminal",
 			"justMyCode": false
@@ -34,15 +44,16 @@
 	],
 	"inputs": [
 		{
-			"id": "spiderPath",
-			"type": "promptString",
-			"description": "Path to the Spider dataset root directory",
-			"default": "./spider"
+			"id": "dataset",
+			"type": "pickString",
+			"description": "Benchmark to evaluate (the data folder is ./Spider or ./BIRD)",
+			"options": ["spider", "bird"],
+			"default": "spider"
 		},
 		{
 			"id": "limit",
 			"type": "promptString",
-			"description": "Number of samples to evaluate (leave blank for all)",
+			"description": "Number of samples to evaluate (the first N of dev.json)",
 			"default": "20"
 		}
 	]

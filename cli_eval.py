@@ -1,23 +1,37 @@
 """
-CLI entry point for Spider 1 benchmark evaluation.
+CLI entry point for benchmark evaluation (Spider 1 dev, BIRD dev).
 
 Usage
 -----
-    # Single-pass (no feedback loop)
-    python cli_spider_eval.py --spider_path ./spider
+    # Single-pass (no feedback loop); Spider is the default dataset
+    python cli_eval.py
 
     # With feedback/retry loop (static validation only)
-    python cli_spider_eval.py --spider_path ./spider --feedback
+    python cli_eval.py --feedback
 
     # With feedback/retry loop (static validation + SQLite execution errors)
-    python cli_spider_eval.py --spider_path ./spider --exec-feedback
+    python cli_eval.py --exec-feedback
 
     # Compare both modes back-to-back
-    python cli_spider_eval.py --spider_path ./spider --compare
+    python cli_eval.py --compare
+
+    # BIRD (with its evidence, the standard setting)
+    python cli_eval.py --dataset bird --exec-feedback --limit 20 --tag pilot
 
     # A paid run: pick the model, then continue it if it is interrupted
-    python cli_spider_eval.py --spider_path ./spider --model MODEL --tag full
-    python cli_spider_eval.py --spider_path ./spider --resume runs/<run_dir>
+    python cli_eval.py --dataset bird --model MODEL --tag full
+    python cli_eval.py --resume runs/<run_dir>
+
+Dataset flags
+-------------
+    --dataset NAME   spider (default) or bird
+    --data_path DIR  The dataset folder (default: ./Spider or ./BIRD);
+                     --spider_path is the old name of this flag
+    BIRD only:
+    --no-evidence    Do not give the model BIRD's external-knowledge hint
+                     (it is used otherwise, in the prompt and the retrieval query)
+    --descriptions   Describe columns with BIRD's database_description CSVs
+                     (enriched schema) instead of the generic text
 
 Optional flags
 --------------
@@ -47,7 +61,7 @@ Model and logging flags
 
 Every run writes runs/<run_dir>/ (manifest.json, samples.jsonl, brief.jsonl,
 schema_units.json, console.txt); see docs/run-log-format.md. Verify a run with:
-    python -m app.spider_eval.run_log check runs/<run_dir>
+    python -m app.evaluation.run_log check runs/<run_dir>
 """
 
 import argparse
@@ -61,22 +75,44 @@ _HERE = os.path.dirname(os.path.abspath(__file__))
 if _HERE not in sys.path:
     sys.path.insert(0, _HERE)
 
+from app.evaluation.benchmarks import BENCHMARKS, Benchmark, default_data_path
+from app.evaluation.llm_io import preflight
+from app.evaluation.run_log import RunLog, StdoutCapture
+from app.evaluation.runner import run_evaluation
 from app.nl2sql_chain import configure_llm, get_llm_settings
-from app.spider_eval.llm_io import preflight
-from app.spider_eval.run_log import RunLog, StdoutCapture
-from app.spider_eval.spider_loader import load_spider_dev
-from app.spider_eval.spider_runner import run_spider_evaluation
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Evaluate NL2SQL pipeline on the Spider 1 benchmark."
+        description="Evaluate the NL2SQL pipeline on the Spider 1 or BIRD benchmark."
     )
     parser.add_argument(
+        "--dataset",
+        choices=BENCHMARKS,
+        default=None,
+        help="Benchmark to evaluate (default: spider).",
+    )
+    parser.add_argument(
+        "--data_path",
         "--spider_path",
-        required=True,
-        help="Root directory of the Spider dataset (must contain dev.json, "
-             "tables.json and database/).",
+        default=None,
+        dest="data_path",
+        metavar="DIR",
+        help="Root directory of the dataset: Spider needs dev.json and database/, "
+             "BIRD needs dev.json and dev_databases/ (default: ./Spider or ./BIRD).",
+    )
+    parser.add_argument(
+        "--no-evidence",
+        action="store_true",
+        default=False,
+        dest="no_evidence",
+        help="BIRD only: do not give the model the question's external-knowledge hint.",
+    )
+    parser.add_argument(
+        "--descriptions",
+        action="store_true",
+        default=False,
+        help="BIRD only: describe columns with database_description/*.csv (enriched schema).",
     )
     parser.add_argument(
         "--limit",
@@ -235,8 +271,11 @@ def _print_results(metrics: dict) -> None:
     if metrics["mode"] == "feedback":
         print(f"Max attempts:        {metrics['max_attempts']}")
     print(f"Total Samples:       {metrics['total']}")
+    reordered = metrics.get("ex_column_reordered", 0)
     print(f"Execution Accuracy:  {metrics['execution_accuracy']:.2f}%"
-          f"  ({metrics.get('ex_column_reordered', 0)} matched only after reordering columns)")
+          + (f"  ({reordered} matched only after reordering columns)" if reordered else ""))
+    for label, part in metrics.get("by_difficulty", {}).items():
+        print(f"  {label:<18} {part['execution_accuracy']:6.2f}%  ({part['total']} samples)")
     print(f"Inference failures:  {_format_failures(metrics)}")
     print(f"Skipped samples:     {metrics['skipped']}")
     print(f"LLM calls:           {metrics['llm_calls']}")
@@ -278,18 +317,25 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     with open(manifest_path, encoding="utf-8") as f:
         manifest = json.load(f)
     config, llm = manifest["config"], manifest["llm"]
+    options = config.get("dataset_options") or {}
 
     saved = {
+        "dataset": config.get("dataset", "spider"),   # logs written before BIRD are Spider logs
         "k": config["k"],
         "feedback": config["mode"] == "feedback",
         "exec_feedback": bool(config.get("execution_feedback")),
         "max_iter": config.get("max_attempts"),
         "model": llm["model"],
+        # a BIRD flag contradicts the run when the run has the opposite setting
+        "no_evidence": not options.get("evidence", True),
+        "descriptions": bool(options.get("descriptions")),
     }
     given = {
+        "dataset": args.dataset,
         "k": args.k, "model": args.model,
         "max_iter": args.max_iter if saved["feedback"] else None,
         "feedback": args.feedback or None, "exec_feedback": args.exec_feedback or None,
+        "no_evidence": args.no_evidence or None, "descriptions": args.descriptions or None,
     }
     for name, value in given.items():
         if value is not None and value != saved[name]:
@@ -303,6 +349,9 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
         print(f"ERROR: --reasoning-effort contradicts the run being resumed ({llm.get('reasoning_effort')!r}).")
         sys.exit(1)
 
+    args.dataset = saved["dataset"]
+    args.no_evidence = saved["no_evidence"]
+    args.descriptions = saved["descriptions"]
     args.k = saved["k"]
     args.feedback = saved["feedback"]
     args.exec_feedback = saved["exec_feedback"]
@@ -313,7 +362,7 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
 
 
 async def _run_one(
-    args: argparse.Namespace, samples, spider_path: str, feedback: bool, prelude: str
+    args: argparse.Namespace, benchmark: Benchmark, samples, feedback: bool, prelude: str
 ) -> dict:
     """One logged run (a new run directory, or the one being resumed)."""
     mode = "feedback" if feedback else "single-pass"
@@ -321,12 +370,13 @@ async def _run_one(
         run_log = RunLog.resume(args.resume, prelude=prelude)
     else:
         run_log = RunLog.create(
-            args.out_dir, mode, get_llm_settings().model, args.k, args.tag, prelude=prelude
+            args.out_dir, benchmark.name, mode, get_llm_settings().model, args.k, args.tag,
+            prelude=prelude,
         )
     try:
-        metrics = await run_spider_evaluation(
+        metrics = await run_evaluation(
+            benchmark=benchmark,
             samples=samples,
-            spider_path=spider_path,
             verbose=not args.quiet,
             max_samples=args.limit,
             k=args.k,
@@ -339,8 +389,9 @@ async def _run_one(
             argv=sys.argv,
         )
         print()
-        print("Spider Evaluation Results")
-        print("=========================")
+        heading = f"{benchmark.title} Evaluation Results"
+        print(heading)
+        print("=" * len(heading))
         _print_results(metrics)
         _warn_infrastructure_failures(metrics)
         return metrics
@@ -355,17 +406,38 @@ def _warn_infrastructure_failures(metrics: dict) -> None:
         print()
         print(f"WARNING: {infra} sample(s) failed on infrastructure errors and {metrics['skipped']} "
               "were skipped; they count against the metrics above.")
-        print(f"         Re-run only those with:  python cli_spider_eval.py --spider_path <path> "
-              f"--resume {metrics['run_dir']}")
+        print(f"         Re-run only those with:  python cli_eval.py --resume {metrics['run_dir']}")
 
 
 async def main() -> None:
     capture = StdoutCapture()   # so the run's console.txt also holds the output printed before it exists
     try:
-        args, samples, spider_path = await _prepare()
+        args, benchmark, samples = await _prepare()
     finally:
         prelude = capture.stop()
-    await _run(args, samples, spider_path, prelude)
+    await _run(args, benchmark, samples, prelude)
+
+
+def _make_benchmark(args: argparse.Namespace) -> Benchmark:
+    """The benchmark chosen on the command line; exits with a message on a bad combination."""
+    name = args.dataset or "spider"
+    bird_flags = {"--no-evidence": args.no_evidence, "--descriptions": args.descriptions}
+    if name != "bird" and any(bird_flags.values()):
+        used = ", ".join(flag for flag, on in bird_flags.items() if on)
+        print(f"ERROR: {used} only applies to --dataset bird.")
+        sys.exit(1)
+    options = {}
+    if name == "bird":
+        options = {
+            "evidence": False if args.no_evidence else None,
+            "descriptions": True if args.descriptions else None,
+        }
+    data_path = os.path.abspath(args.data_path or default_data_path(name))
+    if not os.path.isdir(data_path):
+        print(f"ERROR: the {name} data path does not exist or is not a directory: {data_path}")
+        print("       Pass the dataset folder with --data_path.")
+        sys.exit(1)
+    return Benchmark(name, data_path, **options)
 
 
 async def _prepare():
@@ -387,13 +459,13 @@ async def _prepare():
     )
     llm = get_llm_settings()
 
-    spider_path = os.path.abspath(args.spider_path)
-    if not os.path.isdir(spider_path):
-        print(f"ERROR: spider_path does not exist or is not a directory: {spider_path}")
+    benchmark = _make_benchmark(args)
+    print(f"Loading {benchmark.title} dev set from: {benchmark.root}")
+    try:
+        samples = benchmark.load_samples()
+    except (FileNotFoundError, ValueError) as exc:
+        print(f"ERROR: {exc}")
         sys.exit(1)
-
-    print(f"Loading Spider dev set from: {spider_path}")
-    samples = load_spider_dev(spider_path)
     print(f"Loaded {len(samples)} samples.")
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
@@ -413,26 +485,26 @@ async def _prepare():
             print("WARNING: the endpoint reported no token usage, so the run log cannot show "
                   "token counts or cost.")
     print()
-    return args, samples, spider_path
+    return args, benchmark, samples
 
 
-async def _run(args: argparse.Namespace, samples, spider_path: str, prelude: str) -> None:
+async def _run(args: argparse.Namespace, benchmark: Benchmark, samples, prelude: str) -> None:
     if args.compare:
         # --- Single-pass run ---
         print("=" * 50)
         print("  Mode: Single-pass (no feedback)")
         print("=" * 50)
-        metrics_sp = await _run_one(args, samples, spider_path, False, prelude)
+        metrics_sp = await _run_one(args, benchmark, samples, False, prelude)
 
         print()
         print("=" * 50)
         print("  Mode: Feedback loop" + (" + execution feedback" if args.exec_feedback else ""))
         print("=" * 50)
-        metrics_fb = await _run_one(args, samples, spider_path, True, prelude)
+        metrics_fb = await _run_one(args, benchmark, samples, True, prelude)
 
         # Side-by-side comparison
         print()
-        print("Spider Evaluation – Comparison")
+        print(f"{benchmark.title} Evaluation – Comparison")
         print("=" * 50)
         print(f"{'Metric':<26} {'Single-pass':>12} {'Feedback':>12}")
         print("-" * 50)
@@ -449,7 +521,7 @@ async def _run(args: argparse.Namespace, samples, spider_path: str, prelude: str
         _print_feedback_diagnostics(metrics_fb)
 
     else:
-        await _run_one(args, samples, spider_path, args.feedback, prelude)
+        await _run_one(args, benchmark, samples, args.feedback, prelude)
 
 
 def _terminate_as_interrupt(signum, frame) -> None:

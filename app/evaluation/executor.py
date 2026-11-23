@@ -1,15 +1,21 @@
 """
-Spider SQLite Executor
+SQLite Executor
 
-Executes SQL queries against Spider's SQLite databases and compares
-result sets for execution accuracy evaluation.
+Executes SQL queries against a benchmark's SQLite databases and compares
+result sets for execution accuracy (EX).
 
-Result comparison (``results_match``) ignores row order, letter case and the
-order of the columns: a query that returns the right columns in another order
-is correct. Spider's own execution check (test-suite ``result_eq``) works the
-same way for column order.
+How two results are compared depends on the benchmark (``MATCHERS``):
+
+* ``spider``  (``spider_results_match``) ignores row order, letter case and the
+  order of the columns: a query that returns the right columns in another order
+  is correct. Spider's own execution check (test-suite ``result_eq``) works the
+  same way for column order.
+* ``bird``    (``bird_results_match``) is BIRD's official rule: the two results,
+  as sets of rows, must be equal. Row order and duplicate rows do not matter; the
+  order of the columns, the letter case and the exact values do.
 """
 
+import inspect
 import sqlite3
 import os
 import time
@@ -113,11 +119,11 @@ def _column_orders(candidates: List[List[int]]) -> Iterator[Tuple[int, ...]]:
     yield from extend(0)
 
 
-def results_match(
+def spider_results_match(
     pred_rows: List[tuple], gold_rows: List[tuple]
 ) -> Tuple[bool, bool]:
     """
-    Do two query results hold the same data?
+    Do two query results hold the same data? (the Spider rule)
 
     Rows are compared as a multiset (order and duplicates count, order of the
     rows does not), values by ``_normalize_results`` (text, trimmed, lower
@@ -156,37 +162,71 @@ def results_match(
     return False, False
 
 
+def bird_results_match(
+    pred_rows: List[tuple], gold_rows: List[tuple]
+) -> Tuple[bool, bool]:
+    """
+    Do two query results hold the same data? (BIRD's official rule)
+
+    ``set(predicted rows) == set(gold rows)``, as in BIRD's ``evaluation_ex``:
+    no normalisation, so the columns must come in the gold order and text must
+    match exactly (SQLite's own int/float equality applies, ``1 == 1.0``).
+
+    Returns:
+        ``(match, False)``; the second value exists so every matcher has the
+        signature of ``spider_results_match`` (BIRD never reorders columns).
+    """
+    return set(pred_rows) == set(gold_rows), False
+
+
+# EX comparison rule per benchmark (``Benchmark.scoring``).
+MATCHERS = {
+    "spider": spider_results_match,
+    "bird": bird_results_match,
+}
+
+
 def _decode_text(raw: bytes) -> str:
     """
     Decode TEXT values as UTF-8, dropping invalid bytes.
 
-    Some Spider databases (e.g. ``wta_1``) hold bytes that are not UTF-8; with
+    Some databases (e.g. Spider's ``wta_1``) hold bytes that are not UTF-8; with
     sqlite3's strict default even the gold query fails on them. Dropping the
     bytes is what Spider's own test-suite evaluation does.
     """
     return raw.decode("utf-8", errors="ignore")
 
 
-class SpiderSQLiteExecutor:
+class SQLiteExecutor:
     """
-    Executes and compares SQL queries against a Spider SQLite database.
+    Executes and compares SQL queries against a benchmark's SQLite database.
 
     A SQLite database is a single file, so the executor is bound to one
     ``db_id`` by the path it is constructed with; queries need no db_id.
     """
 
-    def __init__(self, sqlite_path: str, timeout: float = DEFAULT_TIMEOUT_SECONDS):
+    def __init__(
+        self,
+        sqlite_path: str,
+        scoring: str = "spider",
+        timeout: float = DEFAULT_TIMEOUT_SECONDS,
+    ):
         """
         Args:
             sqlite_path: Full path to the .sqlite database file.
+            scoring: How results are compared, a key of ``MATCHERS``.
             timeout: Seconds after which a running query is interrupted.
 
         Raises:
             FileNotFoundError: If the database file does not exist.
+            ValueError: If ``scoring`` is not a known rule.
         """
         if not os.path.exists(sqlite_path):
             raise FileNotFoundError(f"SQLite database not found: {sqlite_path}")
+        if scoring not in MATCHERS:
+            raise ValueError(f"unknown scoring rule {scoring!r}; choose one of {tuple(MATCHERS)}")
         self.sqlite_path = sqlite_path
+        self.scoring = scoring
         self.timeout = timeout
 
     def _open_connection(self) -> sqlite3.Connection:
@@ -218,9 +258,11 @@ class SpiderSQLiteExecutor:
         """
         Execute both predicted and gold SQL and compare result sets.
 
-        Comparison is (see ``results_match``):
+        The comparison rule is the benchmark's (see ``MATCHERS``); for Spider:
         - Order-independent for rows and for columns
         - Case-insensitive for string values
+
+        For every benchmark:
         - If *both* queries fail, returns False
         - If *gold* fails, returns False (benchmark data issue)
         - If *pred* fails, returns False
@@ -228,7 +270,7 @@ class SpiderSQLiteExecutor:
 
         Args:
             pred_sql: SQL generated by the model.
-            gold_sql: Ground-truth SQL from Spider dev.json.
+            gold_sql: Ground-truth SQL from the benchmark's dev.json.
 
         Returns:
             (match: bool, error_description: Optional[str])
@@ -250,7 +292,7 @@ class SpiderSQLiteExecutor:
         if not pred.ok:
             return CompareResult(False, f"Predicted SQL failed: {pred.error}", "pred_failed", pred, gold)
 
-        match, permuted = results_match(pred.rows, gold.rows)
+        match, permuted = MATCHERS[self.scoring](pred.rows, gold.rows)
         if match:
             return CompareResult(True, None, None, pred, gold, permuted)
         return CompareResult(
@@ -267,3 +309,22 @@ class SpiderSQLiteExecutor:
         with closing(self._open_connection()) as conn:
             ok, error, rows = _execute_sql(conn, sql)
         return QueryRun(ok, error, rows, (time.perf_counter() - started) * 1000)
+
+
+def scorer_source(scoring: str) -> str:
+    """
+    Source code of everything that decides EX under the rule ``scoring``.
+
+    Hashed into the run manifest, so a run is not resumed after the scorer changed.
+    """
+    rule_functions = {
+        "spider": (spider_results_match, _normalize_results, _column_orders),
+        "bird": (bird_results_match,),
+    }
+    functions = (
+        *rule_functions[scoring],
+        _decode_text,
+        SQLiteExecutor._open_connection,
+        SQLiteExecutor.compare_detailed,
+    )
+    return "".join(inspect.getsource(f) for f in functions)

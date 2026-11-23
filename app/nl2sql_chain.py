@@ -7,9 +7,9 @@ Core orchestration class for the Schema-RAG NL2SQL pipeline:
 3. Context enrichment with schema elements
 4. SQL generation via LLM
 
-This class is consumed by the Spider evaluation harness
-(``app.spider_eval.spider_runner``), which drives retrieval, validation and
-the feedback/retry loop itself.
+This class is consumed by the evaluation harness
+(``app.evaluation.runner``; Spider and BIRD), which drives retrieval,
+validation and the feedback/retry loop itself.
 """
 
 import asyncio
@@ -40,7 +40,7 @@ OLLAMA_HOST: str = "http://ai.ig.local:11434".strip().lower()
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
 # OpenAI path defaults. The model/temperature/reasoning effort can be overridden
-# per run with configure_llm() (cli_spider_eval.py --model / --temperature /
+# per run with configure_llm() (cli_eval.py --model / --temperature /
 # --reasoning-effort), and the effective values are written to the run manifest.
 OPENAI_MODEL_NAME: str = "gpt-6-luna"
 OPENAI_TEMPERATURE: float = 1
@@ -277,6 +277,7 @@ class NL2SQLChain:
         question: str,
         schema_context: str,
         feedback: Optional[str] = None,
+        evidence: Optional[str] = None,
     ) -> str:
         """
         Build complete user prompt with question and schema context
@@ -286,11 +287,15 @@ class NL2SQLChain:
             schema_context: Retrieved schema context
             feedback: Optional description of previous failed attempts
                       (from ``SQLFeedbackLoop.get_feedback_prompt``)
+            evidence: Optional external knowledge that comes with the question
+                      (BIRD); without it the prompt has no such section
 
         Returns:
             Complete user prompt string
         """
         prompt = f"User Question:\n{question}\n\n"
+        if evidence:
+            prompt += f"External Knowledge:\n{evidence}\n\n"
         prompt += f"{schema_context}\n"
 
         if feedback:

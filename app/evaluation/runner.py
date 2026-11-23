@@ -1,13 +1,15 @@
 """
-Spider Runner
+Evaluation Runner
 
-Main evaluation loop for the Spider 1 benchmark.
+Main evaluation loop for the benchmarks of ``app.evaluation.benchmarks``
+(Spider 1 and BIRD). The loop is the same for both; what differs between them
+(files, evidence, scoring rule) comes from the ``Benchmark``.
 
 Architecture
 ------------
-For each Spider sample the runner:
+For each sample the runner:
 1. Extracts the SQLite schema → SchemaManager-compatible JSON dict
-2. Loads (or reuses) a ChromaDB collection named ``Schema_spider_<db_id>``
+2. Loads (or reuses) a ChromaDB collection named ``Schema_<benchmark>_<db_id>``
 3. Instantiates NL2SQLChain with that collection
 4. Retrieves the Top-K schema units and generates SQL, either single-pass or
    with the feedback/retry loop (static validation, optionally plus the
@@ -33,8 +35,8 @@ from app.schema_manager import Column, Relation, SchemaManager, Table
 from app.nl2sql_chain import NL2SQLChain, get_llm_settings
 from app.sql_validator import SQLFeedbackLoop, SQLValidator
 from app.system_prompt import SYSTEM_PROMPT_NL2SQL, SYSTEM_PROMPT_NL2SQL_FEEDBACK
-from app.spider_eval.llm_io import LLMCall, call_llm, describe_exc, token_counts
-from app.spider_eval.run_log import (
+from app.evaluation.llm_io import LLMCall, call_llm, describe_exc, token_counts
+from app.evaluation.run_log import (
     MAX_RAW_OUTPUT_CHARS,
     RETRYABLE_FAILURE_KINDS,
     RunLog,
@@ -43,27 +45,28 @@ from app.spider_eval.run_log import (
     git_info,
     prompt_sha,
     result_snapshot,
-    sha256_file,
     sha256_text,
     summarize_records,
     token_totals,
     utc_now,
 )
-from app.spider_eval.spider_loader import SpiderSample, get_sqlite_path
-from app.spider_eval.sqlite_schema_extractor import SQLiteSchemaExtractor
-from app.spider_eval.spider_sqlite_executor import CompareResult, QueryRun, SpiderSQLiteExecutor
-from app.spider_eval import spider_sqlite_executor
+from app.evaluation.benchmarks import Benchmark, Sample
+from app.evaluation.sqlite_schema_extractor import SQLiteSchemaExtractor
+from app.evaluation import executor as executor_module
+from app.evaluation.executor import CompareResult, QueryRun, SQLiteExecutor
 from chromadb.utils import embedding_functions
 
 USE_LOCAL_EMBEDDING = env.use_local_embedding
 OPENAI_API_KEY = env.openai_api_key
 EMBEDDING_MODEL_DIR = env.embedding_model_dir
 
-# ChromaDB directory dedicated to Spider evaluation so that production
-# collections are never contaminated.
-_SPIDER_CHROMA_DIR = os.path.join(
-    utils.CHROMADB_PERSIST_DIRECTORY, "spider_eval"
-)
+
+def _chroma_dir(benchmark: Benchmark) -> str:
+    """
+    ChromaDB directory dedicated to one benchmark's evaluation, so that
+    production collections (and the other benchmark's) are never contaminated.
+    """
+    return os.path.join(utils.CHROMADB_PERSIST_DIRECTORY, benchmark.chroma_dir_name)
 
 
 # ---------------------------------------------------------------------------
@@ -86,19 +89,19 @@ def _build_embedding_fn():
 def _build_collection(
     chroma_client: chromadb.PersistentClient,
     embedding_fn,
-    db_id: str,
+    collection_name: str,
     schema_dict: dict,
     batch_size: int = 10,
     rebuild: bool = False,
 ) -> Tuple[str, dict]:
     """
-    Create (or retrieve) a Chroma collection for the given Spider db_id and
-    populate it with schema embeddings if it is empty.
+    Create (or retrieve) the Chroma collection ``collection_name`` of one
+    database and populate it with schema embeddings if it is empty.
 
     Args:
         chroma_client: Open ChromaDB persistent client.
         embedding_fn: Embedding function instance.
-        db_id: Spider database identifier.
+        collection_name: ``Schema_<benchmark>_<db_id>``.
         schema_dict: Schema dict from SQLiteSchemaExtractor.extract().
         batch_size: Upsert batch size.
         rebuild: Drop an existing collection first, so every unit is embedded
@@ -113,8 +116,6 @@ def _build_collection(
         then, which the collection itself does not record: pass ``rebuild=True``
         after changing the embedding model.
     """
-    collection_name = f"Schema_spider_{db_id}"
-
     if rebuild:
         try:
             chroma_client.delete_collection(collection_name)
@@ -233,10 +234,16 @@ def _is_empty_sql(sql: Optional[str]) -> bool:
     return not sql or not sql.strip().strip(";").strip()
 
 
-def _retrieve_context(chain: NL2SQLChain, question: str, k: int):
-    """Return (schema_context, retrieval, None) or (None, retrieval, failed InferenceResult)."""
+def _retrieve_context(chain: NL2SQLChain, question: str, evidence: Optional[str], k: int):
+    """
+    Return (schema_context, retrieval, None) or (None, retrieval, failed InferenceResult).
+
+    The retrieval query is the question plus its external knowledge, if the
+    sample has any (BIRD's hints name the columns the question is about).
+    """
+    query = f"{question}\n{evidence}" if evidence else question
     try:
-        units = chain.retrieve_schema_units(question, n_results=k)
+        units = chain.retrieve_schema_units(query, n_results=k)
     except Exception as exc:
         return None, None, InferenceResult(
             None, f"schema retrieval failed: {describe_exc(exc)}", "retrieval_error"
@@ -257,11 +264,15 @@ def _ms(started: float) -> int:
 
 
 def _build_messages(
-    chain: NL2SQLChain, question: str, schema_context: str, feedback: Optional[str] = None
+    chain: NL2SQLChain,
+    question: str,
+    evidence: Optional[str],
+    schema_context: str,
+    feedback: Optional[str] = None,
 ) -> list:
     return [
         {"role": "system", "content": chain.get_system_prompt(is_feedback=feedback is not None)},
-        {"role": "user", "content": chain.build_user_prompt(question, schema_context, feedback)},
+        {"role": "user", "content": chain.build_user_prompt(question, schema_context, feedback, evidence)},
     ]
 
 
@@ -307,20 +318,23 @@ def _attempt_entry(messages: list, call: LLMCall) -> dict:
 # Single-pass inference  (no feedback retries)
 # ---------------------------------------------------------------------------
 
-async def _predict_sql(chain: NL2SQLChain, question: str, k: int) -> InferenceResult:
+async def _predict_sql(
+    chain: NL2SQLChain, question: str, evidence: Optional[str], k: int
+) -> InferenceResult:
     """
     Single-pass SQL inference – no feedback loop, no DB logging.
 
     Args:
         chain: NL2SQLChain bound to the sample's database.
         question: Natural-language question.
+        evidence: External knowledge that comes with the question (BIRD), or None.
         k: Number of schema retrieval units to retrieve (Top-K).
     """
-    schema_context, retrieval, failed = _retrieve_context(chain, question, k)
+    schema_context, retrieval, failed = _retrieve_context(chain, question, evidence, k)
     if failed:
         return failed
 
-    messages = _build_messages(chain, question, schema_context)
+    messages = _build_messages(chain, question, evidence, schema_context)
     call = await call_llm(messages)
     attempt = _attempt_entry(messages, call)
     if call.error:
@@ -347,7 +361,7 @@ async def _predict_sql(chain: NL2SQLChain, question: str, k: int) -> InferenceRe
 # ---------------------------------------------------------------------------
 
 def _check_sql(
-    chain: NL2SQLChain, sql: str, executor: Optional[SpiderSQLiteExecutor]
+    chain: NL2SQLChain, sql: str, executor: Optional[SQLiteExecutor]
 ) -> Tuple[bool, Optional[str], Optional[str], Optional[QueryRun]]:
     """
     Static validation, then (when ``executor`` is given) the query's own
@@ -375,9 +389,10 @@ def _check_sql(
 async def _predict_sql_with_feedback(
     chain: NL2SQLChain,
     question: str,
+    evidence: Optional[str],
     k: int,
     max_iterations: int,
-    executor: Optional[SpiderSQLiteExecutor] = None,
+    executor: Optional[SQLiteExecutor] = None,
 ) -> InferenceResult:
     """
     SQL inference with the ``SQLFeedbackLoop`` validation + retry loop,
@@ -392,11 +407,12 @@ async def _predict_sql_with_feedback(
     Args:
         chain: NL2SQLChain bound to the sample's database.
         question: Natural-language question.
+        evidence: External knowledge that comes with the question (BIRD), or None.
         k: Number of schema retrieval units to retrieve (Top-K).
         max_iterations: Total attempts (1 initial + max_iterations-1 retries).
         executor: If given, SQLite execution errors also trigger a retry.
     """
-    schema_context, retrieval, failed = _retrieve_context(chain, question, k)
+    schema_context, retrieval, failed = _retrieve_context(chain, question, evidence, k)
     if failed:
         return failed
 
@@ -410,7 +426,7 @@ async def _predict_sql_with_feedback(
     while feedback_loop.should_continue():
         attempts += 1
         messages = _build_messages(
-            chain, question, schema_context, feedback_loop.get_feedback_prompt()
+            chain, question, evidence, schema_context, feedback_loop.get_feedback_prompt()
         )
         call = await call_llm(messages)
         attempt = _attempt_entry(messages, call)
@@ -462,7 +478,7 @@ async def _predict_sql_with_feedback(
 # Scoring
 # ---------------------------------------------------------------------------
 
-def _compare(executor: SpiderSQLiteExecutor, pred_sql: str, gold_sql: str) -> CompareResult:
+def _compare(executor: SQLiteExecutor, pred_sql: str, gold_sql: str) -> CompareResult:
     """executor.compare_detailed, turning an unexpected exception into a failed comparison."""
     try:
         return executor.compare_detailed(pred_sql, gold_sql)
@@ -471,7 +487,7 @@ def _compare(executor: SpiderSQLiteExecutor, pred_sql: str, gold_sql: str) -> Co
         return CompareResult(False, describe_exc(exc), "scoring_error", failed, failed)
 
 
-def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: str):
+def _score(executor: SQLiteExecutor, result: InferenceResult, gold_sql: str):
     """
     Score the final SQL (and, for the feedback diagnostics, attempt 1).
 
@@ -507,8 +523,8 @@ def _score(executor: SpiderSQLiteExecutor, result: InferenceResult, gold_sql: st
 # One sample -> one run-log record
 # ---------------------------------------------------------------------------
 
-def _base_record(index: int, sample: SpiderSample) -> dict:
-    return {
+def _base_record(index: int, sample: Sample) -> dict:
+    record = {
         "sample_index": index,
         "db_id": sample.db_id,
         "question": sample.question,
@@ -528,13 +544,20 @@ def _base_record(index: int, sample: SpiderSample) -> dict:
         "results": None,
         "ms": None,
     }
+    # Only what the dataset provides: the evidence is what was sent to the model
+    # (the prompt is rebuilt from it), the difficulty only labels the sample.
+    if sample.evidence:
+        record["evidence"] = sample.evidence
+    if sample.difficulty:
+        record["difficulty"] = sample.difficulty
+    return record
 
 
 async def _process_sample(
     index: int,
-    sample: SpiderSample,
+    sample: Sample,
     chain: NL2SQLChain,
-    executor: SpiderSQLiteExecutor,
+    executor: SQLiteExecutor,
     *,
     k: int,
     use_feedback_loop: bool,
@@ -548,11 +571,11 @@ async def _process_sample(
     try:
         if use_feedback_loop:
             result = await _predict_sql_with_feedback(
-                chain, sample.question, k=k, max_iterations=max_iterations,
+                chain, sample.question, sample.evidence, k=k, max_iterations=max_iterations,
                 executor=executor if execution_feedback else None,
             )
         else:
-            result = await _predict_sql(chain, sample.question, k=k)
+            result = await _predict_sql(chain, sample.question, sample.evidence, k=k)
 
         record.update(
             retrieved=(result.retrieval or {}).get("ids"),
@@ -581,7 +604,7 @@ async def _process_sample(
     return record, result
 
 
-def _skipped_record(index: int, sample: SpiderSample, reason: str, detail: str) -> dict:
+def _skipped_record(index: int, sample: Sample, reason: str, detail: str) -> dict:
     record = _base_record(index, sample)
     record.update(status="skipped", skip_reason=reason, error=detail)
     return record
@@ -630,12 +653,14 @@ def _embedding_description(embedding_fn) -> dict:
 
 
 def _run_meta(
-    spider_path: str, n_samples: int, *, k: int, use_feedback_loop: bool,
+    benchmark: Benchmark, n_samples: int, *, k: int, use_feedback_loop: bool,
     max_iterations: int, execution_feedback: bool, embedding_fn, out_dir: str,
 ) -> dict:
     llm = asdict(get_llm_settings())
     mode = "feedback" if use_feedback_loop else "single-pass"
     config = {
+        "dataset": benchmark.name,
+        "dataset_options": benchmark.options,
         "mode": mode,
         "k": k,
         "max_attempts": max_iterations if use_feedback_loop else None,
@@ -659,21 +684,14 @@ def _run_meta(
         "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
     )
     # The scorer decides EX: a run must not be resumed after it has changed.
-    scorer_sha = sha256_text(
-        "".join(
-            inspect.getsource(f)
-            for f in (
-                spider_sqlite_executor.results_match,
-                spider_sqlite_executor._normalize_results,
-                spider_sqlite_executor._column_orders,
-                spider_sqlite_executor._decode_text,
-                SpiderSQLiteExecutor._open_connection,
-                SpiderSQLiteExecutor.compare_detailed,
-            )
-        )
-    )
-    dev_json = os.path.join(spider_path, "dev.json")
-    dataset = {"dev_json": "dev.json", "sha256": sha256_file(dev_json), "n_samples": n_samples}
+    scorer_sha = sha256_text(executor_module.scorer_source(benchmark.scoring))
+    dataset = {
+        "name": benchmark.name,
+        "n_samples": n_samples,
+        "scoring": benchmark.scoring,
+        "options": benchmark.options,
+        "files": benchmark.data_files(),
+    }
     embedding = _embedding_description(embedding_fn)
     return {
         "config": config,
@@ -693,7 +711,7 @@ def _run_meta(
             "user_builder_sha256": builder_sha,
             "unit_templates_sha256": units_sha,
             "scorer_sha256": scorer_sha,
-            "dataset_sha256": dataset["sha256"],
+            "dataset_files": dataset["files"],
         },
     }
 
@@ -711,9 +729,9 @@ def _safe_name(embedding_fn) -> Optional[str]:
 # Public evaluation entry point
 # ---------------------------------------------------------------------------
 
-async def run_spider_evaluation(
-    samples: List[SpiderSample],
-    spider_path: str,
+async def run_evaluation(
+    benchmark: Benchmark,
+    samples: List[Sample],
     verbose: bool = True,
     max_samples: Optional[int] = None,
     k: int = 15,
@@ -728,11 +746,11 @@ async def run_spider_evaluation(
     argv: Optional[List[str]] = None,
 ) -> Dict:
     """
-    Evaluate a list of Spider samples, log every sample, and return the metrics.
+    Evaluate a benchmark's samples, log every sample, and return the metrics.
 
     Args:
-        samples: List of SpiderSample objects from spider_loader.
-        spider_path: Root path to Spider dataset (contains database/ folder).
+        benchmark: The dataset (Spider or BIRD) with the options of this run.
+        samples: ``benchmark.load_samples()``.
         verbose: If True, print per-sample progress to stdout.
         max_samples: Optional cap on the number of samples to evaluate.
         k: Number of schema retrieval units (Top-K) passed to the retriever.
@@ -760,10 +778,11 @@ async def run_spider_evaluation(
     mode = "feedback" if use_feedback_loop else "single-pass"
     owns_log = run_log is None
     if owns_log:
-        run_log = RunLog.create(out_dir, mode, get_llm_settings().model, k, tag)
+        run_log = RunLog.create(out_dir, benchmark.name, mode, get_llm_settings().model, k, tag)
 
-    os.makedirs(_SPIDER_CHROMA_DIR, exist_ok=True)
-    chroma_client = chromadb.PersistentClient(path=_SPIDER_CHROMA_DIR)
+    chroma_dir = _chroma_dir(benchmark)
+    os.makedirs(chroma_dir, exist_ok=True)
+    chroma_client = chromadb.PersistentClient(path=chroma_dir)
     embedding_fn = _build_embedding_fn()
 
     eval_samples = samples if max_samples is None else samples[:max_samples]
@@ -774,7 +793,7 @@ async def run_spider_evaluation(
     latest: Dict[int, dict] = {}
     try:
         meta = _run_meta(
-            spider_path, len(samples), k=k, use_feedback_loop=use_feedback_loop,
+            benchmark, len(samples), k=k, use_feedback_loop=use_feedback_loop,
             max_iterations=feedback_max_iterations, execution_feedback=execution_feedback,
             embedding_fn=embedding_fn, out_dir=os.path.dirname(os.path.abspath(run_log.run_dir)),
         )
@@ -788,6 +807,9 @@ async def run_spider_evaluation(
         schema_units = run_log.load_schema_units()
 
         print(f"run log: {run_log.run_dir}")
+        options = ", ".join(f"{name}={'on' if on else 'off'}" for name, on in benchmark.options.items())
+        print(f"benchmark: {benchmark.title}" + (f" ({options})" if options else "")
+              + f", {len(samples)} samples, EX rule: {benchmark.scoring}")
         if meta["code"].get("dirty"):
             print("note: the working tree has uncommitted changes; the manifest records commit "
                   f"{meta['code'].get('commit')} + dirty=true")
@@ -820,7 +842,7 @@ async def run_spider_evaluation(
                 continue
 
             db_id = sample.db_id
-            sqlite_path = get_sqlite_path(spider_path, db_id)
+            sqlite_path = benchmark.sqlite_path(db_id)
 
             if not os.path.exists(sqlite_path):
                 record = _skipped_record(
@@ -834,11 +856,14 @@ async def run_spider_evaluation(
             # Build/reuse schema + chain for this db_id
             if db_id not in _chain_cache:
                 try:
-                    extractor = SQLiteSchemaExtractor(sqlite_path)
+                    extractor = SQLiteSchemaExtractor(
+                        sqlite_path, meanings=benchmark.column_meanings(db_id)
+                    )
                     schema_dict = extractor.extract()
 
                     collection_name, collection_info = _build_collection(
-                        chroma_client, embedding_fn, db_id, schema_dict,
+                        chroma_client, embedding_fn,
+                        f"Schema_{benchmark.collection_prefix}_{db_id}", schema_dict,
                         rebuild=rebuild_index,
                     )
                     if collection_info["rebuilt_stale"]:
@@ -877,7 +902,7 @@ async def run_spider_evaluation(
 
             chain = _chain_cache[db_id]
             # The executor is bound to this sample's database file (its db_id).
-            executor = SpiderSQLiteExecutor(sqlite_path)
+            executor = SQLiteExecutor(sqlite_path, scoring=benchmark.scoring)
 
             record, result = await _process_sample(
                 idx, sample, chain, executor, k=k, use_feedback_loop=use_feedback_loop,

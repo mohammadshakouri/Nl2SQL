@@ -4,7 +4,7 @@ SQL Validator Module for NL2SQL RAG System
 Provides static SQL syntax/schema validation with feedback-loop support.
 Actual SQLite execution (used for Execution Accuracy and, with
 ``--exec-feedback``, as an extra error signal in the feedback loop) lives in
-``app.spider_eval.spider_sqlite_executor``.
+``app.evaluation.executor``.
 """
 
 import re
@@ -116,7 +116,7 @@ class SQLValidator:
                 return False, f"Table '{table}' does not exist in schema"
 
         # Column names are not checked here; use execution feedback
-        # (SpiderSQLiteExecutor) to catch "no such column" errors.
+        # (SQLiteExecutor) to catch "no such column" errors.
         return True, None
     
     def validate_query(self, sql_query: str) -> Tuple[bool, Optional[str]]:

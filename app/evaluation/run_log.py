@@ -1,9 +1,9 @@
 """
-Run log for the Spider evaluation (log format 2).
+Run log of the benchmark evaluation (Spider and BIRD; log format 2).
 
 Every evaluation run writes a directory::
 
-    runs/<timestamp>_<mode>_<model>_k<K>[_<tag>]/
+    runs/<timestamp>_<dataset>_<mode>_<model>_k<K>[_<tag>]/
         manifest.json      what was run (config, model, prompts, code version,
                            dataset hash, environment) and, at the end, the results
         samples.jsonl      ONE LINE PER SAMPLE with the evidence for it
@@ -27,9 +27,9 @@ The record format is documented in docs/run-log-format.md.
 
 Commands::
 
-    python -m app.spider_eval.run_log check  runs/<run_dir>
-    python -m app.spider_eval.run_log brief  runs/<run_dir>
-    python -m app.spider_eval.run_log prompt runs/<run_dir> <sample_index> [attempt]
+    python -m app.evaluation.run_log check  runs/<run_dir>
+    python -m app.evaluation.run_log brief  runs/<run_dir>
+    python -m app.evaluation.run_log prompt runs/<run_dir> <sample_index> [attempt]
 """
 
 import hashlib
@@ -45,8 +45,8 @@ from collections import Counter
 from datetime import datetime, timezone
 from typing import Dict, Iterable, List, Optional, Tuple
 
-from app.spider_eval.spider_evaluator import compute_metrics
-from app.spider_eval.spider_sqlite_executor import QueryRun
+from app.evaluation.benchmarks import DIFFICULTY_ORDER
+from app.evaluation.executor import QueryRun
 
 SCHEMA_VERSION = 2
 
@@ -317,6 +317,30 @@ def load_units(run_dir: str) -> Dict[str, Dict[str, dict]]:
 # Aggregation (the metrics are a pure function of the records)
 # ---------------------------------------------------------------------------
 
+def compute_metrics(total: int, exec_correct: int) -> dict:
+    """Execution accuracy as a percentage rounded to 2 decimals (0.0 for an empty run)."""
+    return {
+        "total": total,
+        "execution_accuracy": round(exec_correct / total * 100, 2) if total else 0.0,
+    }
+
+
+def _by_difficulty(processed: List[dict]) -> dict:
+    """EX per difficulty label of the dataset (empty when the samples carry none)."""
+    groups: Dict[str, List[dict]] = {}
+    for record in processed:
+        if record.get("difficulty"):
+            groups.setdefault(record["difficulty"], []).append(record)
+    order = [d for d in DIFFICULTY_ORDER if d in groups] + sorted(set(groups) - set(DIFFICULTY_ORDER))
+    return {
+        label: compute_metrics(
+            len(groups[label]),
+            sum(1 for r in groups[label] if (r.get("scoring") or {}).get("ex")),
+        )
+        for label in order
+    }
+
+
 def summarize_records(
     latest: Dict[int, dict],
     *,
@@ -330,6 +354,9 @@ def summarize_records(
     total = len(processed)
 
     metrics = compute_metrics(total, sum(1 for r in scored if r["scoring"]["ex"]))
+    by_difficulty = _by_difficulty(processed)
+    if by_difficulty:
+        metrics["by_difficulty"] = by_difficulty
     failure_reasons = Counter(
         r["failure_kind"] for r in processed if r["status"] in ("no_sql", "internal_error")
     )
@@ -417,10 +444,12 @@ def brief_record(record: dict) -> dict:
             if attempt.get("rejected"):
                 error = f"attempt rejected ({attempt['rejected']['stage']}): {attempt['rejected']['error']}"
                 break
+    extra = {key: record[key] for key in ("evidence", "difficulty") if record.get(key)}
     return {
         "idx": record["sample_index"],
         "db": record["db_id"],
         "question": record["question"],
+        **extra,
         "gold": record["gold_sql"],
         "pred": record.get("final_sql"),
         "status": record["status"] if record["status"] != "scored" else None,
@@ -449,9 +478,10 @@ def write_brief(run_dir: str) -> int:
 
 def rebuild_user_prompts(record: dict, units: Dict[str, dict]) -> List[str]:
     """
-    The user prompt of every attempt of ``record``, rebuilt from the question,
-    the retrieved unit ids, schema_units.json (``units``: this db's units by id)
-    and the earlier attempts' SQL and rejection messages.
+    The user prompt of every attempt of ``record``, rebuilt from the question
+    (and its evidence, if it had any), the retrieved unit ids, schema_units.json
+    (``units``: this db's units by id) and the earlier attempts' SQL and
+    rejection messages.
     """
     from app.nl2sql_chain import NL2SQLChain
     from app.sql_validator import SQLFeedbackLoop, SQLValidator
@@ -461,7 +491,9 @@ def rebuild_user_prompts(record: dict, units: Dict[str, dict]) -> List[str]:
     loop = SQLFeedbackLoop(SQLValidator(), max_iterations=len(record["attempts"]) + 1)
     prompts = []
     for attempt in record["attempts"]:
-        prompts.append(chain.build_user_prompt(record["question"], context, loop.get_feedback_prompt()))
+        prompts.append(chain.build_user_prompt(
+            record["question"], context, loop.get_feedback_prompt(), record.get("evidence")
+        ))
         if attempt.get("error"):      # the call failed: nothing was checked, the loop stopped
             break
         rejected = attempt.get("rejected")
@@ -522,11 +554,11 @@ class RunLog:
     # -- creation ---------------------------------------------------------
 
     @classmethod
-    def create(cls, out_dir: str, mode: str, model: str, k: int, tag: Optional[str] = None,
-               prelude: str = "") -> "RunLog":
+    def create(cls, out_dir: str, dataset: str, mode: str, model: str, k: int,
+               tag: Optional[str] = None, prelude: str = "") -> "RunLog":
         stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
         slug = "".join(c if c.isalnum() or c in "-." else "-" for c in model).strip("-")
-        name = f"{stamp}_{mode}_{slug}_k{k}" + (f"_{tag}" if tag else "")
+        name = f"{stamp}_{dataset}_{mode}_{slug}_k{k}" + (f"_{tag}" if tag else "")
         path, n = os.path.join(out_dir, name), 1
         while os.path.exists(path):   # two runs started within the same second
             n += 1
@@ -707,7 +739,11 @@ def check_run(run_dir: str) -> int:
     latest = latest_by_index(r for r in records if "sample_index" in r)
 
     code = manifest.get("code", {})
+    dataset = manifest.get("dataset", {})
+    options = ", ".join(f"{k}={'on' if v else 'off'}" for k, v in (dataset.get("options") or {}).items())
     print(f"run:        {manifest.get('run_id')}  (status: {manifest.get('status')})")
+    print(f"dataset:    {dataset.get('name', 'spider')}" + (f" ({options})" if options else "")
+          + f"  {dataset.get('n_samples')} samples")
     llm = manifest.get("llm", {})
     print(f"model:      {llm.get('provider')} / {llm.get('model')}  temperature={llm.get('temperature')}  "
           f"reasoning_effort={llm.get('reasoning_effort')}")
@@ -744,7 +780,7 @@ def check_run(run_dir: str) -> int:
     except ImportError as exc:
         print(f"prompts:    not verified (the project's dependencies are not importable: {exc})")
 
-    expected = manifest.get("dataset", {}).get("n_samples")
+    expected = dataset.get("n_samples")
     sessions = manifest.get("sessions") or [{}]
     limit = sessions[-1].get("limit")
     want = min(expected, limit) if expected and limit else expected
@@ -795,6 +831,6 @@ if __name__ == "__main__":
         sys.exit(0)
     if len(args) in (3, 4) and args[0] == "prompt":
         sys.exit(show_prompt(args[1], int(args[2]), int(args[3]) if len(args) == 4 else 1))
-    print("usage: python -m app.spider_eval.run_log check|brief <run_dir>\n"
-          "       python -m app.spider_eval.run_log prompt <run_dir> <sample_index> [attempt]")
+    print("usage: python -m app.evaluation.run_log check|brief <run_dir>\n"
+          "       python -m app.evaluation.run_log prompt <run_dir> <sample_index> [attempt]")
     sys.exit(2)

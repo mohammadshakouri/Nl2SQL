@@ -1,7 +1,7 @@
 # تحلیل خطا روی اجرای کامل Spider dev (۱۰۳۴ نمونه)
 
 > اجرا: `runs/20261120T164326Z_feedback_gpt-6-luna_k15_all_samples` — `gpt-6-luna`، temperature=1، reasoning_effort=low، K=15، `--exec-feedback` (حداکثر ۴ تلاش)، commit `b8354d4` (بدون تغییر ناکامیت‌شده).
-> این سند جایگزین بخش ۴ سند `Auto_Ontology_Applicability_Review_fa.md` است که روی ۴۰۲ نمونه از لاگ ترمینال بود. اعداد این سند از روی لاگ کامل و با اسکریپت تکرارپذیر `python -m app.spider_eval.error_analysis` محاسبه شده‌اند؛ برچسب‌های دستی در `runs/20261120T164326Z_feedback_gpt-6-luna_k15_all_samples/error_labels.tsv` و خروجی ماشینی در `error_analysis.json` کنار لاگ است.
+> این سند جایگزین بخش ۴ سند `Auto_Ontology_Applicability_Review_fa.md` است که روی ۴۰۲ نمونه از لاگ ترمینال بود. اعداد این سند از روی لاگ کامل و با اسکریپت تکرارپذیر `python -m app.evaluation.error_analysis` محاسبه شده‌اند؛ برچسب‌های دستی در `runs/20261120T164326Z_feedback_gpt-6-luna_k15_all_samples/error_labels.tsv` و خروجی ماشینی در `error_analysis.json` کنار لاگ است.
 > **شمارهٔ نمونه‌ها `sample_index` ۰-مبنا هستند** (همان `idx` در `brief.jsonl`)؛ برای تطبیق با شمارهٔ ردیف‌های سند قبلی ۱ واحد اضافه کنید.
 
 ## ۱. نتیجه در یک نگاه
@@ -244,20 +244,20 @@
 
 ```bash
 # اعتبارسنجی برچسب‌ها (هر نمونهٔ ناموفق برچسب دارد، H/column_order با نتیجهٔ ذخیره‌شده سازگار است)
-python -m app.spider_eval.error_analysis runs/<run_dir> --spider_path ./spider --check-only
+python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider --check-only
 # همهٔ جدول‌ها + نوشتن error_analysis.json کنار لاگ
-python -m app.spider_eval.error_analysis runs/<run_dir> --spider_path ./spider
+python -m app.evaluation.error_analysis runs/<run_dir> --spider_path ./Spider
 ```
 
-`--spider_path` پوشه‌ای با `dev.json` و `tables.json` است. برچسب‌ها: `error_labels.tsv` (ستون‌ها: `sample_index, category, subtype, arguable, also, note`).
+`--spider_path` پوشه‌ای با `dev.json` و `tables.json` است. این تحلیل فقط برای لاگ‌های Spider است. برچسب‌ها: `error_labels.tsv` (ستون‌ها: `sample_index, category, subtype, arguable, also, note`).
 
 ## ۱۱. وضعیت اصلاح scorer (پس از این تحلیل انجام شد)
 
-اصلاح‌های `app/spider_eval/spider_sqlite_executor.py` و پیامد آن‌ها روی همین لاگ:
+اصلاح‌های `app/evaluation/executor.py` (که در زمان این تحلیل `app/spider_eval/spider_sqlite_executor.py` نام داشت) و پیامد آن‌ها روی همین لاگ:
 
 | ضعف | اصلاح | اثر روی این لاگ |
 |---|---|---|
-| H/`column_order` (45 نمونه) | `results_match`: ردیف‌ها چندمجموعه‌ای، ترتیب ستون‌ها مهم نیست (مثل `result_eq` رسمی Spider)؛ هر ستون gold دقیقاً یک‌بار باید باشد | از 959 نمونه‌ای که نتیجهٔ کامل دارند، **0 نمونه از قبول به رد** تغییر کرد و **دقیقاً همان 37 نمونهٔ H** از رد به قبول رسید، هیچ‌کدام G یا M نبود. 6 نمونهٔ دیگر (نتیجه >20 ردیف) فقط در اجرای دوباره قطعی می‌شوند |
+| H/`column_order` (45 نمونه) | `spider_results_match` (قبلاً `results_match`): ردیف‌ها چندمجموعه‌ای، ترتیب ستون‌ها مهم نیست (مثل `result_eq` رسمی Spider)؛ هر ستون gold دقیقاً یک‌بار باید باشد | از 959 نمونه‌ای که نتیجهٔ کامل دارند، **0 نمونه از قبول به رد** تغییر کرد و **دقیقاً همان 37 نمونهٔ H** از رد به قبول رسید، هیچ‌کدام G یا M نبود. 6 نمونهٔ دیگر (نتیجه >20 ردیف) فقط در اجرای دوباره قطعی می‌شوند |
 | H/`gold_unreadable` (2 نمونه) و خطای UTF-8 که به مدل پس داده می‌شد (4 نمونه) | `text_factory` با حذف بایت‌های نامعتبر (مثل test-suite رسمی) | فقط با اجرای دوباره روی `wta_1` قابل سنجش است (دیتابیس این محیط نبود) |
 | ثبت و کنترل | `scoring.permuted` برای هر نمونه، شمارندهٔ پایان اجرا، `scorer_sha256` در fingerprint (resume با scorer دیگر رد می‌شود) | — |
 

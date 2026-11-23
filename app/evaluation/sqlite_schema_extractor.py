@@ -99,10 +99,17 @@ class SQLiteSchemaExtractor:
     with the SchemaManager JSON format.
     """
 
-    def __init__(self, sqlite_path: str):
+    def __init__(
+        self,
+        sqlite_path: str,
+        meanings: Optional[Dict[Tuple[str, str], str]] = None,
+    ):
         """
         Args:
             sqlite_path: Full filesystem path to the .sqlite file.
+            meanings: Optional ``{(table, column) lower-cased: text}`` that replaces
+                the generic "Column x of table y" meaning of a column (e.g. BIRD's
+                column descriptions).
 
         Raises:
             FileNotFoundError: If the database file does not exist.
@@ -110,6 +117,7 @@ class SQLiteSchemaExtractor:
         if not os.path.exists(sqlite_path):
             raise FileNotFoundError(f"SQLite database not found: {sqlite_path}")
         self.sqlite_path = sqlite_path
+        self._meanings = meanings or {}
         self._db_name = os.path.splitext(os.path.basename(sqlite_path))[0]
 
     # ------------------------------------------------------------------
@@ -122,8 +130,10 @@ class SQLiteSchemaExtractor:
         return conn
 
     def _get_table_names(self, conn: sqlite3.Connection) -> List[str]:
+        # sqlite_sequence and the like are SQLite's own bookkeeping, not schema.
         cursor = conn.execute(
-            "SELECT name FROM sqlite_master WHERE type='table' ORDER BY name;"
+            "SELECT name FROM sqlite_master WHERE type='table' "
+            "AND name NOT LIKE 'sqlite\\_%' ESCAPE '\\' ORDER BY name;"
         )
         return [row["name"] for row in cursor.fetchall()]
 
@@ -146,6 +156,20 @@ class SQLiteSchemaExtractor:
         """
         cursor = conn.execute(f"PRAGMA foreign_key_list({_quote(table_name)});")
         return [dict(row) for row in cursor.fetchall()]
+
+    def _fk_target_column(self, conn: sqlite3.Connection, fk: Dict[str, Any]) -> str:
+        """
+        The referenced column of a foreign key. ``REFERENCES t`` without a column
+        names ``t``'s primary key; PRAGMA then reports no target (None).
+        """
+        if fk["to"] is not None:
+            return fk["to"]
+        primary_key = [
+            col["name"]
+            for col in sorted(self._get_columns(conn, fk["table"]), key=lambda c: c["pk"])
+            if col["pk"] > 0
+        ]
+        return primary_key[fk["seq"]] if fk["seq"] < len(primary_key) else str(fk["to"])
 
     # ------------------------------------------------------------------
     # Public API
@@ -190,11 +214,12 @@ class SQLiteSchemaExtractor:
                 )
 
                 for col in raw_cols:
+                    meaning = self._meanings.get((table_name.lower(), col["name"].lower()))
                     schema["columns"].append(
                         {
                             "table_name": table_name,
                             "column_name": col["name"],
-                            "meaning": f"Column {col['name']} of table {table_name}",
+                            "meaning": meaning or f"Column {col['name']} of table {table_name}",
                             "data_type": _map_type(col["type"]),
                         }
                     )
@@ -206,7 +231,7 @@ class SQLiteSchemaExtractor:
                             "source_table": table_name,
                             "source_column": fk["from"],
                             "target_table": fk["table"],
-                            "target_column": fk["to"],
+                            "target_column": self._fk_target_column(conn, fk),
                             "relationship_type": "many-to-one",
                             "join_purpose": (
                                 f"connecting {table_name} to {fk['table']}"
