@@ -1,0 +1,199 @@
+{
+  "schema_version": 2,
+  "run_id": "20261123T110920Z_bird_feedback_gpt-6-luna_k30_all_samples_with_desc",
+  "created_at": "2026-11-23T11:09:23.238+00:00",
+  "sessions": [
+    {
+      "session": 1,
+      "started_at": "2026-11-23T11:09:23.238+00:00",
+      "ended_at": "2026-11-23T12:07:09.967+00:00",
+      "status": "complete",
+      "resumed": false,
+      "argv": [
+        "cli_eval.py",
+        "--dataset",
+        "bird",
+        "--k",
+        "30",
+        "--exec-feedback",
+        "--descriptions",
+        "--tag",
+        "all_samples_with_desc"
+      ],
+      "limit": null,
+      "code": {
+        "commit": "327a6331a9393e105d3421c83b5cccdc70767858",
+        "branch": "main",
+        "dirty": true
+      },
+      "environment": {
+        "python": "3.12.10",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "sqlite": "3.49.1",
+        "packages": {
+          "openai": "2.14.0",
+          "ollama": "0.6.1",
+          "chromadb": "1.3.7",
+          "sentence-transformers": "5.2.0",
+          "sqlparse": "0.5.3",
+          "numpy": "2.3.5"
+        }
+      },
+      "wall_seconds": 3466.7
+    }
+  ],
+  "config": {
+    "dataset": "bird",
+    "dataset_options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "mode": "feedback",
+    "k": 30,
+    "max_attempts": 4,
+    "execution_feedback": true
+  },
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "temperature": 1,
+    "host": "api.openai.com (SDK default)",
+    "timeout_s": 120.0,
+    "max_retries": 5,
+    "reasoning_effort": "none",
+    "stream": true,
+    "api_key_set": true
+  },
+  "embedding": {
+    "provider": "local",
+    "model": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+    "function": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+  },
+  "prompts": {
+    "system_first": "[ROLE]\nYou are an expert SQL generator responsible for producing valid, executable SQL queries.\n\n[INPUT]\nInputs include a user question in natural language and a database Schema.\n\n[CRITICAL RULES]\n2. Use ONLY tables, columns, and relations provided in the Schema\n3. Do NOT invent any tables, columns, or relationships\n4. Use Schema information to infer correct JOINs\n5. SQL must be standard and executable\n6. Use appropriate aggregate functions (SUM, COUNT, AVG, MAX, MIN)\n7. Implement WHERE conditions and filters correctly\n8. Use appropriate DATE functions for temporal queries\n\n[OUTPUT FORMAT]\nYour output must be exactly in this format:\nSELECT ...\nFROM ...\nWHERE ...\n\nDo not write any explanation before or after the SQL.\n",
+    "system_feedback": "[ROLE]\nYou are an expert SQL developer correcting a previous query.\n\n[CONTEXT]\nYour previous query encountered an error. You must fix it.\n\n[CRITICAL RULES]\n1. Read the previous error carefully\n2. Generate ONLY corrected SQL - no explanations\n3. Use the provided Schema\n4. Check spelling of tables and columns\n5. Verify JOIN conditions\n6. Qualify ambiguous column names with aliases\n\n[OUTPUT]\nOnly the corrected SQL:\n",
+    "system_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "6d3a0431265413ad9d24f554f579a3f4f051ea8540528da9c203bb3256d9dd4e"
+  },
+  "retrieval_units": {
+    "templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8"
+  },
+  "scorer": {
+    "sha256": "996aa00aea94779f57f2a6d0db2149c7cc3885e9cf637fe1c19f15ac1cf9e50a"
+  },
+  "dataset": {
+    "name": "bird",
+    "n_samples": 1534,
+    "scoring": "bird",
+    "options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "files": {
+      "dev.json": "630272f2b1c44d8cef2c3b246f623355cf0bbc1e832c81061df895530dfc2f06",
+      "database_description/*.csv": "8905fea01b3b4a8e548e99764fe00b62b01ab0fab6af5bc75e3add0ef43dd5db"
+    }
+  },
+  "code": {
+    "commit": "327a6331a9393e105d3421c83b5cccdc70767858",
+    "branch": "main",
+    "dirty": true
+  },
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "sqlite": "3.49.1",
+    "packages": {
+      "openai": "2.14.0",
+      "ollama": "0.6.1",
+      "chromadb": "1.3.7",
+      "sentence-transformers": "5.2.0",
+      "sqlparse": "0.5.3",
+      "numpy": "2.3.5"
+    }
+  },
+  "fingerprint": {
+    "dataset": "bird",
+    "dataset_options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "mode": "feedback",
+    "k": 30,
+    "max_attempts": 4,
+    "execution_feedback": true,
+    "llm": {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "temperature": 1,
+      "reasoning_effort": "none"
+    },
+    "embedding": {
+      "provider": "local",
+      "model": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+    },
+    "prompts_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "6d3a0431265413ad9d24f554f579a3f4f051ea8540528da9c203bb3256d9dd4e",
+    "unit_templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8",
+    "scorer_sha256": "996aa00aea94779f57f2a6d0db2149c7cc3885e9cf637fe1c19f15ac1cf9e50a",
+    "dataset_files": {
+      "dev.json": "630272f2b1c44d8cef2c3b246f623355cf0bbc1e832c81061df895530dfc2f06",
+      "database_description/*.csv": "8905fea01b3b4a8e548e99764fe00b62b01ab0fab6af5bc75e3add0ef43dd5db"
+    }
+  },
+  "status": "complete",
+  "progress": {
+    "done": 1525,
+    "of": 1534,
+    "updated_at": "2026-11-23T12:06:45.314+00:00"
+  },
+  "results": {
+    "metrics": {
+      "total": 1534,
+      "execution_accuracy": 54.82,
+      "by_difficulty": {
+        "simple": {
+          "total": 925,
+          "execution_accuracy": 61.51
+        },
+        "moderate": {
+          "total": 464,
+          "execution_accuracy": 45.47
+        },
+        "challenging": {
+          "total": 145,
+          "execution_accuracy": 42.07
+        }
+      },
+      "mode": "feedback",
+      "k": 30,
+      "skipped": 0,
+      "inference_failures": 0,
+      "failure_reasons": {},
+      "llm_calls": 1932,
+      "ex_column_reordered": 0,
+      "max_attempts": 4,
+      "execution_feedback": true,
+      "feedback": {
+        "retried": 299,
+        "recovered": 291,
+        "exhausted": 8,
+        "first_attempt_execution_accuracy": 47.26
+      }
+    },
+    "tokens": {
+      "prompt_tokens": 2161854,
+      "completion_tokens": 103701,
+      "total_tokens": 2265555,
+      "reasoning_tokens": 0,
+      "cached_tokens": 165456,
+      "samples_without_usage": 0
+    },
+    "status_counts": {
+      "scored": 1534
+    },
+    "n_samples_logged": 1534,
+    "of": 1534,
+    "finished_at": "2026-11-23T12:07:09.967+00:00"
+  }
+}

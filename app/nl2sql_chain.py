@@ -45,7 +45,7 @@ EMBEDDING_MODEL_DIR = env.embedding_model_dir
 OPENAI_MODEL_NAME: str = "gpt-6-luna"
 OPENAI_TEMPERATURE: float = 1
 # Sent as ``reasoning_effort``; None omits the parameter (the model's own default).
-OPENAI_REASONING_EFFORT: Optional[str] = "low"
+OPENAI_REASONING_EFFORT: Optional[str] = "none"
 # Explicit so the values are recorded rather than inherited from SDK defaults:
 # a hung request must not stall a paid run for the SDK's 10-minute default, and
 # transient errors (429/5xx/connection) are retried by the SDK before a sample

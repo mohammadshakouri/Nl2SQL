@@ -7,7 +7,7 @@ The user writes Persian. Answer in Persian; keep code, identifiers, commit messa
 
 ## How it works
 1. `app/schema_manager.py` turns each database into **units** (table / column / relation), embedded into one ChromaDB collection per database (`chroma_db/`, git-ignored).
-2. `app/nl2sql_chain.py`: dense retrieval of the Top-K units (K=15), prompt assembly, LLM call. OpenAI (default model `gpt-6-luna`, temperature 1, reasoning_effort low) or Ollama (`USE_LOCAL_LLM`). Prompts: `app/system_prompt.py`.
+2. `app/nl2sql_chain.py`: dense retrieval of the Top-K units (K=15), prompt assembly, LLM call. OpenAI (default model `gpt-6-luna`, temperature 1, reasoning_effort none) or Ollama (`USE_LOCAL_LLM`). Prompts: `app/system_prompt.py`.
 3. `app/sql_validator.py` + `SQLFeedbackLoop`: with `--feedback` retries on static errors; with `--exec-feedback` also on SQLite execution errors (max 4 attempts). Attempt 1 is the single-pass answer, so one run gives paired single-pass and loop scores.
 4. `app/evaluation/`: `benchmarks.py` (**everything that differs between Spider and BIRD**: paths, gold key, evidence, scoring rule, column descriptions), `runner.py` (the run), `executor.py` (**the scorers**), `run_log.py` (log format, `check`/`brief`/`prompt`), `error_analysis.py` (Spider only). Retrieval, prompting, the feedback loop and logging are shared; a new dataset means a new entry in `benchmarks.py`, not a new pipeline.
 
