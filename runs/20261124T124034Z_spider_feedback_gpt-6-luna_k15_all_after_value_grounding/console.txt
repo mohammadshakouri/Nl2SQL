@@ -1,0 +1,1478 @@
+Loading Spider 1 dev set from: C:\repos\mohammad\NL2SQL\Nl2SQL\Spider
+Loaded 1034 samples.
+Retrieval: dense Top-15 + BM25 Top-15 -> RRF (K to 1.5 K schema units), then completion (keys, joins, name column).
+LLM: openai / gpt-6-luna  temperature=1  reasoning_effort=none
+Preflight OK: 3600 ms, reply 'OK', usage {'completion_tokens': 4, 'prompt_tokens': 14, 'total_tokens': 18, 'completion_tokens_details': {'accepted_prediction_tokens': 0, 'audio_tokens': 0, 'reasoning_tokens': 0, 'rejected_prediction_tokens': 0}, 'prompt_tokens_details': {'audio_tokens': 0, 'cached_tokens': 0, 'cache_write_tokens': 0}}
+
+run log: runs\20261124T124034Z_spider_feedback_gpt-6-luna_k15_all_after_value_grounding
+benchmark: Spider 1, 1034 samples, EX rule: spider
+feedback loop (static validation + SQLite execution), max 4 attempts, k=15
+retrieval: hybrid (dense + BM25 -> RRF) + completion
+LLM: openai / gpt-6-luna  temperature=1  reasoning_effort=none
+note: db=concert_singer: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[1/1034] EX     db=concert_singer | Q: How many singers do we have?
+[2/1034] EX     db=concert_singer | Q: What is the total number of singers?
+[3/1034] EX     db=concert_singer | Q: Show name, country, age for all singers ordered by age from 
+[4/1034] EX     db=concert_singer | Q: What are the names, countries, and ages for every singer in 
+[5/1034] EX     db=concert_singer | Q: What is the average, minimum, and maximum age of all singers
+[6/1034] EX     db=concert_singer | Q: What is the average, minimum, and maximum age for all French
+[7/1034] EX     db=concert_singer | Q: Show the name and the release year of the song by the younge
+[8/1034] EX     db=concert_singer | Q: What are the names and release years for all the songs of th
+[9/1034] EX     db=concert_singer | Q: What are all distinct countries where singers above age 20 a
+[10/1034] EX     db=concert_singer | Q: What are  the different countries with singers above age 20?
+[11/1034] EX     db=concert_singer | Q: Show all countries and the number of singers in each country
+[12/1034] EX     db=concert_singer | Q: How many singers are from each country?
+[13/1034] EX     db=concert_singer | Q: List all song names by singers above the average age.
+[14/1034] EX     db=concert_singer | Q: What are all the song names by singers who are older than av
+[15/1034] EX     db=concert_singer | Q: Show location and name for all stadiums with a capacity betw
+[16/1034] EX     db=concert_singer | Q: What are the locations and names of all stations with capaci
+[17/1034] FAIL   db=concert_singer | Q: What is the maximum capacity and the average of all stadiums
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MAX(Capacity), AVG(Average) FROM stadium;
+[18/1034] EX     db=concert_singer | Q: What is the average and maximum capacities for all stadiums 
+[19/1034] EX     db=concert_singer | Q: What is the name and capacity for the stadium with highest a
+[20/1034] EX     db=concert_singer | Q: What is the name and capacity for the stadium with the highe
+[21/1034] EX     db=concert_singer | Q: How many concerts are there in year 2014 or 2015?
+[22/1034] EX     db=concert_singer | Q: How many concerts occurred in 2014 or 2015?
+[23/1034] FAIL   db=concert_singer | Q: Show the stadium name and the number of concerts in each sta
+         reason: Result mismatch: predicted 9 row(s), gold 5 row(s)
+         pred:   SELECT stadium.Name, COUNT(concert.concert_ID) AS concert_count FROM stadium LEFT JOIN concert ON concert.Stadium_ID = stadium.Stadium_ID GROUP BY stadium.Stadium_ID, stadium.Name;
+[24/1034] FAIL   db=concert_singer | Q: For each stadium, how many concerts play there?
+         reason: Result mismatch: predicted 9 row(s), gold 5 row(s)
+         pred:   SELECT stadium.Name, COUNT(concert.concert_ID) FROM stadium LEFT JOIN concert ON concert.Stadium_ID = stadium.Stadium_ID GROUP BY stadium.Stadium_ID, stadium.Name;
+[25/1034] EX     db=concert_singer | Q: Show the stadium name and capacity with most number of conce
+[26/1034] EX     db=concert_singer | Q: What is the name and capacity of the stadium with the most c
+[27/1034] EX     db=concert_singer | Q: Which year has most number of concerts?
+[28/1034] EX     db=concert_singer | Q: What is the year that had the most concerts?
+[29/1034] EX     db=concert_singer | Q: Show the stadium names without any concert.
+[30/1034] EX     db=concert_singer | Q: What are the names of the stadiums without any concerts?
+[31/1034] EX     db=concert_singer | Q: Show countries where a singer above age 40 and a singer belo
+[32/1034] EX     db=concert_singer | Q: Show names for all stadiums except for stadiums having a con
+[33/1034] EX     db=concert_singer | Q: What are the names of all stadiums that did not have a conce
+[34/1034] EX     db=concert_singer | Q: Show the name and theme for all concerts and the number of s
+[35/1034] EX     db=concert_singer | Q: What are the names , themes , and number of singers for ever
+[36/1034] EX     db=concert_singer | Q: List singer names and number of concerts for each singer.
+[37/1034] EX     db=concert_singer | Q: What are the names of the singers and number of concerts for
+[38/1034] FAIL   db=concert_singer | Q: List all singer names in concerts in year 2014.
+         reason: Result mismatch: predicted 5 row(s), gold 6 row(s)
+         pred:   SELECT DISTINCT singer.Name FROM singer JOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID JOIN concert ON singer_in_concert.concert_ID = concert.concert_ID WHERE concert.Year = 
+[39/1034] FAIL   db=concert_singer | Q: What are the names of the singers who performed in a concert
+         reason: Result mismatch: predicted 5 row(s), gold 6 row(s)
+         pred:   SELECT DISTINCT singer.Name FROM singer JOIN singer_in_concert ON singer.Singer_ID = singer_in_concert.Singer_ID JOIN concert ON singer_in_concert.concert_ID = concert.concert_ID WHERE concert.Year = 
+[40/1034] EX     db=concert_singer | Q: what is the name and nation of the singer who have a song ha
+[41/1034] EX     db=concert_singer | Q: What is the name and country of origin of every singer who h
+[42/1034] EX     db=concert_singer | Q: Find the name and location of the stadiums which some concer
+[43/1034] EX     db=concert_singer | Q: What are the names and locations of the stadiums that had co
+[44/1034] EX     db=concert_singer | Q: Find the number of concerts happened in the stadium with the
+[45/1034] EX     db=concert_singer | Q: What are the number of concerts that occurred in the stadium
+note: db=pets_1: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[46/1034] EX     db=pets_1 | Q: Find the number of pets whose weight is heavier than 10.
+[47/1034] EX     db=pets_1 | Q: How many pets have a greater weight than 10?
+[48/1034] EX     db=pets_1 | Q: Find the weight of the youngest dog.
+[49/1034] EX     db=pets_1 | Q: How much does the youngest dog weigh?
+[50/1034] EX     db=pets_1 | Q: Find the maximum weight for each type of pet. List the maxim
+[51/1034] EX     db=pets_1 | Q: List the maximum weight and type for each type of pet.
+[52/1034] EX     db=pets_1 | Q: Find number of pets owned by students who are older than 20.
+[53/1034] EX     db=pets_1 | Q: How many pets are owned by students that have an age greater
+[54/1034] EX     db=pets_1 | Q: Find the number of dog pets that are raised by female studen
+[55/1034] EX     db=pets_1 | Q: How many dog pets are raised by female students?
+[56/1034] EX     db=pets_1 | Q: Find the number of distinct type of pets.
+[57/1034] EX     db=pets_1 | Q: How many different types of pet are there?
+[58/1034] EX     db=pets_1 | Q: Find the first name of students who have cat or dog pet.
+[59/1034] EX     db=pets_1 | Q: What are the first names of every student who has a cat or d
+[60/1034] EX     db=pets_1 | Q: Find the first name of students who have both cat and dog pe
+[61/1034] EX     db=pets_1 | Q: What are the students' first names who have both cats and do
+[62/1034] EX     db=pets_1 | Q: Find the major and age of students who do not have a cat pet
+[63/1034] EX     db=pets_1 | Q: What major is every student who does not own a cat as a pet,
+[64/1034] EX     db=pets_1 | Q: Find the id of students who do not have a cat pet.
+[65/1034] EX     db=pets_1 | Q: What are the ids of the students who do not own cats as pets
+[66/1034] FAIL   db=pets_1 | Q: Find the first name and age of students who have a dog but d
+         reason: Result mismatch: predicted 1 row(s), gold 2 row(s)
+         pred:   SELECT DISTINCT s.Fname, s.Age FROM Student AS s JOIN Has_Pet AS hp ON hp.StuID = s.StuID JOIN Pets AS p ON p.PetID = hp.PetID WHERE p.PetType = 'dog'   AND NOT EXISTS (     SELECT 1     FROM Has_Pet 
+[67/1034] FAIL   db=pets_1 | Q: What is the first name of every student who has a dog but do
+         reason: Result mismatch: predicted 1 row(s), gold 2 row(s)
+         pred:   SELECT DISTINCT s.Fname FROM Student AS s JOIN Has_Pet AS hp ON hp.StuID = s.StuID JOIN Pets AS p ON p.PetID = hp.PetID WHERE p.PetType = 'dog'   AND NOT EXISTS (     SELECT 1     FROM Has_Pet AS hp2 
+[68/1034] EX     db=pets_1 | Q: Find the type and weight of the youngest pet.
+[69/1034] EX     db=pets_1 | Q: What type of pet is the youngest animal, and how much does i
+[70/1034] EX     db=pets_1 | Q: Find the id and weight of all pets whose age is older than 1
+[71/1034] EX     db=pets_1 | Q: What is the id and weight of every pet who is older than 1?
+[72/1034] EX     db=pets_1 | Q: Find the average and maximum age for each type of pet.
+[73/1034] EX     db=pets_1 | Q: What is the average and maximum age for each pet type?
+[74/1034] EX     db=pets_1 | Q: Find the average weight for each pet type.
+[75/1034] EX     db=pets_1 | Q: What is the average weight for each type of pet?
+[76/1034] EX     db=pets_1 | Q: Find the first name and age of students who have a pet.
+[77/1034] EX     db=pets_1 | Q: What are the different first names and ages of the students 
+[78/1034] EX     db=pets_1 | Q: Find the id of the pet owned by student whose last name is ‘
+[79/1034] EX     db=pets_1 | Q: What is the id of the pet owned by the student whose last na
+[80/1034] EX     db=pets_1 | Q: Find the number of pets for each student who has any pet and
+[81/1034] EX     db=pets_1 | Q: For students who have pets , how many pets does each student
+[82/1034] EX     db=pets_1 | Q: Find the first name and gender of student who have more than
+[83/1034] EX     db=pets_1 | Q: What is the first name and gender of the all the students wh
+[84/1034] EX     db=pets_1 | Q: Find the last name of the student who has a cat that is age 
+[85/1034] EX     db=pets_1 | Q: What is the last name of the student who has a cat that is 3
+[86/1034] EX     db=pets_1 | Q: Find the average age of students who do not have any pet .
+[87/1034] EX     db=pets_1 | Q: What is the average age for all students who do not own any 
+note: db=car_1: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[88/1034] EX     db=car_1 | Q: How many continents are there?
+[89/1034] EX     db=car_1 | Q: What is the number of continents?
+[90/1034] EX     db=car_1 | Q: How many countries does each continent have? List the contin
+[91/1034] EX     db=car_1 | Q: For each continent, list its id, name, and how many countrie
+[92/1034] EX     db=car_1 | Q: How many countries are listed?
+[93/1034] EX     db=car_1 | Q: How many countries exist?
+[94/1034] EX     db=car_1 | Q: How many models does each car maker produce? List maker full
+[95/1034] EX     db=car_1 | Q: What is the full name of each car maker, along with its id a
+[96/1034] FAIL   db=car_1 | Q: Which model of the car has the minimum horsepower?
+         reason: Result mismatch: predicted 6 row(s), gold 1 row(s)
+         pred:   SELECT car_names.Model FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE CAST(cars_data.Horsepower AS REAL) = (   SELECT MIN(CAST(Horsepower AS REAL))   FROM cars_data   WHERE Hor
+[97/1034] FAIL   db=car_1 | Q: What is the model of the car with the smallest amount of hor
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT car_names.Model FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId ORDER BY CAST(cars_data.Horsepower AS INTEGER) LIMIT 1;
+[98/1034] FAIL   db=car_1 | Q: Find the model of the car whose weight is below the average 
+         reason: Result mismatch: predicted 229 row(s), gold 230 row(s)
+         pred:   SELECT ml.Model FROM cars_data AS cd JOIN car_names AS cn ON cd.Id = cn.MakeId JOIN model_list AS ml ON cn.Model = ml.Model WHERE cd.Weight < (SELECT AVG(Weight) FROM cars_data);
+[99/1034] EX     db=car_1 | Q: What is the model for the car with a weight smaller than the
+[100/1034] EX     db=car_1 | Q: Find the name of the makers that produced some cars in the y
+[101/1034] FAIL   db=car_1 | Q: What is the name of the different car makers who produced a 
+         reason: Result mismatch: predicted 11 row(s), gold 11 row(s)
+         pred:   SELECT DISTINCT car_makers.FullName FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId JOIN model_list ON car_names.Model = model_list.Model JOIN car_makers ON model_list.Maker = car_mak
+[102/1034] FAIL   db=car_1 | Q: Find the make and production time of the cars that were prod
+         reason: Result mismatch: predicted 35 row(s), gold 35 row(s)
+         pred:   SELECT car_names.Make, cars_data.Accelerate FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE cars_data.Year = (SELECT MIN(Year) FROM cars_data);
+[103/1034] FAIL   db=car_1 | Q: What is the maker of the carr produced in the earliest year 
+         reason: Result mismatch: predicted 1 row(s), gold 35 row(s)
+         pred:   SELECT car_makers.Maker, cars_data.Year FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId JOIN model_list ON car_names.Model = model_list.Model JOIN car_makers ON model_list.Maker = car
+[104/1034] EX     db=car_1 | Q: Which distinct car models are the produced after 1980?
+[105/1034] EX     db=car_1 | Q: What are the different models for the cards produced after 1
+[106/1034] EX     db=car_1 | Q: How many car makers are there in each continents? List the c
+[107/1034] EX     db=car_1 | Q: What is the name of each continent and how many car makers a
+[108/1034] EX     db=car_1 | Q: Which of the countries has the most car makers? List the cou
+[109/1034] EX     db=car_1 | Q: What is the name of the country with the most car makers?
+[110/1034] EX     db=car_1 | Q: How many car models are produced by each maker ? Only list t
+[111/1034] EX     db=car_1 | Q: What is the number of car models that are produced by each m
+[112/1034] FAIL   db=car_1 | Q: What is the accelerate of the car make amc hornet sportabout
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT cars_data.Accelerate FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE car_names.Make = 'amc'   AND car_names.Model = 'hornet sportabout (sw)';
+[113/1034] FAIL   db=car_1 | Q: How much does the car accelerate that makes amc hornet sport
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT cars_data.Accelerate FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE car_names.Make = 'amc'   AND car_names.Model = 'hornet sportabout (sw)';
+[114/1034] FAIL   db=car_1 | Q: How many car makers are there in france?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM car_makers AS cm JOIN countries AS c   ON cm.Country = c.CountryId WHERE c.CountryName = 'France';
+[115/1034] FAIL   db=car_1 | Q: What is the number of makers of care in France?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM car_makers JOIN countries ON car_makers.Country = countries.CountryId WHERE countries.CountryName = 'France';
+[116/1034] EX     db=car_1 | Q: How many car models are produced in the usa?
+[117/1034] FAIL   db=car_1 | Q: What is the count of the car models produced in the United S
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(DISTINCT cn.Model) FROM car_names AS cn JOIN cars_data AS cd ON cd.Id = cn.MakeId JOIN model_list AS ml ON ml.Model = cn.Model JOIN car_makers AS cm ON cm.Id = ml.Maker WHERE cm.Country =
+[118/1034] EX     db=car_1 | Q: What is the average miles per gallon(mpg) of the cars with 4
+[119/1034] EX     db=car_1 | Q: What is the average miles per gallon of all the cards with 4
+[120/1034] EX     db=car_1 | Q: What is the smallest weight of the car produced with 8 cylin
+[121/1034] EX     db=car_1 | Q: What is the minimum weight of the car with 8 cylinders produ
+[122/1034] FAIL   db=car_1 | Q: What are all the makers and models?
+         reason: Result mismatch: predicted 35 row(s), gold 36 row(s)
+         pred:   SELECT car_makers.Maker, model_list.Model FROM model_list JOIN car_makers ON model_list.Maker = car_makers.Id;
+[123/1034] FAIL   db=car_1 | Q: What are the makers and models?
+         reason: Result mismatch: predicted 35 row(s), gold 36 row(s)
+         pred:   SELECT car_makers.Maker, model_list.Model FROM model_list JOIN car_makers ON model_list.Maker = car_makers.Id;
+[124/1034] EX     db=car_1 | Q: What are the countries having at least one car maker? List n
+[125/1034] EX     db=car_1 | Q: What are the names and ids of all countries with at least on
+[126/1034] FAIL   db=car_1 | Q: What is the number of the cars with horsepower more than 150
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) AS number_of_cars FROM cars_data WHERE CAST(Horsepower AS INTEGER) > 150;
+[127/1034] FAIL   db=car_1 | Q: What is the number of cars with a horsepower greater than 15
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM cars_data WHERE CAST(Horsepower AS INTEGER) > 150;
+[128/1034] EX     db=car_1 | Q: What is the average weight of cars each year?
+[129/1034] EX     db=car_1 | Q: What is the average weight and year for each year?
+[130/1034] EX     db=car_1 | Q: Which countries in europe have at least 3 car manufacturers?
+[131/1034] EX     db=car_1 | Q: What are the names of all European countries with at least 3
+[132/1034] FAIL   db=car_1 | Q: What is the maximum horsepower and the make of the car model
+         reason: Result mismatch: predicted 4 row(s), gold 1 row(s)
+         pred:   SELECT MAX(CAST(c.Horsepower AS INTEGER)) AS "Maximum Horsepower", n.Make FROM cars_data AS c JOIN car_names AS n ON c.Id = n.MakeId JOIN model_list AS ml ON n.Model = ml.Model JOIN car_makers AS cm O
+[133/1034] FAIL   db=car_1 | Q: What is the largest amount of horsepower for the models with
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT CAST(cars_data.Horsepower AS INTEGER) AS Horsepower,        car_makers.Maker AS Make FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId JOIN model_list ON car_names.Model = model_
+[134/1034] FAIL   db=car_1 | Q: Which model saves the most gasoline? That is to say, have th
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT ml.Model FROM model_list AS ml JOIN car_names AS cn ON cn.Model = ml.Model JOIN cars_data AS cd ON cd.Id = cn.MakeId WHERE cd.MPG <> '?' ORDER BY CAST(cd.MPG AS REAL) DESC LIMIT 1;
+[135/1034] FAIL   db=car_1 | Q: What is the car model with the highest mpg ?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT cn.Model FROM cars_data AS cd JOIN car_names AS cn ON cd.Id = cn.MakeId ORDER BY CAST(cd.MPG AS REAL) DESC LIMIT 1;
+[136/1034] EX     db=car_1 | Q: What is the average horsepower of the cars before 1980?
+[137/1034] EX     db=car_1 | Q: What is the average horsepower for all cars produced before 
+[138/1034] EX     db=car_1 | Q: What is the average edispl of the cars of model volvo?
+[139/1034] FAIL   db=car_1 | Q: What is the average edispl for all volvos?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(cars_data.Edispl) FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId JOIN car_makers ON car_names.MakeId = car_makers.Id WHERE car_makers.FullName = 'Volvo';
+[140/1034] EX     db=car_1 | Q: What is the maximum accelerate for different number of cylin
+[141/1034] EX     db=car_1 | Q: What is the maximum accelerate for all the different cylinde
+[142/1034] EX     db=car_1 | Q: Which model has the most version(make) of cars?
+[143/1034] FAIL   db=car_1 | Q: What model has the most different versions?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT ml.Model FROM model_list AS ml GROUP BY ml.Model ORDER BY COUNT(*) DESC LIMIT 1;
+[144/1034] EX     db=car_1 | Q: How many cars have more than 4 cylinders?
+[145/1034] EX     db=car_1 | Q: What is the number of cars with more than 4 cylinders?
+[146/1034] EX     db=car_1 | Q: how many cars were produced in 1980?
+[147/1034] EX     db=car_1 | Q: In 1980, how many cars were made?
+[148/1034] EX     db=car_1 | Q: How many car models were produced by the maker with full nam
+[149/1034] FAIL   db=car_1 | Q: What is the number of car models created by the car maker Am
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM model_list JOIN car_makers ON model_list.Maker = car_makers.Id WHERE car_makers.Maker = 'American Motor Company';
+[150/1034] EX     db=car_1 | Q: Which makers designed more than 3 car models? List full name
+[151/1034] EX     db=car_1 | Q: What are the names and ids of all makers with more than 3 mo
+[152/1034] EX     db=car_1 | Q: Which distinctive models are produced by maker with the full
+[153/1034] EX     db=car_1 | Q: What are the different models created by either the car make
+[154/1034] EX     db=car_1 | Q: In which years cars were produced weighing no less than 3000
+[155/1034] EX     db=car_1 | Q: What are the different years in which there were cars produc
+[156/1034] EX     db=car_1 | Q: What is the horsepower of the car with the largest accelerat
+[157/1034] EX     db=car_1 | Q: What is the horsepower of the car with the greatest accelera
+[158/1034] EX     db=car_1 | Q: For model volvo, how many cylinders does the car with the le
+[159/1034] EX     db=car_1 | Q: For a volvo model, how many cylinders does the version with 
+[160/1034] FAIL   db=car_1 | Q: How many cars have a larger accelerate than the car with the
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM cars_data WHERE CAST(Accelerate AS REAL) > (   SELECT CAST(Accelerate AS REAL)   FROM cars_data   ORDER BY CAST(Horsepower AS REAL) DESC   LIMIT 1 );
+[161/1034] FAIL   db=car_1 | Q: What is the number of cars with a greater accelerate than th
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM cars_data WHERE Accelerate > (   SELECT Accelerate   FROM cars_data   WHERE CAST(Horsepower AS REAL) = (     SELECT MAX(CAST(Horsepower AS REAL))     FROM cars_data   )   LIMIT 1 
+[162/1034] FAIL   db=car_1 | Q: How many countries has more than 2 car makers ?
+         reason: Result mismatch: predicted 1 row(s), gold 4 row(s)
+         pred:   SELECT COUNT(*) FROM (   SELECT countries.CountryId   FROM countries   JOIN car_makers ON car_makers.Country = countries.CountryId   GROUP BY countries.CountryId   HAVING COUNT(car_makers.Id) > 2 ) AS
+[163/1034] FAIL   db=car_1 | Q: What is the number of countries with more than 2 car makers 
+         reason: Result mismatch: predicted 1 row(s), gold 4 row(s)
+         pred:   SELECT COUNT(*) FROM (   SELECT countries.CountryId   FROM countries   JOIN car_makers ON car_makers.Country = countries.CountryId   GROUP BY countries.CountryId   HAVING COUNT(car_makers.Id) > 2 );
+[164/1034] EX     db=car_1 | Q: How many cars has over 6 cylinders?
+[165/1034] EX     db=car_1 | Q: What is the number of carsw ith over 6 cylinders?
+[166/1034] FAIL   db=car_1 | Q: For the cars with 4 cylinders, which model has the largest h
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT car_names.Model FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE cars_data.Cylinders = 4   AND cars_data.Horsepower IS NOT NULL ORDER BY CAST(cars_data.Horsepower AS INTEG
+[167/1034] FAIL   db=car_1 | Q: For all of the 4 cylinder cars, which model has the most hor
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT cl.Model FROM cars_data AS cd JOIN car_names AS cn ON cd.Id = cn.MakeId JOIN model_list AS cl ON cn.Model = cl.Model WHERE cd.Cylinders = 4   AND cd.Horsepower IS NOT NULL ORDER BY CAST(cd.Hors
+[168/1034] FAIL   db=car_1 | Q: Among the cars with more than lowest horsepower, which ones 
+         reason: Result mismatch: predicted 4 row(s), gold 3 row(s)
+         pred:   SELECT car_names.MakeId, car_names.Make FROM cars_data JOIN car_names ON cars_data.Id = car_names.MakeId WHERE CAST(cars_data.Horsepower AS REAL) > (     SELECT MIN(CAST(Horsepower AS REAL))     FROM 
+[169/1034] FAIL   db=car_1 | Q: Among the cars that do not have the minimum horsepower , wha
+         reason: Result mismatch: predicted 0 row(s), gold 3 row(s)
+         pred:   SELECT DISTINCT cm.Id, cm.FullName FROM cars_data AS cd JOIN car_names AS cn ON cd.Id = cn.MakeId JOIN car_makers AS cm ON cn.MakeId = cm.Id WHERE cd.Cylinders < 4   AND CAST(cd.Horsepower AS REAL) > 
+[170/1034] FAIL   db=car_1 | Q: What is the maximum miles per gallon of the car with 8 cylin
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MAX(CAST(MPG AS REAL)) FROM cars_data WHERE Cylinders = 8 OR Year < 1980;
+[171/1034] FAIL   db=car_1 | Q: What is the maximum mpg of the cars that had 8 cylinders or 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MAX(CAST(MPG AS REAL)) FROM cars_data WHERE Cylinders = 8 OR Year < 1980;
+[172/1034] EX     db=car_1 | Q: Which models are lighter than 3500 but not built by the 'For
+[173/1034] EX     db=car_1 | Q: What are the different models wthat are lighter than 3500 bu
+[174/1034] EX     db=car_1 | Q: What are the name of the countries where there is not a sing
+[175/1034] EX     db=car_1 | Q: What are the names of the countries with no car makers?
+[176/1034] FAIL   db=car_1 | Q: Which are the car makers which produce at least 2 models and
+         reason: Result mismatch: predicted 0 row(s), gold 6 row(s)
+         pred:   SELECT cm.Id, cm.Maker FROM car_makers AS cm JOIN model_list AS ml ON ml.Maker = cm.Id GROUP BY cm.Id, cm.Maker HAVING COUNT(DISTINCT ml.Model) >= 2    AND COUNT(DISTINCT cm.Id) > 3;
+[177/1034] FAIL   db=car_1 | Q: What are the ids and makers of all car makers that produce a
+         reason: Result mismatch: predicted 5 row(s), gold 6 row(s)
+         pred:   SELECT cm.Id, cm.Maker FROM car_makers AS cm JOIN model_list AS ml ON ml.Maker = cm.Id JOIN car_names AS cn ON cn.Model = ml.Model JOIN cars_data AS cd ON cd.Id = cn.MakeId GROUP BY cm.Id, cm.Maker HA
+[178/1034] EX     db=car_1 | Q: What are the id and names of the countries which have more t
+[179/1034] EX     db=car_1 | Q: What are the ids and names of all countries that either have
+note: db=flight_2: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[180/1034] EX     db=flight_2 | Q: Which country does Airline "JetBlue Airways" belong to?
+[181/1034] EX     db=flight_2 | Q: What country is Jetblue Airways affiliated with?
+[182/1034] EX     db=flight_2 | Q: What is the abbreviation of Airline "JetBlue Airways"?
+[183/1034] EX     db=flight_2 | Q: Which abbreviation corresponds to Jetblue Airways?
+[184/1034] EX     db=flight_2 | Q: List all airline names and their abbreviations in "USA".
+[185/1034] EX     db=flight_2 | Q: What are the airline names and abbreviations for airlines in
+[186/1034] EX     db=flight_2 | Q: List the airport code and name in the city of Anthony.
+[187/1034] EX     db=flight_2 | Q: Give the airport code and airport name corresonding to the c
+[188/1034] EX     db=flight_2 | Q: How many airlines do we have?
+[189/1034] EX     db=flight_2 | Q: What is the total number of airlines?
+[190/1034] EX     db=flight_2 | Q: How many airports do we have?
+[191/1034] EX     db=flight_2 | Q: Return the number of  airports.
+[192/1034] EX     db=flight_2 | Q: How many flights do we have?
+[193/1034] EX     db=flight_2 | Q: Return the number of flights.
+[194/1034] EX     db=flight_2 | Q: Which airline has abbreviation 'UAL'?
+[195/1034] EX     db=flight_2 | Q: Give the airline with abbreviation 'UAL'.
+[196/1034] EX     db=flight_2 | Q: How many airlines are from USA?
+[197/1034] EX     db=flight_2 | Q: Return the number of airlines in the USA.
+[198/1034] EX     db=flight_2 | Q: Which city and country is the Alton airport at?
+[199/1034] EX     db=flight_2 | Q: Give the city and country for the Alton airport.
+[200/1034] EX     db=flight_2 | Q: What is the airport name for airport 'AKO'?
+[201/1034] EX     db=flight_2 | Q: Return the name of the airport with code 'AKO'.
+[202/1034] EX     db=flight_2 | Q: What are airport names at City 'Aberdeen'?
+[203/1034] EX     db=flight_2 | Q: What are the names of airports in Aberdeen?
+[204/1034] EX     db=flight_2 | Q: How many flights depart from 'APG'?
+[205/1034] EX     db=flight_2 | Q: Count the number of flights departing from 'APG'.
+[206/1034] EX     db=flight_2 | Q: How many flights have destination ATO?
+[207/1034] EX     db=flight_2 | Q: Count the number of flights into ATO.
+[208/1034] EX     db=flight_2 | Q: How many flights depart from City Aberdeen?
+[209/1034] EX     db=flight_2 | Q: Return the number of flights departing from Aberdeen.
+[210/1034] EX     db=flight_2 | Q: How many flights arriving in Aberdeen city?
+[211/1034] EX     db=flight_2 | Q: Return the number of flights arriving in Aberdeen.
+[212/1034] EX     db=flight_2 | Q: How many flights depart from City 'Aberdeen' and have destin
+[213/1034] EX     db=flight_2 | Q: How many flights fly from Aberdeen to Ashley?
+[214/1034] EX     db=flight_2 | Q: How many flights does airline 'JetBlue Airways' have?
+[215/1034] EX     db=flight_2 | Q: Give the number of Jetblue Airways flights.
+[216/1034] EX     db=flight_2 | Q: How many 'United Airlines' flights go to Airport 'ASY'?
+[217/1034] EX     db=flight_2 | Q: Count the number of United Airlines flights arriving in ASY 
+[218/1034] EX     db=flight_2 | Q: How many 'United Airlines' flights depart from Airport 'AHD'
+[219/1034] EX     db=flight_2 | Q: Return the number of United Airlines flights leaving from AH
+[220/1034] EX     db=flight_2 | Q: How many United Airlines flights go to City 'Aberdeen'?
+[221/1034] EX     db=flight_2 | Q: Count the number of United Airlines flights that arrive in A
+[222/1034] EX     db=flight_2 | Q: Which city has most number of arriving flights?
+[223/1034] EX     db=flight_2 | Q: Which city has the most frequent destination airport?
+[224/1034] EX     db=flight_2 | Q: Which city has most number of departing flights?
+[225/1034] EX     db=flight_2 | Q: Which city is the most frequent source airport?
+[226/1034] FAIL   db=flight_2 | Q: What is the code of airport that has the highest number of f
+         reason: Result mismatch: predicted 1 row(s), gold 0 row(s)
+         pred:   SELECT AirportCode FROM (   SELECT AirportCode, COUNT(*) AS flight_count   FROM (     SELECT SourceAirport AS AirportCode FROM flights     UNION ALL     SELECT DestAirport AS AirportCode FROM flights 
+[227/1034] FAIL   db=flight_2 | Q: What is the airport code of the airport with the most flight
+         reason: Result mismatch: predicted 1 row(s), gold 0 row(s)
+         pred:   SELECT AirportCode FROM (   SELECT AirportCode, COUNT(*) AS flight_count   FROM (     SELECT SourceAirport AS AirportCode FROM flights     UNION ALL     SELECT DestAirport AS AirportCode FROM flights 
+[228/1034] FAIL   db=flight_2 | Q: What is the code of airport that has fewest number of flight
+         reason: Result mismatch: predicted 1 row(s), gold 0 row(s)
+         pred:   SELECT a.AirportCode FROM airports AS a LEFT JOIN flights AS f   ON f.SourceAirport = a.AirportCode   OR f.DestAirport = a.AirportCode GROUP BY a.AirportCode ORDER BY COUNT(f.FlightNo), a.AirportCode 
+[229/1034] FAIL   db=flight_2 | Q: Give the code of the airport with the least flights.
+         reason: Result mismatch: predicted 1 row(s), gold 0 row(s)
+         pred:   SELECT AirportCode FROM airports LEFT JOIN (     SELECT SourceAirport AS AirportCode FROM flights     UNION ALL     SELECT DestAirport AS AirportCode FROM flights ) AS airport_flights USING (AirportCo
+[230/1034] EX     db=flight_2 | Q: Which airline has most number of flights?
+[231/1034] FAIL   db=flight_2 (attempts: 2) | Q: What airline serves the most flights?
+         [feedback] attempt 1 rejected: SQLite execution error: ambiguous column name: Airline
+         [feedback] attempt 2 passed
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT a.Airline FROM flights AS f JOIN airlines AS a ON f.Airline = a.uid GROUP BY a.uid, a.Airline ORDER BY COUNT(*) DESC LIMIT 1;
+[232/1034] FAIL   db=flight_2 | Q: Find the abbreviation and country of the airline that has fe
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT a.Abbreviation, a.Country FROM airlines AS a JOIN flights AS f ON f.Airline = a.uid GROUP BY a.uid, a.Abbreviation, a.Country ORDER BY COUNT(*) ASC LIMIT 1;
+[233/1034] FAIL   db=flight_2 | Q: What is the abbreviation of the airilne has the fewest fligh
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT a.Abbreviation, a.Country FROM airlines AS a JOIN flights AS f ON f.Airline = a.uid GROUP BY a.uid, a.Abbreviation, a.Country ORDER BY COUNT(*) ASC LIMIT 1;
+[234/1034] EX     db=flight_2 | Q: What are airlines that have some flight departing from airpo
+[235/1034] EX     db=flight_2 | Q: Which airlines have a flight with source airport AHD?
+[236/1034] EX     db=flight_2 | Q: What are airlines that have flights arriving at airport 'AHD
+[237/1034] EX     db=flight_2 | Q: Which airlines have a flight with destination airport AHD?
+[238/1034] EX     db=flight_2 | Q: Find all airlines that have flights from both airports 'APG'
+[239/1034] EX     db=flight_2 | Q: Which airlines have departing flights from both APG and CVO 
+[240/1034] EX     db=flight_2 | Q: Find all airlines that have flights from airport 'CVO' but n
+[241/1034] EX     db=flight_2 | Q: Which airlines have departures from CVO but not from APG air
+[242/1034] EX     db=flight_2 | Q: Find all airlines that have at least 10 flights.
+[243/1034] EX     db=flight_2 | Q: Which airlines have at least 10 flights?
+[244/1034] EX     db=flight_2 | Q: Find all airlines that have fewer than 200 flights.
+[245/1034] EX     db=flight_2 | Q: Which airlines have less than 200 flights?
+[246/1034] EX     db=flight_2 | Q: What are flight numbers of Airline "United Airlines"?
+[247/1034] EX     db=flight_2 | Q: Which flight numbers correspond to United Airlines flights?
+[248/1034] EX     db=flight_2 | Q: What are flight numbers of flights departing from Airport "A
+[249/1034] EX     db=flight_2 | Q: Give the flight numbers of flights leaving from APG.
+[250/1034] EX     db=flight_2 | Q: What are flight numbers of flights arriving at Airport "APG"
+[251/1034] EX     db=flight_2 | Q: Give the flight numbers of flights landing at APG.
+[252/1034] EX     db=flight_2 | Q: What are flight numbers of flights departing from City "Aber
+[253/1034] EX     db=flight_2 | Q: Give the flight numbers of flights leaving from Aberdeen.
+[254/1034] EX     db=flight_2 | Q: What are flight numbers of flights arriving at City "Aberdee
+[255/1034] EX     db=flight_2 | Q: Give the flight numbers of flights arriving in Aberdeen.
+[256/1034] EX     db=flight_2 | Q: Find the number of flights landing in the city of Aberdeen o
+[257/1034] EX     db=flight_2 | Q: How many flights land in Aberdeen or Abilene?
+[258/1034] EX     db=flight_2 | Q: Find the name of airports which do not have any flight in an
+[259/1034] EX     db=flight_2 | Q: Which airports do not have departing or arriving flights?
+note: db=employee_hire_evaluation: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[260/1034] EX     db=employee_hire_evaluation | Q: How many employees are there?
+[261/1034] EX     db=employee_hire_evaluation | Q: Count the number of employees
+[262/1034] EX     db=employee_hire_evaluation | Q: Sort employee names by their age in ascending order.
+[263/1034] EX     db=employee_hire_evaluation | Q: List the names of employees and sort in ascending order of a
+[264/1034] EX     db=employee_hire_evaluation | Q: What is the number of employees from each city?
+[265/1034] EX     db=employee_hire_evaluation | Q: Count the number of employees for each city.
+[266/1034] EX     db=employee_hire_evaluation | Q: Which cities do more than one employee under age 30 come fro
+[267/1034] EX     db=employee_hire_evaluation | Q: Find the cities that have more than one employee under age 3
+[268/1034] EX     db=employee_hire_evaluation | Q: Find the number of shops in each location.
+[269/1034] EX     db=employee_hire_evaluation | Q: How many shops are there in each location?
+[270/1034] EX     db=employee_hire_evaluation | Q: Find the manager name and district of the shop whose number 
+[271/1034] EX     db=employee_hire_evaluation | Q: What are the manager name and district of the shop that sell
+[272/1034] EX     db=employee_hire_evaluation | Q: find the minimum and maximum number of products of all store
+[273/1034] EX     db=employee_hire_evaluation | Q: What are the minimum and maximum number of products across a
+[274/1034] EX     db=employee_hire_evaluation | Q: Return the name, location and district of all shops in desce
+[275/1034] EX     db=employee_hire_evaluation | Q: Sort all the shops by number products in descending order, a
+[276/1034] EX     db=employee_hire_evaluation | Q: Find the names of stores whose number products is more than 
+[277/1034] EX     db=employee_hire_evaluation | Q: Which shops' number products is above the average? Give me t
+[278/1034] EX     db=employee_hire_evaluation | Q: find the name of employee who was awarded the most times in 
+[279/1034] EX     db=employee_hire_evaluation | Q: Which employee received the most awards in evaluations? Give
+[280/1034] EX     db=employee_hire_evaluation | Q: Find the name of the employee who got the highest one time b
+[281/1034] EX     db=employee_hire_evaluation | Q: Which employee received the biggest bonus? Give me the emplo
+[282/1034] EX     db=employee_hire_evaluation | Q: Find the names of employees who never won any award in the e
+[283/1034] EX     db=employee_hire_evaluation | Q: What are the names of the employees who never received any e
+[284/1034] EX     db=employee_hire_evaluation | Q: What is the name of the shop that is hiring the largest numb
+[285/1034] EX     db=employee_hire_evaluation | Q: Which shop has the most employees? Give me the shop name.
+[286/1034] EX     db=employee_hire_evaluation | Q: Find the name of the shops that do not hire any employee.
+[287/1034] EX     db=employee_hire_evaluation | Q: Which shops run with no employees? Find the shop names
+[288/1034] FAIL   db=employee_hire_evaluation | Q: Find the number of employees hired in each shop; show the sh
+         reason: Result mismatch: predicted 9 row(s), gold 6 row(s)
+         pred:   SELECT shop.Name, COUNT(hiring.Employee_ID) FROM shop LEFT JOIN hiring ON shop.Shop_ID = hiring.Shop_ID GROUP BY shop.Shop_ID, shop.Name;
+[289/1034] FAIL   db=employee_hire_evaluation | Q: For each shop, return the number of employees working there 
+         reason: Result mismatch: predicted 9 row(s), gold 6 row(s)
+         pred:   SELECT shop.Name, COUNT(employee.Employee_ID) FROM shop LEFT JOIN hiring ON shop.Shop_ID = hiring.Shop_ID LEFT JOIN employee ON hiring.Employee_ID = employee.Employee_ID GROUP BY shop.Shop_ID, shop.Na
+[290/1034] EX     db=employee_hire_evaluation | Q: What is total bonus given in all evaluations?
+[291/1034] EX     db=employee_hire_evaluation | Q: Find the total amount of bonus given in all the evaluations.
+[292/1034] EX     db=employee_hire_evaluation | Q: Give me all the information about hiring.
+[293/1034] FAIL   db=employee_hire_evaluation | Q: What is all the information about hiring?
+         reason: Result mismatch: predicted 7 row(s), gold 7 row(s)
+         pred:   SELECT hiring.Employee_ID, employee.Name, employee.Age, employee.City, hiring.Shop_ID, hiring.Is_full_time, hiring.Start_from FROM hiring JOIN employee ON hiring.Employee_ID = employee.Employee_ID;
+[294/1034] EX     db=employee_hire_evaluation | Q: Which district has both stores with less than 3000 products 
+[295/1034] EX     db=employee_hire_evaluation | Q: Find the districts in which there are both shops selling les
+[296/1034] EX     db=employee_hire_evaluation | Q: How many different store locations are there?
+[297/1034] EX     db=employee_hire_evaluation | Q: Count the number of distinct store locations.
+note: db=cre_Doc_Template_Mgt: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[298/1034] EX     db=cre_Doc_Template_Mgt | Q: How many documents do we have?
+[299/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of documents.
+[300/1034] EX     db=cre_Doc_Template_Mgt | Q: List document IDs, document names, and document descriptions
+[301/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids, names, and descriptions for all documents?
+[302/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the document name and template id for document with 
+[303/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the names and template ids for documents that contain
+[304/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the document id, template id and description for doc
+[305/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the document id, template id, and description for the
+[306/1034] EX     db=cre_Doc_Template_Mgt | Q: How many different templates do all document use?
+[307/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of different templates used for documents.
+[308/1034] EX     db=cre_Doc_Template_Mgt | Q: How many documents are using the template with type code 'PP
+[309/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of documents that use the PPT template type
+[310/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show all template ids and number of documents using each tem
+         reason: Result mismatch: predicted 20 row(s), gold 12 row(s)
+         pred:   SELECT Templates.Template_ID, COUNT(Documents.Document_ID) FROM Templates LEFT JOIN Documents ON Documents.Template_ID = Templates.Template_ID GROUP BY Templates.Template_ID;
+[311/1034] EX     db=cre_Doc_Template_Mgt | Q: What are all different template ids used for documents, and 
+[312/1034] FAIL   db=cre_Doc_Template_Mgt | Q: What is the id and type code for the template used by the mo
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT t.Template_ID, t.Template_Type_Code FROM Documents AS d JOIN Templates AS t ON d.Template_ID = t.Template_ID GROUP BY t.Template_ID, t.Template_Type_Code ORDER BY COUNT(d.Document_ID) DESC LIMI
+[313/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Return the id and type code of the template that is used for
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT t.Template_ID, t.Template_Type_Code FROM Templates AS t JOIN Documents AS d ON d.Template_ID = t.Template_ID GROUP BY t.Template_ID, t.Template_Type_Code ORDER BY COUNT(d.Document_ID) DESC LIMI
+[314/1034] EX     db=cre_Doc_Template_Mgt | Q: Show ids for all templates that are used by more than one do
+[315/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the template ids of any templates used in more than
+[316/1034] EX     db=cre_Doc_Template_Mgt | Q: Show ids for all templates not used by any document.
+[317/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids for templates that are not used in any docu
+[318/1034] EX     db=cre_Doc_Template_Mgt | Q: How many templates do we have?
+[319/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of templates.
+[320/1034] EX     db=cre_Doc_Template_Mgt | Q: Show template ids, version numbers, and template type codes 
+[321/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids, version numbers, and type codes for each t
+[322/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all distinct template type codes for all templates.
+[323/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the different template type codes?
+[324/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids of templates with template type code PP or 
+[325/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the ids of templates that have the code PP or PPT.
+[326/1034] EX     db=cre_Doc_Template_Mgt | Q: How many templates have template type code CV?
+[327/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of templates of the type CV.
+[328/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the version number and template type code for the te
+[329/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the version numbers and template type codes of templa
+[330/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all template type codes and number of templates for eac
+[331/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the different template type codes, and how many tem
+[332/1034] EX     db=cre_Doc_Template_Mgt | Q: Which template type code has most number of templates?
+[333/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the type code of the template type that the most temp
+[334/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all template type codes with less than three templates.
+[335/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the codes of template types that have fewer than 3 
+[336/1034] EX     db=cre_Doc_Template_Mgt | Q: What the smallest version number and its template type code?
+[337/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the lowest version number, along with its correspondi
+[338/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the template type code of the template used by docum
+[339/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the template type code of the template that is used b
+[340/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all document names using templates with template type c
+[341/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the names of documents that use templates with the 
+[342/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show all template type codes and the number of documents usi
+         reason: Result mismatch: predicted 5 row(s), gold 4 row(s)
+         pred:   SELECT r.Template_Type_Code, COUNT(d.Document_ID) FROM Ref_Template_Types AS r LEFT JOIN Templates AS t   ON t.Template_Type_Code = r.Template_Type_Code LEFT JOIN Documents AS d   ON d.Template_ID = t
+[343/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the different template type codes, and how many doc
+[344/1034] EX     db=cre_Doc_Template_Mgt | Q: Which template type code is used by most number of documents
+[345/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the code of the template type that is most commonly u
+[346/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all template type codes that are not used by any docume
+[347/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the codes of template types that are not used for a
+[348/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all template type codes and descriptions.
+[349/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the type codes and descriptions for all template ty
+[350/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the template type descriptions for template type cod
+[351/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the template type description of the template type wi
+[352/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the template type code for template type description
+[353/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the type code of the template type with the descripti
+[354/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the distinct template type descriptions for the tem
+[355/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the different descriptions for templates that have be
+[356/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the template ids with template type description "Pr
+[357/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the ids corresponding to templates with the descripti
+[358/1034] EX     db=cre_Doc_Template_Mgt | Q: How many paragraphs in total?
+[359/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of paragraphs.
+[360/1034] EX     db=cre_Doc_Template_Mgt | Q: How many paragraphs for the document with name 'Summer Show'
+[361/1034] EX     db=cre_Doc_Template_Mgt | Q: Count the number of paragraphs in the document named 'Summer
+[362/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show paragraph details for paragraph with text 'Korea ' .
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT Paragraph_ID, Paragraph_Text, Other_Details, Document_ID FROM Paragraphs WHERE Paragraph_Text = 'Korea ';
+[363/1034] FAIL   db=cre_Doc_Template_Mgt | Q: What are the details for the paragraph that includes the tex
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT Paragraph_ID, Paragraph_Text, Other_Details FROM Paragraphs WHERE Paragraph_Text LIKE '%Korea %';
+[364/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all paragraph ids and texts for the document with name 
+[365/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids and texts of paragraphs in the document tit
+[366/1034] EX     db=cre_Doc_Template_Mgt | Q: Show all paragraph texts for the document "Customer reviews"
+[367/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the paragraph texts for the document with the name 
+[368/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show all document ids and the number of paragraphs in each d
+         reason: Result mismatch: predicted 15 row(s), gold 10 row(s)
+         pred:   SELECT d.Document_ID, COUNT(p.Paragraph_ID) FROM Documents AS d LEFT JOIN Paragraphs AS p ON d.Document_ID = p.Document_ID GROUP BY d.Document_ID ORDER BY d.Document_ID;
+[369/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the different document ids along with the number of p
+[370/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show all document ids, names and the number of paragraphs in
+         reason: Result mismatch: predicted 15 row(s), gold 10 row(s)
+         pred:   SELECT d.Document_ID, d.Document_Name, COUNT(p.Paragraph_ID) AS Paragraph_Count FROM Documents AS d LEFT JOIN Paragraphs AS p ON p.Document_ID = d.Document_ID GROUP BY d.Document_ID, d.Document_Name;
+[371/1034] FAIL   db=cre_Doc_Template_Mgt | Q: What are the ids and names of each document, as well as the 
+         reason: Result mismatch: predicted 15 row(s), gold 10 row(s)
+         pred:   SELECT d.Document_ID, d.Document_Name, COUNT(p.Paragraph_ID) FROM Documents AS d LEFT JOIN Paragraphs AS p ON p.Document_ID = d.Document_ID GROUP BY d.Document_ID, d.Document_Name;
+[372/1034] EX     db=cre_Doc_Template_Mgt | Q: List all document ids with at least two paragraphs.
+[373/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids of documents that have 2 or more paragraphs
+[374/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the document id and name with greatest number of par
+[375/1034] EX     db=cre_Doc_Template_Mgt | Q: Return the id and name of the document with the most paragra
+[376/1034] FAIL   db=cre_Doc_Template_Mgt | Q: What is the document id with least number of paragraphs?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT d.Document_ID FROM Documents AS d LEFT JOIN Paragraphs AS p ON p.Document_ID = d.Document_ID GROUP BY d.Document_ID ORDER BY COUNT(p.Paragraph_ID), d.Document_ID LIMIT 1;
+[377/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Return the id of the document with the fewest paragraphs.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT d.Document_ID FROM Documents AS d LEFT JOIN Paragraphs AS p ON p.Document_ID = d.Document_ID GROUP BY d.Document_ID ORDER BY COUNT(p.Paragraph_ID) LIMIT 1;
+[378/1034] EX     db=cre_Doc_Template_Mgt | Q: What is the document id with 1 to 2 paragraphs?
+[379/1034] EX     db=cre_Doc_Template_Mgt | Q: Give the ids of documents that have between one and two para
+[380/1034] FAIL   db=cre_Doc_Template_Mgt | Q: Show the document id with paragraph text 'Brazil' and 'Irela
+         reason: Result mismatch: predicted 2 row(s), gold 1 row(s)
+         pred:   SELECT Document_ID FROM Paragraphs WHERE Paragraph_Text IN ('Brazil', 'Ireland');
+[381/1034] EX     db=cre_Doc_Template_Mgt | Q: What are the ids of documents that contain the paragraph tex
+note: db=course_teach: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[382/1034] EX     db=course_teach | Q: How many teachers are there?
+[383/1034] EX     db=course_teach | Q: What is the total count of teachers?
+[384/1034] EX     db=course_teach | Q: List the names of teachers in ascending order of age.
+[385/1034] EX     db=course_teach | Q: What are the names of the teachers ordered by ascending age?
+[386/1034] EX     db=course_teach | Q: What are the age and hometown of teachers?
+[387/1034] EX     db=course_teach | Q: What is the age and hometown of every teacher?
+[388/1034] FAIL   db=course_teach | Q: List the name of teachers whose hometown is not `` Little Le
+         reason: Result mismatch: predicted 6 row(s), gold 7 row(s)
+         pred:   SELECT Name FROM teacher WHERE Hometown <> 'Little Lever Urban District';
+[389/1034] FAIL   db=course_teach | Q: What are the names of the teachers whose hometown is not `` 
+         reason: Result mismatch: predicted 6 row(s), gold 7 row(s)
+         pred:   SELECT Name FROM teacher WHERE Hometown <> 'Little Lever Urban District';
+[390/1034] EX     db=course_teach | Q: Show the name of teachers aged either 32 or 33?
+[391/1034] EX     db=course_teach | Q: What are the names of the teachers who are aged either 32 or
+[392/1034] EX     db=course_teach | Q: What is the hometown of the youngest teacher?
+[393/1034] EX     db=course_teach | Q: Where is the youngest teacher from?
+[394/1034] EX     db=course_teach | Q: Show different hometown of teachers and the number of teache
+[395/1034] EX     db=course_teach | Q: For each hometown, how many teachers are there?
+[396/1034] EX     db=course_teach | Q: List the most common hometown of teachers.
+[397/1034] EX     db=course_teach | Q: What is the most commmon hometowns for teachers?
+[398/1034] EX     db=course_teach | Q: Show the hometowns shared by at least two teachers.
+[399/1034] EX     db=course_teach | Q: What are the towns from which at least two teachers come fro
+[400/1034] EX     db=course_teach | Q: Show names of teachers and the courses they are arranged to 
+[401/1034] EX     db=course_teach | Q: What is the name of each teacher and what course they teach?
+[402/1034] EX     db=course_teach | Q: Show names of teachers and the courses they are arranged to 
+[403/1034] EX     db=course_teach | Q: What are the names of the teachers and the courses they teac
+[404/1034] EX     db=course_teach | Q: Show the name of the teacher for the math course.
+[405/1034] EX     db=course_teach | Q: What are the names of the people who teach math courses?
+[406/1034] EX     db=course_teach | Q: Show names of teachers and the number of courses they teach.
+[407/1034] EX     db=course_teach | Q: What are the names of the teachers and how many courses do t
+[408/1034] EX     db=course_teach | Q: Show names of teachers that teach at least two courses.
+[409/1034] EX     db=course_teach | Q: What are the names of the teachers who teach at least two co
+[410/1034] EX     db=course_teach | Q: List the names of teachers who have not been arranged to tea
+[411/1034] EX     db=course_teach | Q: What are the names of the teachers whose courses have not be
+note: db=museum_visit: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[412/1034] EX     db=museum_visit | Q: How many visitors below age 30 are there?
+[413/1034] EX     db=museum_visit | Q: Find the names of the visitors whose membership level is hig
+[414/1034] EX     db=museum_visit | Q: What is the average age of the visitors whose membership lev
+[415/1034] EX     db=museum_visit | Q: Find the name and membership level of the visitors whose mem
+[416/1034] EX     db=museum_visit | Q: Find the id and name of the museum that has the most staff m
+[417/1034] EX     db=museum_visit | Q: Find the average number of staff working for the museums tha
+[418/1034] EX     db=museum_visit | Q: What are the opening year and staff number of the museum nam
+[419/1034] EX     db=museum_visit | Q: find the names of museums which have more staff than the min
+[420/1034] EX     db=museum_visit | Q: find the id, name and age for visitors who visited some muse
+[421/1034] EX     db=museum_visit | Q: What are the id, name and membership level of visitors who h
+[422/1034] EX     db=museum_visit | Q: What are the id and name of the museum visited most times?
+[423/1034] EX     db=museum_visit | Q: What is the name of the museum that had no visitor yet?
+[424/1034] EX     db=museum_visit | Q: Find the name and age of the visitor who bought the most tic
+[425/1034] EX     db=museum_visit | Q: What are the average and maximum number of tickets bought in
+[426/1034] EX     db=museum_visit | Q: What is the total ticket expense of the visitors whose membe
+[427/1034] EX     db=museum_visit | Q: What is the name of the visitor who visited both a museum op
+[428/1034] EX     db=museum_visit | Q: Find the number of visitors who did not visit any museum ope
+[429/1034] EX     db=museum_visit | Q: How many museums were opened after 2013 or before 2008?
+note: db=wta_1: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[430/1034] EX     db=wta_1 | Q: Find the total number of players.
+[431/1034] EX     db=wta_1 | Q: How many players are there?
+[432/1034] EX     db=wta_1 | Q: Find the total number of matches.
+[433/1034] EX     db=wta_1 | Q: Count the number of matches.
+[434/1034] EX     db=wta_1 | Q: List the first name and birth date of all players from the c
+[435/1034] EX     db=wta_1 | Q: What are the first names and birth dates of players from the
+[436/1034] EX     db=wta_1 | Q: Find the average age of losers and winners of all matches.
+[437/1034] EX     db=wta_1 | Q: What are the average ages of losers and winners across match
+[438/1034] EX     db=wta_1 | Q: Find the average rank of winners in all matches.
+[439/1034] EX     db=wta_1 | Q: What is the average rank for winners in all matches?
+[440/1034] FAIL   db=wta_1 | Q: Find the highest rank of losers in all matches.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MAX(loser_rank) FROM matches;
+[441/1034] EX     db=wta_1 | Q: What is the best rank of losers across all matches?
+[442/1034] EX     db=wta_1 | Q: find the number of distinct country codes of all players.
+[443/1034] EX     db=wta_1 | Q: How many distinct countries do players come from?
+[444/1034] EX     db=wta_1 | Q: Find the number of distinct name of losers.
+[445/1034] EX     db=wta_1 | Q: How many different loser names are there?
+[446/1034] EX     db=wta_1 | Q: Find the name of tourney that has more than 10 matches.
+[447/1034] EX     db=wta_1 | Q: What are the names of tournaments that have more than 10 mat
+[448/1034] FAIL   db=wta_1 | Q: List the names of all winners who played in both 2013 and 20
+         reason: Result mismatch: predicted 0 row(s), gold 5 row(s)
+         pred:   SELECT DISTINCT p.first_name, p.last_name FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE strftime('%Y', m.tourney_date) IN ('2013', '2016') GROUP BY p.player_id, p.first_name, 
+[449/1034] FAIL   db=wta_1 | Q: What are the names of players who won in both 2013 and 2016?
+         reason: Result mismatch: predicted 0 row(s), gold 5 row(s)
+         pred:   SELECT DISTINCT p.first_name, p.last_name FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE strftime('%Y', m.tourney_date) IN ('2013', '2016') GROUP BY p.player_id, p.first_name, 
+[450/1034] EX     db=wta_1 | Q: List the number of all matches who played in years of 2013 o
+[451/1034] EX     db=wta_1 | Q: How many matches were played in 2013 or 2016?
+[452/1034] EX     db=wta_1 | Q: What are the country code and first name of the players who 
+[453/1034] EX     db=wta_1 | Q: What are the first names and country codes for players who w
+[454/1034] EX     db=wta_1 | Q: Find the first name and country code of the oldest player.
+[455/1034] EX     db=wta_1 | Q: What is the first name and country code of the oldest player
+[456/1034] EX     db=wta_1 | Q: List the first and last name of all players in the order of 
+[457/1034] EX     db=wta_1 | Q: What are the full names of all players, sorted by birth date
+[458/1034] EX     db=wta_1 | Q: List the first and last name of all players who are left / L
+[459/1034] EX     db=wta_1 | Q: What are the full names of all left handed players, in order
+[460/1034] EX     db=wta_1 | Q: Find the first name and country code of the player who did t
+[461/1034] EX     db=wta_1 | Q: What is the first name and country code of the player with t
+[462/1034] EX     db=wta_1 | Q: Find the year that has the most number of matches.
+[463/1034] EX     db=wta_1 | Q: Which year had the most matches?
+[464/1034] FAIL   db=wta_1 | Q: Find the name and rank points of the winner who won the most
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT p.first_name, p.last_name, m.winner_rank_points FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id GROUP BY m.winner_id, p.first_name, p.last_name ORDER BY COUNT(*) DESC LIMIT 1;
+[465/1034] FAIL   db=wta_1 | Q: What is the name of the winner who has won the most matches,
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT p.first_name, p.last_name, r.ranking_points FROM matches m JOIN players p ON m.winner_id = p.player_id JOIN rankings r ON r.player_id = p.player_id GROUP BY p.player_id, p.first_name, p.last_na
+[466/1034] FAIL   db=wta_1 | Q: Find the name of the winner who has the highest rank points 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT p.first_name, p.last_name FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE m.tourney_name = 'Australian Open'   AND m.winner_rank_points IS NOT NULL ORDER BY m.winner_rank
+[467/1034] EX     db=wta_1 | Q: What is the name of the winner with the most rank points who
+[468/1034] FAIL   db=wta_1 | Q: find the names of loser and winner who played in the match w
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT loser.first_name, loser.last_name, winner.first_name, winner.last_name FROM matches JOIN players AS loser ON matches.loser_id = loser.player_id JOIN players AS winner ON matches.winner_id = win
+[469/1034] FAIL   db=wta_1 | Q: What are the names of the winner and loser who played in the
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT winner_name, loser_name FROM matches ORDER BY best_of DESC LIMIT 1;
+[470/1034] FAIL   db=wta_1 | Q: Find the average ranking for each player and their first nam
+         reason: Result mismatch: predicted 2775 row(s), gold 1580 row(s)
+         pred:   SELECT players.first_name, AVG(rankings.ranking) FROM rankings JOIN players ON rankings.player_id = players.player_id GROUP BY players.player_id, players.first_name;
+[471/1034] FAIL   db=wta_1 | Q: What are the first names of all players, and their average r
+         reason: Result mismatch: predicted 2775 row(s), gold 1580 row(s)
+         pred:   SELECT players.first_name, AVG(rankings.ranking) AS average_ranking FROM players JOIN rankings ON rankings.player_id = players.player_id GROUP BY players.player_id, players.first_name;
+[472/1034] FAIL   db=wta_1 | Q: Find the total ranking points for each player and their firs
+         reason: Result mismatch: predicted 2775 row(s), gold 1580 row(s)
+         pred:   SELECT p.first_name, SUM(r.ranking_points) AS total_ranking_points FROM rankings AS r JOIN players AS p ON r.player_id = p.player_id GROUP BY p.player_id, p.first_name;
+[473/1034] FAIL   db=wta_1 | Q: What are the first names of all players, and their total ran
+         reason: Result mismatch: predicted 2775 row(s), gold 1580 row(s)
+         pred:   SELECT players.first_name, SUM(rankings.ranking_points) AS total_ranking_points FROM players JOIN rankings ON rankings.player_id = players.player_id GROUP BY players.player_id, players.first_name;
+[474/1034] EX     db=wta_1 | Q: find the number of players for each country.
+[475/1034] EX     db=wta_1 | Q: How many players are from each country?
+[476/1034] EX     db=wta_1 | Q: find the code of the country where has the greatest number o
+[477/1034] EX     db=wta_1 | Q: What is the code of the country with the most players?
+[478/1034] EX     db=wta_1 | Q: Find the codes of countries that have more than 50 players.
+[479/1034] EX     db=wta_1 | Q: What are the codes of countries with more than 50 players?
+[480/1034] EX     db=wta_1 | Q: Find the total number of tours for each ranking date.
+[481/1034] EX     db=wta_1 | Q: How many total tours were there for each ranking date?
+[482/1034] EX     db=wta_1 | Q: Find the number of matches happened in each year.
+[483/1034] EX     db=wta_1 | Q: How many matches were played in each year?
+[484/1034] FAIL   db=wta_1 | Q: Find the name and rank of the 3 youngest winners across all 
+         reason: Result mismatch: predicted 3 row(s), gold 3 row(s)
+         pred:   SELECT p.first_name, p.last_name, m.winner_rank FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE m.winner_age IS NOT NULL ORDER BY m.winner_age ASC LIMIT 3;
+[485/1034] FAIL   db=wta_1 | Q: What are the names and ranks of the three youngest winners a
+         reason: Result mismatch: predicted 3 row(s), gold 3 row(s)
+         pred:   SELECT p.first_name, p.last_name, m.winner_rank FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE m.winner_age IS NOT NULL ORDER BY m.winner_age ASC LIMIT 3;
+[486/1034] EX     db=wta_1 (attempts: 2) | Q: How many different winners both participated in the WTA Cham
+         [feedback] attempt 1 rejected: SQLite execution error: no such column: m.tournament
+         [feedback] attempt 2 passed
+[487/1034] EX     db=wta_1 (attempts: 2) | Q: Find the number of left handed winners who participated in t
+         [feedback] attempt 1 rejected: SQLite execution error: no such column: m.tournament
+         [feedback] attempt 2 passed
+[488/1034] FAIL   db=wta_1 | Q: Find the first name, country code and birth date of the winn
+         reason: Result mismatch: predicted 3 row(s), gold 1 row(s)
+         pred:   SELECT p.first_name, p.country_code, p.birth_date FROM matches AS m JOIN players AS p ON m.winner_id = p.player_id WHERE m.winner_rank_points = (   SELECT MAX(winner_rank_points)   FROM matches );
+[489/1034] EX     db=wta_1 | Q: What is the first name, country code, and birth date of the 
+[490/1034] EX     db=wta_1 | Q: Find the number of players for each hand type.
+[491/1034] EX     db=wta_1 | Q: How many players are there for each hand type?
+note: db=battle_death: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[492/1034] EX     db=battle_death | Q: How many ships ended up being 'Captured'?
+[493/1034] EX     db=battle_death | Q: List the name and tonnage ordered by in descending alphaetic
+[494/1034] FAIL   db=battle_death | Q: List the name, date and result of each battle.
+         reason: Result mismatch: predicted 8 row(s), gold 8 row(s)
+         pred:   SELECT name, date, result FROM battle;
+[495/1034] FAIL   db=battle_death | Q: What is maximum and minimum death toll caused each time?
+         reason: Result mismatch: predicted 13 row(s), gold 1 row(s)
+         pred:   SELECT MAX(killed) AS maximum_death_toll, MIN(killed) AS minimum_death_toll FROM death GROUP BY id;
+[496/1034] EX     db=battle_death | Q: What is the average number of injuries caused each time?
+[497/1034] EX     db=battle_death | Q: What are the death and injury situations caused by the ship 
+[498/1034] EX     db=battle_death | Q: What are the name and results of the battles when the bulgar
+[499/1034] EX     db=battle_death | Q: What are the different ids and names of the battles that los
+[500/1034] EX     db=battle_death | Q: What are the ids and names of the battles that led to more t
+[501/1034] FAIL   db=battle_death | Q: What is the ship id and name that caused most total injuries
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT ship.id, ship.name FROM ship JOIN death ON death.caused_by_ship_id = ship.id GROUP BY ship.id, ship.name ORDER BY SUM(death.injured) DESC LIMIT 1;
+[502/1034] EX     db=battle_death | Q: What are the distinct battle names which are between bulgari
+[503/1034] EX     db=battle_death | Q: How many different results are there for the battles?
+[504/1034] EX     db=battle_death | Q: How many battles did not lose any ship with tonnage '225'?
+[505/1034] EX     db=battle_death | Q: List the name and date the battle that has lost the ship nam
+[506/1034] FAIL   db=battle_death | Q: Show names, results and bulgarian commanders of the battles 
+         reason: Result mismatch: predicted 0 row(s), gold 3 row(s)
+         pred:   SELECT DISTINCT b.name, b.result, b.bulgarian_commander FROM battle AS b JOIN ship AS s ON s.lost_in_battle = b.id WHERE s.location = 'English Channel'   AND NOT EXISTS (     SELECT 1     FROM ship AS
+[507/1034] EX     db=battle_death | Q: What are the notes of the death events which has substring '
+note: db=student_transcripts_tracking: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[508/1034] EX     db=student_transcripts_tracking | Q: what are all the addresses including line 1 and line 2?
+[509/1034] EX     db=student_transcripts_tracking | Q: What is the first and second line for all addresses?
+[510/1034] EX     db=student_transcripts_tracking | Q: How many courses in total are listed?
+[511/1034] EX     db=student_transcripts_tracking | Q: How many courses are there?
+[512/1034] FAIL   db=student_transcripts_tracking | Q: How is the math course described?
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT course_description FROM Courses WHERE course_name = 'Math';
+[513/1034] EX     db=student_transcripts_tracking | Q: What are the descriptions for all the math courses?
+[514/1034] EX     db=student_transcripts_tracking | Q: What is the zip code of the address in the city Port Chelsea
+[515/1034] EX     db=student_transcripts_tracking | Q: What is the zip code for Port Chelsea?
+[516/1034] EX     db=student_transcripts_tracking | Q: Which department offers the most number of degrees? List dep
+[517/1034] EX     db=student_transcripts_tracking | Q: What is the name and id of the department with the most numb
+[518/1034] EX     db=student_transcripts_tracking | Q: How many departments offer any degree?
+[519/1034] EX     db=student_transcripts_tracking | Q: How many different departments offer degrees?
+[520/1034] EX     db=student_transcripts_tracking | Q: How many different degree names are offered?
+[521/1034] EX     db=student_transcripts_tracking | Q: How many different degrees are offered?
+[522/1034] EX     db=student_transcripts_tracking | Q: How many degrees does the engineering department offer?
+[523/1034] EX     db=student_transcripts_tracking | Q: How many degrees does the engineering department have?
+[524/1034] EX     db=student_transcripts_tracking | Q: What are the names and descriptions of all the sections?
+[525/1034] EX     db=student_transcripts_tracking | Q: What are the names and descriptions for all the sections?
+[526/1034] FAIL   db=student_transcripts_tracking | Q: What are the names and id of courses having at most 2 sectio
+         reason: Result mismatch: predicted 15 row(s), gold 11 row(s)
+         pred:   SELECT c.course_name, c.course_id FROM Courses AS c LEFT JOIN Sections AS s ON s.course_id = c.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(s.section_id) <= 2;
+[527/1034] FAIL   db=student_transcripts_tracking | Q: What are the names and ids of every course with less than 2 
+         reason: Result mismatch: predicted 11 row(s), gold 11 row(s)
+         pred:   SELECT c.course_name, c.course_id FROM Courses AS c LEFT JOIN Sections AS s ON s.course_id = c.course_id GROUP BY c.course_id, c.course_name HAVING COUNT(s.section_id) < 2;
+[528/1034] EX     db=student_transcripts_tracking | Q: List the section_name in reversed lexicographical order.
+[529/1034] EX     db=student_transcripts_tracking | Q: What are the names of the sections in reverse alphabetical o
+[530/1034] EX     db=student_transcripts_tracking | Q: What is the semester which most student registered in? Show 
+[531/1034] FAIL   db=student_transcripts_tracking | Q: For each semester, what is the name and id of the one with t
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT s.semester_name, st.student_id FROM Semesters AS s JOIN Student_Enrolment AS e ON e.semester_id = s.semester_id JOIN Students AS st ON st.student_id = e.student_id GROUP BY s.semester_id, s.sem
+[532/1034] EX     db=student_transcripts_tracking | Q: What is the description of the department whose name has the
+[533/1034] EX     db=student_transcripts_tracking | Q: What is the department description for the one whose name ha
+[534/1034] FAIL   db=student_transcripts_tracking | Q: Who are enrolled in 2 degree programs in one semester? List 
+         reason: Result mismatch: predicted 1 row(s), gold 3 row(s)
+         pred:   SELECT s.first_name, s.middle_name, s.last_name, s.student_id FROM Students AS s JOIN Student_Enrolment AS se ON se.student_id = s.student_id GROUP BY s.student_id, se.semester_id HAVING COUNT(DISTINC
+[535/1034] FAIL   db=student_transcripts_tracking | Q: What are the first, middle, and last names, along with the i
+         reason: Result mismatch: predicted 1 row(s), gold 3 row(s)
+         pred:   SELECT s.first_name, s.middle_name, s.last_name, s.student_id FROM Students AS s JOIN Student_Enrolment AS se ON se.student_id = s.student_id GROUP BY s.student_id, se.semester_id HAVING COUNT(DISTINC
+[536/1034] EX     db=student_transcripts_tracking | Q: Who is enrolled in a Bachelor degree program? List the first
+[537/1034] EX     db=student_transcripts_tracking | Q: What are the first, middle, and last names for everybody enr
+[538/1034] FAIL   db=student_transcripts_tracking | Q: Find the kind of program which most number of students are e
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT Degree_Programs.degree_summary_name FROM Student_Enrolment JOIN Degree_Programs   ON Student_Enrolment.degree_program_id = Degree_Programs.degree_program_id GROUP BY Degree_Programs.degree_summ
+[539/1034] FAIL   db=student_transcripts_tracking | Q: What is the degree summary name that has the most number of 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT dp.degree_summary_name FROM Student_Enrolment AS se JOIN Degree_Programs AS dp   ON se.degree_program_id = dp.degree_program_id GROUP BY dp.degree_summary_name ORDER BY COUNT(DISTINCT se.studen
+[540/1034] FAIL   db=student_transcripts_tracking | Q: Find the program which most number of students are enrolled 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT dp.degree_program_id, dp.degree_summary_description FROM Student_Enrolment AS se JOIN Degree_Programs AS dp   ON se.degree_program_id = dp.degree_program_id GROUP BY dp.degree_program_id, dp.de
+[541/1034] FAIL   db=student_transcripts_tracking | Q: What is the program id and the summary of the degree that ha
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT dp.degree_program_id, dp.degree_summary_description FROM Degree_Programs AS dp JOIN Student_Enrolment AS se   ON se.degree_program_id = dp.degree_program_id GROUP BY dp.degree_program_id, dp.de
+[542/1034] FAIL   db=student_transcripts_tracking | Q: Which student has enrolled for the most times in any program
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT     s.student_id,     s.first_name,     s.middle_name,     s.last_name,     COUNT(se.student_enrolment_id) AS number_of_enrollments,     s.student_id FROM Students AS s JOIN Student_Enrolment A
+[543/1034] FAIL   db=student_transcripts_tracking | Q: What is the first, middle, and last name, along with the id 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT s.first_name, s.middle_name, s.last_name, s.student_id, COUNT(*) AS number_of_enrollments FROM Students AS s JOIN Student_Enrolment AS se ON se.student_id = s.student_id GROUP BY s.student_id, 
+[544/1034] EX     db=student_transcripts_tracking | Q: Which semesters do not have any student enrolled? List the s
+[545/1034] EX     db=student_transcripts_tracking | Q: What is the name of the semester with no students enrolled?
+[546/1034] EX     db=student_transcripts_tracking | Q: What are all the course names of the courses which ever have
+[547/1034] EX     db=student_transcripts_tracking | Q: What are the names of all courses that have some students en
+[548/1034] FAIL   db=student_transcripts_tracking | Q: What's the name of the course with most number of enrollment
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT c.course_name FROM Courses AS c JOIN Student_Enrolment_Courses AS sec ON sec.course_id = c.course_id GROUP BY c.course_id, c.course_name ORDER BY COUNT(*) DESC LIMIT 1;
+[549/1034] FAIL   db=student_transcripts_tracking | Q: What is the name of the course with the most students enroll
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT c.course_name FROM Student_Enrolment_Courses AS sec JOIN Courses AS c ON sec.course_id = c.course_id GROUP BY c.course_id, c.course_name ORDER BY COUNT(*) DESC LIMIT 1;
+[550/1034] FAIL   db=student_transcripts_tracking | Q: Find the last name of the students who currently live in the
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT s.last_name FROM Students AS s JOIN Addresses AS a ON s.current_address_id = a.address_id WHERE a.state_province_county = 'North Carolina'   AND NOT EXISTS (     SELECT 1     FROM Student_Enrol
+[551/1034] FAIL   db=student_transcripts_tracking (attempts: 2) | Q: What are the last name of the students who live in North Car
+         [feedback] attempt 1 rejected: SQLite execution error: no such column: s.state
+         [feedback] attempt 2 passed
+         reason: Result mismatch: predicted 7 row(s), gold 2 row(s)
+         pred:   SELECT s.last_name FROM Students AS s WHERE NOT EXISTS (     SELECT 1     FROM Student_Enrolment AS se     WHERE se.student_id = s.student_id );
+[552/1034] EX     db=student_transcripts_tracking | Q: Show the date and id of the transcript with at least 2 cours
+[553/1034] EX     db=student_transcripts_tracking | Q: What is the date and id of the transcript with at least 2 co
+[554/1034] EX     db=student_transcripts_tracking | Q: What is the phone number of the man with the first name Timm
+[555/1034] FAIL   db=student_transcripts_tracking | Q: What is the mobile phone number of the student named Timmoth
+         reason: Result mismatch: predicted 1 row(s), gold 0 row(s)
+         pred:   SELECT cell_mobile_number FROM Students WHERE first_name = 'Timmothy'   AND last_name = 'Ward';
+[556/1034] EX     db=student_transcripts_tracking | Q: Who is the first student to register? List the first name, m
+[557/1034] EX     db=student_transcripts_tracking | Q: What is the first, middle, and last name of the first studen
+[558/1034] EX     db=student_transcripts_tracking | Q: Who is the earliest graduate of the school? List the first n
+[559/1034] FAIL   db=student_transcripts_tracking | Q: What is the first, middle, and last name of the earliest sch
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT Students.first_name, Students.middle_name, Students.last_name FROM Students JOIN Student_Enrolment ON Student_Enrolment.student_id = Students.student_id JOIN Degree_Programs ON Degree_Programs.
+[560/1034] EX     db=student_transcripts_tracking | Q: Whose permanent address is different from his or her current
+[561/1034] EX     db=student_transcripts_tracking | Q: What is the first name of the student whose permanent addres
+[562/1034] FAIL   db=student_transcripts_tracking | Q: Which address holds the most number of students currently? L
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT a.address_id, a.line_1, a.line_2, a.line_3 FROM Addresses AS a JOIN Students AS s ON s.current_address_id = a.address_id GROUP BY a.address_id, a.line_1, a.line_2, a.line_3 ORDER BY COUNT(s.stu
+[563/1034] EX     db=student_transcripts_tracking | Q: What is the id, line 1, and line 2 of the address with the m
+[564/1034] FAIL   db=student_transcripts_tracking | Q: On average, when were the transcripts printed?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(julianday(transcript_date)) AS average_printed_date FROM Transcripts;
+[565/1034] FAIL   db=student_transcripts_tracking | Q: What is the average transcript date?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(julianday(Transcripts.transcript_date)) AS average_transcript_date FROM Transcripts;
+[566/1034] EX     db=student_transcripts_tracking | Q: When is the first transcript released? List the date and det
+[567/1034] EX     db=student_transcripts_tracking | Q: What is the earliest date of a transcript release, and what 
+[568/1034] EX     db=student_transcripts_tracking | Q: How many transcripts are released?
+[569/1034] EX     db=student_transcripts_tracking | Q: How many transcripts are listed?
+[570/1034] EX     db=student_transcripts_tracking | Q: What is the last transcript release date?
+[571/1034] EX     db=student_transcripts_tracking | Q: When was the last transcript released?
+[572/1034] EX     db=student_transcripts_tracking | Q: How many times at most can a course enrollment result show i
+[573/1034] FAIL   db=student_transcripts_tracking | Q: What is the maximum number of times that a course shows up i
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(DISTINCT tc.transcript_id) AS transcript_count,        sec.student_enrolment_id FROM Transcript_Contents AS tc JOIN Student_Enrolment_Courses AS sec   ON tc.student_course_id = sec.studen
+[574/1034] FAIL   db=student_transcripts_tracking | Q: Show the date of the transcript which shows the least number
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT t.transcript_date, t.transcript_id FROM Transcripts AS t LEFT JOIN Transcript_Contents AS tc   ON tc.transcript_id = t.transcript_id GROUP BY t.transcript_id, t.transcript_date ORDER BY COUNT(t
+[575/1034] FAIL   db=student_transcripts_tracking | Q: What is the date and id of the transcript with the least num
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT t.transcript_date, t.transcript_id FROM Transcripts AS t LEFT JOIN Transcript_Contents AS tc   ON tc.transcript_id = t.transcript_id GROUP BY t.transcript_id ORDER BY COUNT(tc.transcript_id), t
+[576/1034] FAIL   db=student_transcripts_tracking | Q: Find the semester when both Master students and Bachelor stu
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT s.semester_name FROM Semesters AS s JOIN Student_Enrolment AS e ON e.semester_id = s.semester_id JOIN Degree_Programs AS d ON d.degree_program_id = e.degree_program_id WHERE d.degree_summary_na
+[577/1034] EX     db=student_transcripts_tracking | Q: What is the id of the semester that had both Masters and Bac
+[578/1034] EX     db=student_transcripts_tracking | Q: How many different addresses do the students currently live?
+[579/1034] FAIL   db=student_transcripts_tracking | Q: What are the different addresses that have students living t
+         reason: Result mismatch: predicted 14 row(s), gold 1 row(s)
+         pred:   SELECT DISTINCT a.line_1, a.line_2, a.line_3, a.city, a.state_province_county, a.zip_postcode, a.country FROM Students AS s JOIN Addresses AS a ON s.current_address_id = a.address_id UNION SELECT DIST
+[580/1034] FAIL   db=student_transcripts_tracking | Q: List all the student details in reversed lexicographical ord
+         reason: Result mismatch: predicted 15 row(s), gold 15 row(s)
+         pred:   SELECT student_id, first_name, middle_name, last_name, email_address, ssn, permanent_address_id, cell_mobile_number, date_left, current_address_id, other_student_details FROM Students ORDER BY student
+[581/1034] EX     db=student_transcripts_tracking | Q: What other details can you tell me about students in reverse
+[582/1034] FAIL   db=student_transcripts_tracking | Q: Describe the section h.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT section_name, section_description, other_details FROM Sections WHERE section_name = 'h';
+[583/1034] EX     db=student_transcripts_tracking | Q: What is the description for the section named h?
+[584/1034] FAIL   db=student_transcripts_tracking | Q: Find the first name of the students who permanently live in 
+         reason: Result mismatch: predicted 4 row(s), gold 1 row(s)
+         pred:   SELECT Students.first_name FROM Students LEFT JOIN Addresses   ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti'    OR Students.cell_mobile_number = '0970016658
+[585/1034] FAIL   db=student_transcripts_tracking | Q: What are the first names of the students who live in Haiti p
+         reason: Result mismatch: predicted 4 row(s), gold 1 row(s)
+         pred:   SELECT Students.first_name FROM Students LEFT JOIN Addresses ON Students.permanent_address_id = Addresses.address_id WHERE Addresses.country = 'Haiti'    OR Students.cell_mobile_number = '09700166582'
+note: db=tvshow: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[586/1034] EX     db=tvshow | Q: List the title of all cartoons in alphabetical order.
+[587/1034] EX     db=tvshow | Q: What are the titles of the cartoons sorted alphabetically?
+[588/1034] EX     db=tvshow | Q: List all cartoon directed by "Ben Jones".
+[589/1034] EX     db=tvshow | Q: What are the names of all cartoons directed by Ben Jones?
+[590/1034] EX     db=tvshow | Q: How many cartoons were written by "Joseph Kuhr"?
+[591/1034] EX     db=tvshow | Q: What is the number of cartoones written by Joseph Kuhr?
+[592/1034] EX     db=tvshow | Q: list all cartoon titles and their directors ordered by their
+[593/1034] EX     db=tvshow | Q: What is the name and directors of all the cartoons that are 
+[594/1034] EX     db=tvshow | Q: List the title of all cartoon directed by "Ben Jones" or "Br
+[595/1034] EX     db=tvshow | Q: What are the titles of all cartoons directed by Ben Jones or
+[596/1034] EX     db=tvshow | Q: Which country has the most of TV Channels? List the country 
+[597/1034] EX     db=tvshow | Q: What is the country with the most number of TV Channels and 
+[598/1034] FAIL   db=tvshow | Q: List the number of different series names and contents in th
+         reason: Result mismatch: predicted 15 row(s), gold 1 row(s)
+         pred:   SELECT DISTINCT series_name, Content FROM TV_Channel;
+[599/1034] EX     db=tvshow | Q: How many different series and contents are listed in the TV 
+[600/1034] EX     db=tvshow | Q: What is the content of TV Channel with serial name "Sky Radi
+[601/1034] EX     db=tvshow | Q: What is the content of the series Sky Radio?
+[602/1034] EX     db=tvshow | Q: What is the Package Option of TV Channel with serial name "S
+[603/1034] EX     db=tvshow | Q: What are the Package Options of the TV Channels whose series
+[604/1034] EX     db=tvshow | Q: How many TV Channel using language English?
+[605/1034] EX     db=tvshow | Q: How many TV Channels use the English language?
+[606/1034] EX     db=tvshow | Q: List the language used least number of TV Channel. List lang
+[607/1034] EX     db=tvshow | Q: What are the languages used by the least number of TV Channe
+[608/1034] EX     db=tvshow | Q: List each language and the number of TV Channels using it.
+[609/1034] EX     db=tvshow | Q: For each language, list the number of TV Channels that use i
+[610/1034] EX     db=tvshow | Q: What is the TV Channel that shows the cartoon "The Rise of t
+[611/1034] FAIL   db=tvshow | Q: What is the series name of the TV Channel that shows the car
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT TV_Channel.series_name FROM Cartoon JOIN TV_Channel ON Cartoon.Channel = TV_Channel.id WHERE Cartoon.Title = 'The Rise of the Blue Beetle';
+[612/1034] EX     db=tvshow | Q: List the title of all  Cartoons showed on TV Channel with se
+[613/1034] EX     db=tvshow | Q: What is the title of all the cartools that are on the TV Cha
+[614/1034] EX     db=tvshow | Q: List the Episode of all TV series sorted by rating.
+[615/1034] EX     db=tvshow | Q: What are all of the episodes ordered by ratings?
+[616/1034] EX     db=tvshow | Q: List top 3 highest Rating  TV series. List the TV series's E
+[617/1034] EX     db=tvshow | Q: What are 3 most highly rated episodes in the TV series table
+[618/1034] EX     db=tvshow | Q: What is minimum and maximum share of TV series?
+[619/1034] EX     db=tvshow | Q: What is the maximum and minimum share for the TV series?
+[620/1034] EX     db=tvshow | Q: What is the air date of TV series with Episode "A Love of a 
+[621/1034] EX     db=tvshow | Q: When did the episode "A Love of a Lifetime" air?
+[622/1034] EX     db=tvshow | Q: What is Weekly Rank of TV series with Episode "A Love of a L
+[623/1034] EX     db=tvshow | Q: What is the weekly rank for the episode "A Love of a Lifetim
+[624/1034] EX     db=tvshow | Q: What is the TV Channel of TV series with Episode "A Love of 
+[625/1034] EX     db=tvshow | Q: What is the name of the series that has the episode "A Love 
+[626/1034] EX     db=tvshow | Q: List the Episode of all  TV series showed on TV Channel with
+[627/1034] EX     db=tvshow | Q: What is the episode for the TV series named "Sky Radio"?
+[628/1034] EX     db=tvshow | Q: Find the number of cartoons directed by each of the listed d
+[629/1034] EX     db=tvshow | Q: How many cartoons did each director create?
+[630/1034] FAIL   db=tvshow | Q: Find the production code and channel of the most recently ai
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT Production_code, Channel FROM Cartoon ORDER BY date(   substr(Original_air_date, instr(Original_air_date, ',') + 1) || '-' ||   CASE substr(Original_air_date, 1, instr(Original_air_date, ' ') -
+[631/1034] FAIL   db=tvshow | Q: What is the produdction code and channel of the most recent 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT Production_code, Channel FROM Cartoon ORDER BY date(   substr(Original_air_date, instr(Original_air_date, ',') + 1) || '-' ||   CASE substr(Original_air_date, 1, instr(Original_air_date, ' ') -
+[632/1034] EX     db=tvshow (attempts: 2) | Q: Find the package choice and series name of the TV channel th
+         [feedback] attempt 1 rejected: SQLite execution error: no such column: TV_series.series_name
+         [feedback] attempt 2 passed
+[633/1034] EX     db=tvshow | Q: What are the package options and the name of the series for 
+[634/1034] EX     db=tvshow | Q: which countries' tv channels are playing some cartoon writte
+[635/1034] EX     db=tvshow | Q: What are the countries that have cartoons on TV that were wr
+[636/1034] FAIL   db=tvshow | Q: which countries' tv channels are not playing any cartoon wri
+         reason: Result mismatch: predicted 3 row(s), gold 1 row(s)
+         pred:   SELECT DISTINCT tc.Country FROM TV_Channel AS tc WHERE NOT EXISTS (     SELECT 1     FROM Cartoon AS c     WHERE c.Channel = tc.id       AND c.Written_by = 'Todd Casey' );
+[637/1034] EX     db=tvshow | Q: What are the countries that are not playing cartoons written
+[638/1034] FAIL   db=tvshow | Q: Find the series name and country of the tv channel that is p
+         reason: Result mismatch: predicted 6 row(s), gold 1 row(s)
+         pred:   SELECT DISTINCT tc.series_name, tc.Country FROM Cartoon AS c JOIN TV_Channel AS tc ON c.Channel = tc.id WHERE c.Directed_by IN ('Ben Jones', 'Michael Chang');
+[639/1034] EX     db=tvshow | Q: What is the series name and country of all TV channels that 
+[640/1034] EX     db=tvshow | Q: find the pixel aspect ratio and nation of the tv channels th
+[641/1034] EX     db=tvshow | Q: What is the pixel aspect ratio and country of origin for all
+[642/1034] FAIL   db=tvshow | Q: find id of the tv channels that from the countries where hav
+         reason: Result mismatch: predicted 12 row(s), gold 1 row(s)
+         pred:   SELECT id FROM TV_Channel WHERE Country IN (     SELECT Country     FROM TV_Channel     GROUP BY Country     HAVING COUNT(*) > 2 );
+[643/1034] FAIL   db=tvshow | Q: What are the ids of all tv channels that have more than 2 TV
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT id FROM TV_Channel WHERE id IN (   SELECT Channel   FROM TV_series   GROUP BY Channel   HAVING COUNT(*) > 2 );
+[644/1034] EX     db=tvshow | Q: find the id of tv channels that do not play any cartoon dire
+[645/1034] EX     db=tvshow | Q: What are the ids of the TV channels that do not have any car
+[646/1034] FAIL   db=tvshow | Q: find the package option of the tv channel that do not have a
+         reason: Result mismatch: predicted 3 row(s), gold 11 row(s)
+         pred:   SELECT DISTINCT tc.Package_Option FROM TV_Channel AS tc WHERE NOT EXISTS (     SELECT 1     FROM Cartoon AS c     WHERE c.Channel = tc.id       AND c.Directed_by = 'Ben Jones' );
+[647/1034] EX     db=tvshow | Q: What are the package options of all tv channels that are not
+note: db=poker_player: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[648/1034] EX     db=poker_player | Q: How many poker players are there?
+[649/1034] EX     db=poker_player | Q: Count the number of poker players.
+[650/1034] EX     db=poker_player | Q: List the earnings of poker players in descending order.
+[651/1034] EX     db=poker_player | Q: What are the earnings of poker players, ordered descending b
+[652/1034] EX     db=poker_player | Q: List the final tables made and the best finishes of poker pl
+[653/1034] EX     db=poker_player | Q: What are the final tables made and best finishes for all pok
+[654/1034] EX     db=poker_player | Q: What is the average earnings of poker players?
+[655/1034] EX     db=poker_player | Q: Return the average earnings across all poker players.
+[656/1034] EX     db=poker_player | Q: What is the money rank of the poker player with the highest 
+[657/1034] EX     db=poker_player | Q: Return the money rank of the player with the greatest earnin
+[658/1034] EX     db=poker_player | Q: What is the maximum number of final tables made among poker 
+[659/1034] EX     db=poker_player | Q: Return the maximum final tables made across all poker player
+[660/1034] EX     db=poker_player | Q: What are the names of poker players?
+[661/1034] EX     db=poker_player | Q: Return the names of all the poker players.
+[662/1034] EX     db=poker_player | Q: What are the names of poker players whose earnings is higher
+[663/1034] EX     db=poker_player | Q: Give the names of poker players who have earnings above 3000
+[664/1034] EX     db=poker_player | Q: List the names of poker players ordered by the final tables 
+[665/1034] EX     db=poker_player | Q: What are the names of poker players, ordered ascending by th
+[666/1034] EX     db=poker_player | Q: What is the birth date of the poker player with the lowest e
+[667/1034] EX     db=poker_player | Q: Return the birth date of the poker player with the lowest ea
+[668/1034] EX     db=poker_player | Q: What is the money rank of the tallest poker player?
+[669/1034] EX     db=poker_player | Q: Return the money rank of the poker player with the greatest 
+[670/1034] EX     db=poker_player | Q: What is the average earnings of poker players with height hi
+[671/1034] EX     db=poker_player | Q: Give average earnings of poker players who are taller than 2
+[672/1034] EX     db=poker_player | Q: What are the names of poker players in descending order of e
+[673/1034] EX     db=poker_player | Q: Return the names of poker players sorted by their earnings d
+[674/1034] EX     db=poker_player | Q: What are different nationalities of people and the correspon
+[675/1034] EX     db=poker_player | Q: How many people are there of each nationality?
+[676/1034] EX     db=poker_player | Q: What is the most common nationality of people?
+[677/1034] EX     db=poker_player | Q: Give the nationality that is most common across all people.
+[678/1034] EX     db=poker_player | Q: What are the nationalities that are shared by at least two p
+[679/1034] EX     db=poker_player | Q: Return the nationalities for which there are two or more peo
+[680/1034] EX     db=poker_player | Q: List the names and birth dates of people in ascending alphab
+[681/1034] EX     db=poker_player | Q: What are the names and birth dates of people, ordered by the
+[682/1034] EX     db=poker_player | Q: Show names of people whose nationality is not "Russia".
+[683/1034] EX     db=poker_player | Q: What are the names of people who are not from Russia?
+[684/1034] EX     db=poker_player | Q: List the names of people that are not poker players.
+[685/1034] EX     db=poker_player | Q: What are the names of people who do not play poker?
+[686/1034] EX     db=poker_player | Q: How many distinct nationalities are there?
+[687/1034] EX     db=poker_player | Q: Count the number of different nationalities.
+note: db=voter_1: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[688/1034] FAIL   db=voter_1 | Q: How many states are there?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(DISTINCT state) AS state_count FROM AREA_CODE_STATE;
+[689/1034] EX     db=voter_1 | Q: List the contestant numbers and names, ordered by contestant
+[690/1034] EX     db=voter_1 | Q: List the vote ids, phone numbers and states of all votes.
+[691/1034] EX     db=voter_1 | Q: What are the maximum and minimum values of area codes?
+[692/1034] EX     db=voter_1 | Q: What is last date created of votes from the state 'CA'?
+[693/1034] EX     db=voter_1 | Q: What are the names of the contestants whose names are not 'J
+[694/1034] EX     db=voter_1 | Q: What are the distinct states and create time of all votes?
+[695/1034] EX     db=voter_1 | Q: What are the contestant numbers and names of the contestants
+[696/1034] EX     db=voter_1 | Q: Of all the contestants who got voted, what is the contestant
+[697/1034] EX     db=voter_1 | Q: What are the number of votes from state 'NY' or 'CA'?
+[698/1034] EX     db=voter_1 | Q: How many contestants did not get voted?
+[699/1034] EX     db=voter_1 | Q: What is the area code in which the most voters voted?
+[700/1034] EX     db=voter_1 | Q: What are the create dates, states, and phone numbers of the 
+[701/1034] EX     db=voter_1 | Q: List the area codes in which voters voted both for the conte
+[702/1034] EX     db=voter_1 | Q: Return the names of the contestants whose names contain the 
+note: db=world_1: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[703/1034] EX     db=world_1 | Q: What are the names of all the countries that became independ
+[704/1034] EX     db=world_1 | Q: Give the names of the nations that were founded after 1950.
+[705/1034] FAIL   db=world_1 | Q: How many countries have a republic as their form of governme
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM country WHERE GovernmentForm LIKE '%Republic%';
+[706/1034] FAIL   db=world_1 | Q: How many countries have governments that are republics?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM country WHERE GovernmentForm LIKE '%Republic%';
+[707/1034] EX     db=world_1 | Q: What is the total surface area of the countries in the Carib
+[708/1034] EX     db=world_1 | Q: How much surface area do the countires in the Carribean cove
+[709/1034] EX     db=world_1 | Q: Which continent is Anguilla in?
+[710/1034] EX     db=world_1 | Q: What is the continent name which Anguilla belongs to?
+[711/1034] EX     db=world_1 | Q: Which region is the city Kabul located in?
+[712/1034] EX     db=world_1 | Q: What region is Kabul in?
+[713/1034] EX     db=world_1 | Q: Which language is the most popular in Aruba?
+[714/1034] EX     db=world_1 | Q: What language is predominantly spoken in Aruba?
+[715/1034] EX     db=world_1 | Q: What are the population and life expectancies in Brazil?
+[716/1034] EX     db=world_1 | Q: Give me Brazil’s population and life expectancies.
+[717/1034] EX     db=world_1 | Q: What are the region and population of Angola?
+[718/1034] EX     db=world_1 | Q: What region does Angola belong to and what is its population
+[719/1034] EX     db=world_1 | Q: What is the average expected life expectancy for countries i
+[720/1034] EX     db=world_1 | Q: How long is the people’s average life expectancy in Central 
+[721/1034] EX     db=world_1 | Q: What is the name of country that has the shortest life expec
+[722/1034] EX     db=world_1 | Q: Give the name of the country in Asia with the lowest life ex
+[723/1034] EX     db=world_1 | Q: What is the total population and maximum GNP in Asia?
+[724/1034] EX     db=world_1 | Q: How many people live in Asia, and what is the largest GNP am
+[725/1034] FAIL   db=world_1 | Q: What is the average life expectancy in African countries tha
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(LifeExpectancy) FROM country WHERE Continent = 'Africa'   AND GovernmentForm LIKE '%Republic%';
+[726/1034] EX     db=world_1 | Q: Give the average life expectancy for countries in Africa whi
+[727/1034] EX     db=world_1 | Q: What is the total surface area of the continents Asia and Eu
+[728/1034] EX     db=world_1 | Q: Give the total surface area covered by countries in Asia or 
+[729/1034] EX     db=world_1 | Q: How many people live in Gelderland district?
+[730/1034] EX     db=world_1 | Q: What is the total population of Gelderland district?
+[731/1034] EX     db=world_1 | Q: What is the average GNP and total population in all nations 
+[732/1034] EX     db=world_1 | Q: Give the mean GNP and total population of nations which are 
+[733/1034] EX     db=world_1 | Q: How many unique languages are spoken in the world?
+[734/1034] EX     db=world_1 | Q: What is the number of distinct languages used around the wor
+[735/1034] EX     db=world_1 | Q: How many type of governments are in Africa?
+[736/1034] EX     db=world_1 | Q: How many different forms of governments are there in Africa?
+[737/1034] EX     db=world_1 | Q: What is the total number of languages used in Aruba?
+[738/1034] EX     db=world_1 | Q: How many languages are spoken in Aruba?
+[739/1034] EX     db=world_1 | Q: How many official languages does Afghanistan have?
+[740/1034] EX     db=world_1 | Q: How many official languages are spoken in Afghanistan?
+[741/1034] FAIL   db=world_1 | Q: What is name of the country that speaks the largest number o
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT country.Name FROM country JOIN countrylanguage ON countrylanguage.CountryCode = country.Code GROUP BY country.Code, country.Name ORDER BY COUNT(countrylanguage.Language) DESC LIMIT 1;
+[742/1034] FAIL   db=world_1 | Q: Give the name of the nation that uses the greatest amount of
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT country.Name FROM country JOIN countrylanguage ON country.Code = countrylanguage.CountryCode GROUP BY country.Code, country.Name ORDER BY COUNT(countrylanguage.Language) DESC LIMIT 1;
+[743/1034] EX     db=world_1 | Q: Which continent has the most diverse languages?
+[744/1034] EX     db=world_1 | Q: Which continent speaks the most languages?
+[745/1034] EX     db=world_1 | Q: How many countries speak both English and Dutch?
+[746/1034] EX     db=world_1 | Q: What is the number of nations that use English and Dutch?
+[747/1034] EX     db=world_1 | Q: What are the names of nations speak both English and French?
+[748/1034] EX     db=world_1 | Q: Give the names of nations that speak both English and French
+[749/1034] EX     db=world_1 | Q: What are the names of nations where both English and French 
+[750/1034] EX     db=world_1 | Q: Give the names of countries with English and French as offic
+[751/1034] EX     db=world_1 | Q: What is the number of distinct continents where Chinese is s
+[752/1034] EX     db=world_1 | Q: How many continents speak Chinese?
+[753/1034] EX     db=world_1 | Q: What are the regions that use English or Dutch?
+[754/1034] EX     db=world_1 | Q: Which regions speak Dutch or English?
+[755/1034] FAIL   db=world_1 | Q: What are the countries where either English or Dutch is the 
+         reason: Result mismatch: predicted 48 row(s), gold 0 row(s)
+         pred:   SELECT DISTINCT country.Name FROM country JOIN countrylanguage ON countrylanguage.CountryCode = country.Code WHERE countrylanguage.IsOfficial = 'T'   AND countrylanguage.Language IN ('English', 'Dutch
+[756/1034] FAIL   db=world_1 | Q: Which countries have either English or Dutch as an official 
+         reason: Result mismatch: predicted 48 row(s), gold 48 row(s)
+         pred:   SELECT DISTINCT country.Name FROM country JOIN countrylanguage ON countrylanguage.CountryCode = country.Code WHERE countrylanguage.IsOfficial = 'T'   AND countrylanguage.Language IN ('English', 'Dutch
+[757/1034] FAIL   db=world_1 | Q: Which language is the most popular on the Asian continent?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT cl.Language FROM countrylanguage AS cl JOIN country AS c ON cl.CountryCode = c.Code WHERE c.Continent = 'Asia' GROUP BY cl.Language ORDER BY SUM(c.Population * cl.Percentage / 100.0) DESC LIMIT
+[758/1034] EX     db=world_1 | Q: What is the language that is used by the largest number of A
+[759/1034] FAIL   db=world_1 | Q: Which languages are spoken by only one country in republic g
+         reason: Result mismatch: predicted 306 row(s), gold 258 row(s)
+         pred:   SELECT cl.Language FROM countrylanguage AS cl JOIN country AS c ON cl.CountryCode = c.Code WHERE c.GovernmentForm LIKE '%Republic%' GROUP BY cl.Language HAVING COUNT(DISTINCT c.Code) = 1;
+[760/1034] FAIL   db=world_1 | Q: What languages are only used by a single country with a repu
+         reason: Result mismatch: predicted 286 row(s), gold 258 row(s)
+         pred:   SELECT cl.Language FROM countrylanguage AS cl JOIN country AS c ON cl.CountryCode = c.Code GROUP BY cl.Language HAVING COUNT(DISTINCT c.Code) = 1    AND SUM(CASE WHEN c.GovernmentForm LIKE '%Republic%
+[761/1034] FAIL   db=world_1 | Q: Find the city with the largest population that uses English.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT city.Name FROM city JOIN country ON city.CountryCode = country.Code JOIN countrylanguage ON countrylanguage.CountryCode = country.Code WHERE countrylanguage.Language = 'English' ORDER BY city.P
+[762/1034] FAIL   db=world_1 | Q: What is the most populace city that speaks English?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT city.Name FROM city JOIN country ON city.CountryCode = country.Code JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE countrylanguage.Language = 'English' ORDER BY city.P
+[763/1034] EX     db=world_1 | Q: Find the name, population and expected life length of asian 
+[764/1034] EX     db=world_1 | Q: What are the name, population, and life expectancy of the la
+[765/1034] EX     db=world_1 | Q: What is average life expectancy in the countries where Engli
+[766/1034] FAIL   db=world_1 | Q: Give the mean life expectancy of countries in which English 
+         reason: Result mismatch: predicted 189 row(s), gold 1 row(s)
+         pred:   SELECT AVG(c.LifeExpectancy) FROM country AS c JOIN countrylanguage AS cl ON cl.CountryCode = c.Code GROUP BY c.Code HAVING SUM(CASE WHEN cl.Language = 'English' AND cl.IsOfficial = 'T' THEN 1 ELSE 0 
+[767/1034] EX     db=world_1 | Q: What is the total number of people living in the nations tha
+[768/1034] EX     db=world_1 | Q: How many people live in countries that do not speak English?
+[769/1034] EX     db=world_1 | Q: What is the official language spoken in the country whose he
+[770/1034] EX     db=world_1 | Q: What is the official language used in the country the name o
+[771/1034] EX     db=world_1 | Q: What is the total number of unique official languages spoken
+[772/1034] EX     db=world_1 | Q: For the countries founded before 1930, what is the total num
+[773/1034] FAIL   db=world_1 | Q: What are the countries that have greater surface area than a
+         reason: Result mismatch: predicted 0 row(s), gold 238 row(s)
+         pred:   SELECT Name FROM country WHERE SurfaceArea > (     SELECT MAX(SurfaceArea)     FROM country     WHERE Continent = 'Europe' );
+[774/1034] FAIL   db=world_1 | Q: Which countries have greater area than that of any country i
+         reason: Result mismatch: predicted 0 row(s), gold 238 row(s)
+         pred:   SELECT Name FROM country WHERE SurfaceArea > (   SELECT MAX(SurfaceArea)   FROM country   WHERE Continent = 'Europe' );
+[775/1034] EX     db=world_1 | Q: What are the African countries that have a  population less 
+[776/1034] EX     db=world_1 | Q: Which African countries have a smaller population than that 
+[777/1034] EX     db=world_1 | Q: Which Asian countries have a population that is larger than 
+[778/1034] FAIL   db=world_1 | Q: What are the Asian countries which have a population larger 
+         reason: Result mismatch: predicted 6 row(s), gold 51 row(s)
+         pred:   SELECT Name FROM country WHERE Continent = 'Asia'   AND Population > (     SELECT MAX(Population)     FROM country     WHERE Continent = 'Africa'   );
+[779/1034] FAIL   db=world_1 | Q: What are the country codes for countries that do not speak E
+         reason: Result mismatch: predicted 179 row(s), gold 173 row(s)
+         pred:   SELECT country.Code FROM country WHERE NOT EXISTS (   SELECT 1   FROM countrylanguage   WHERE countrylanguage.CountryCode = country.Code     AND countrylanguage.Language = 'English' );
+[780/1034] FAIL   db=world_1 | Q: Return the country codes for countries that do not speak Eng
+         reason: Result mismatch: predicted 179 row(s), gold 173 row(s)
+         pred:   SELECT c.Code FROM country AS c WHERE NOT EXISTS (   SELECT 1   FROM countrylanguage AS cl   WHERE cl.CountryCode = c.Code     AND cl.Language = 'English' );
+[781/1034] EX     db=world_1 | Q: What are the country codes of countries where people use lan
+[782/1034] EX     db=world_1 | Q: Give the country codes for countries in which people speak l
+[783/1034] FAIL   db=world_1 | Q: What are the codes of the countries that do not speak Englis
+         reason: Result mismatch: predicted 101 row(s), gold 69 row(s)
+         pred:   SELECT DISTINCT c.Code FROM country AS c JOIN countrylanguage AS cl ON cl.CountryCode = c.Code WHERE cl.Language <> 'English'   AND c.GovernmentForm <> 'Republic';
+[784/1034] FAIL   db=world_1 | Q: Return the codes of countries that do not speak English and 
+         reason: Result mismatch: predicted 49 row(s), gold 69 row(s)
+         pred:   SELECT c.Code FROM country AS c WHERE c.GovernmentForm NOT LIKE '%Republic%'   AND NOT EXISTS (     SELECT 1     FROM countrylanguage AS cl     WHERE cl.CountryCode = c.Code       AND cl.Language = 'E
+[785/1034] EX     db=world_1 | Q: Which cities are in European countries where English is not 
+[786/1034] EX     db=world_1 | Q: What are the names of cities in Europe for which English is 
+[787/1034] FAIL   db=world_1 | Q: Which unique cities are in Asian countries where Chinese is 
+         reason: Result mismatch: predicted 359 row(s), gold 0 row(s)
+         pred:   SELECT DISTINCT city.Name FROM city JOIN country ON city.CountryCode = country.Code JOIN countrylanguage ON country.Code = countrylanguage.CountryCode WHERE countrylanguage.Language = 'Chinese'   AND 
+[788/1034] EX     db=world_1 | Q: Return the different names of cities that are in Asia and fo
+[789/1034] FAIL   db=world_1 | Q: What are the name, independence year, and surface area of th
+         reason: Result mismatch: predicted 7 row(s), gold 1 row(s)
+         pred:   SELECT Name, IndepYear, SurfaceArea FROM country WHERE Population = (SELECT MIN(Population) FROM country);
+[790/1034] EX     db=world_1 | Q: Give the name, year of independence, and surface area of the
+[791/1034] EX     db=world_1 | Q: What are the population, name and leader of the country with
+[792/1034] EX     db=world_1 | Q: Give the name, population, and head of state for the country
+[793/1034] EX     db=world_1 | Q: Return the country name and the numbers of languages spoken 
+[794/1034] EX     db=world_1 | Q: What are the names of countries that speak more than 2 langu
+[795/1034] EX     db=world_1 | Q: Find the number of cities in each district whose population 
+[796/1034] EX     db=world_1 | Q: How many cities in each district have a population that is a
+[797/1034] EX     db=world_1 | Q: Find the government form name and total population for each 
+[798/1034] EX     db=world_1 | Q: What are the different government forms and what is the tota
+[799/1034] EX     db=world_1 | Q: Find the average life expectancy and total population for ea
+[800/1034] EX     db=world_1 | Q: What are the different continents and the total popuation an
+[801/1034] EX     db=world_1 | Q: What are the names and areas of countries with the top 5 lar
+[802/1034] EX     db=world_1 | Q: Return the names and surface areas of the 5 largest countrie
+[803/1034] EX     db=world_1 | Q: What are names of countries with the top 3 largest populatio
+[804/1034] EX     db=world_1 | Q: Return the names of the 3 most populated countries.
+[805/1034] EX     db=world_1 | Q: What are the names of the nations with the 3 lowest populati
+[806/1034] EX     db=world_1 | Q: Return the names of the 3 countries with the fewest people.
+[807/1034] EX     db=world_1 | Q: how many countries are in Asia?
+[808/1034] EX     db=world_1 | Q: Count the number of countries in Asia.
+[809/1034] EX     db=world_1 | Q: What are the names of the countries that are in the continen
+[810/1034] EX     db=world_1 | Q: Give the names of countries that are in Europe and have a po
+[811/1034] FAIL   db=world_1 | Q: What is the total population and average area of countries i
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT SUM(Population), AVG(SurfaceArea) FROM country WHERE Continent = 'North America'   AND SurfaceArea > 3000;
+[812/1034] FAIL   db=world_1 | Q: Give the total population and average surface area correspon
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT SUM(Population), AVG(SurfaceArea) FROM country WHERE Continent = 'North America'   AND SurfaceArea > 3000;
+[813/1034] EX     db=world_1 | Q: What are the cities whose population is between 160000 and 9
+[814/1034] EX     db=world_1 | Q: Return the names of cities that have a population between 16
+[815/1034] EX     db=world_1 | Q: Which language is spoken by the largest number of countries?
+[816/1034] EX     db=world_1 | Q: Give the language that is spoken in the most countries.
+[817/1034] FAIL   db=world_1 | Q: What is the language spoken by the largest percentage of peo
+         reason: Result mismatch: predicted 241 row(s), gold 233 row(s)
+         pred:   SELECT cl.CountryCode, cl.Language FROM countrylanguage AS cl WHERE cl.Percentage = (   SELECT MAX(cl2.Percentage)   FROM countrylanguage AS cl2   WHERE cl2.CountryCode = cl.CountryCode );
+[818/1034] FAIL   db=world_1 | Q: What are the country codes of the different countries, and w
+         reason: Result mismatch: predicted 241 row(s), gold 233 row(s)
+         pred:   SELECT cl.CountryCode, cl.Language FROM countrylanguage AS cl JOIN country AS c ON cl.CountryCode = c.Code WHERE cl.Percentage = (     SELECT MAX(cl2.Percentage)     FROM countrylanguage AS cl2     WH
+[819/1034] FAIL   db=world_1 | Q: What is the total number of countries where Spanish is spoke
+         reason: Result mismatch: predicted 1 row(s), gold 28 row(s)
+         pred:   SELECT COUNT(*) FROM countrylanguage WHERE Language = 'Spanish'   AND Percentage = (       SELECT MAX(Percentage)       FROM countrylanguage       WHERE Language = 'Spanish'   );
+[820/1034] FAIL   db=world_1 | Q: Count the number of countries for which Spanish is the predo
+         reason: Result mismatch: predicted 1 row(s), gold 28 row(s)
+         pred:   SELECT COUNT(DISTINCT c.Code) FROM country AS c JOIN countrylanguage AS cl ON cl.CountryCode = c.Code WHERE cl.Language = 'Spanish'   AND cl.Percentage > 50;
+[821/1034] FAIL   db=world_1 | Q: What are the codes of countries where Spanish is spoken by t
+         reason: Result mismatch: predicted 2 row(s), gold 28 row(s)
+         pred:   SELECT CountryCode FROM countrylanguage WHERE Language = 'Spanish'   AND Percentage = (     SELECT MAX(Percentage)     FROM countrylanguage     WHERE Language = 'Spanish'   );
+[822/1034] FAIL   db=world_1 | Q: Return the codes of countries for which Spanish is the predo
+         reason: Result mismatch: predicted 20 row(s), gold 28 row(s)
+         pred:   SELECT c.Code FROM country AS c JOIN countrylanguage AS cl ON cl.CountryCode = c.Code WHERE cl.Language = 'Spanish'   AND cl.Percentage > 50;
+note: db=orchestra: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[823/1034] EX     db=orchestra | Q: How many conductors are there?
+[824/1034] EX     db=orchestra | Q: Count the number of conductors.
+[825/1034] EX     db=orchestra | Q: List the names of conductors in ascending order of age.
+[826/1034] EX     db=orchestra | Q: What are the names of conductors, ordered by age?
+[827/1034] EX     db=orchestra | Q: What are the names of conductors whose nationalities are not
+[828/1034] EX     db=orchestra | Q: Return the names of conductors that do not have the national
+[829/1034] EX     db=orchestra | Q: What are the record companies of orchestras in descending or
+[830/1034] EX     db=orchestra | Q: Return the record companies of orchestras, sorted descending
+[831/1034] EX     db=orchestra | Q: What is the average attendance of shows?
+[832/1034] EX     db=orchestra | Q: Return the average attendance across all shows.
+[833/1034] FAIL   db=orchestra | Q: What are the maximum and minimum share of performances whose
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT   MAX(CAST(REPLACE(p.Share, '%', '') AS REAL) / 100.0) AS maximum_share,   MIN(CAST(REPLACE(p.Share, '%', '') AS REAL) / 100.0) AS minimum_share FROM show AS s JOIN performance AS p ON s.Perfor
+[834/1034] FAIL   db=orchestra | Q: Return the maximum and minimum shares for performances that 
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MAX(p.Share), MIN(p.Share) FROM show AS s JOIN performance AS p ON s.Performance_ID = p.Performance_ID WHERE p.Type <> 'Live final';
+[835/1034] EX     db=orchestra | Q: How many different nationalities do conductors have?
+[836/1034] EX     db=orchestra | Q: Count the number of different nationalities of conductors.
+[837/1034] EX     db=orchestra | Q: List names of conductors in descending order of years of wor
+[838/1034] EX     db=orchestra | Q: What are the names of conductors, sorted descending by the n
+[839/1034] EX     db=orchestra | Q: List the name of the conductor with the most years of work.
+[840/1034] EX     db=orchestra | Q: What is the name of the conductor who has worked the greates
+[841/1034] EX     db=orchestra | Q: Show the names of conductors and the orchestras they have co
+[842/1034] EX     db=orchestra | Q: What are the names of conductors as well as the corresonding
+[843/1034] EX     db=orchestra | Q: Show the names of conductors that have conducted more than o
+[844/1034] EX     db=orchestra | Q: What are the names of conductors who have conducted at more 
+[845/1034] FAIL   db=orchestra | Q: Show the name of the conductor that has conducted the most n
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT conductor.Name FROM conductor JOIN orchestra ON orchestra.Conductor_ID = conductor.Conductor_ID GROUP BY conductor.Conductor_ID, conductor.Name ORDER BY COUNT(DISTINCT orchestra.Orchestra_ID) D
+[846/1034] FAIL   db=orchestra | Q: What is the name of the conductor who has conducted the most
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT c.Name FROM conductor AS c JOIN orchestra AS o ON o.Conductor_ID = c.Conductor_ID GROUP BY c.Conductor_ID, c.Name ORDER BY COUNT(DISTINCT o.Orchestra_ID) DESC LIMIT 1;
+[847/1034] EX     db=orchestra | Q: Please show the name of the conductor that has conducted orc
+[848/1034] EX     db=orchestra | Q: What are the names of conductors who have conducted orchestr
+[849/1034] EX     db=orchestra | Q: Please show the different record companies and the correspon
+[850/1034] EX     db=orchestra | Q: How many orchestras does each record company manage?
+[851/1034] EX     db=orchestra | Q: Please show the record formats of orchestras in ascending or
+[852/1034] EX     db=orchestra | Q: What are the major record formats of orchestras, sorted by t
+[853/1034] EX     db=orchestra | Q: List the record company shared by the most number of orchest
+[854/1034] EX     db=orchestra | Q: What is the record company used by the greatest number of or
+[855/1034] EX     db=orchestra | Q: List the names of orchestras that have no performance.
+[856/1034] EX     db=orchestra | Q: What are the orchestras that do not have any performances?
+[857/1034] EX     db=orchestra | Q: Show the record companies shared by orchestras founded befor
+[858/1034] EX     db=orchestra | Q: What are the record companies that are used by both orchestr
+[859/1034] EX     db=orchestra | Q: Find the number of orchestras whose record format is "CD" or
+[860/1034] EX     db=orchestra | Q: Count the number of orchestras that have CD or DVD as their 
+[861/1034] EX     db=orchestra | Q: Show the years in which orchestras that have given more than
+[862/1034] EX     db=orchestra | Q: What are years of founding for orchestras that have had more
+[863/1034] EX     db=network_1 | Q: How many high schoolers are there?
+[864/1034] EX     db=network_1 | Q: Count the number of high schoolers.
+[865/1034] EX     db=network_1 | Q: Show the names and grades of each high schooler.
+[866/1034] EX     db=network_1 | Q: What are the names and grades for each high schooler?
+[867/1034] EX     db=network_1 | Q: Show all the grades of the high schoolers.
+[868/1034] FAIL   db=network_1 | Q: What is the grade of each high schooler?
+         reason: Result mismatch: predicted 16 row(s), gold 16 row(s)
+         pred:   SELECT name, grade FROM Highschooler;
+[869/1034] EX     db=network_1 | Q: What grade is Kyle in?
+[870/1034] EX     db=network_1 | Q: Return the grade for the high schooler named Kyle.
+[871/1034] EX     db=network_1 | Q: Show the names of all high schoolers in grade 10.
+[872/1034] EX     db=network_1 | Q: What are the names of all high schoolers in grade 10?
+[873/1034] EX     db=network_1 | Q: Show the ID of the high schooler named Kyle.
+[874/1034] EX     db=network_1 | Q: What is Kyle's id?
+[875/1034] EX     db=network_1 | Q: How many high schoolers are there in grade 9 or 10?
+[876/1034] EX     db=network_1 | Q: Count the number of high schoolers in grades 9 or 10.
+[877/1034] EX     db=network_1 | Q: Show the number of high schoolers for each grade.
+[878/1034] EX     db=network_1 | Q: How many high schoolers are in each grade?
+[879/1034] EX     db=network_1 | Q: Which grade has the most high schoolers?
+[880/1034] EX     db=network_1 | Q: Return the grade that has the greatest number of high school
+[881/1034] EX     db=network_1 | Q: Show me all grades that have at least 4 students.
+[882/1034] EX     db=network_1 | Q: Which grades have 4 or more high schoolers?
+[883/1034] EX     db=network_1 | Q: Show the student IDs and numbers of friends corresponding to
+[884/1034] FAIL   db=network_1 | Q: How many friends does each student have?
+         reason: Result mismatch: predicted 16 row(s), gold 14 row(s)
+         pred:   SELECT Highschooler.ID, Highschooler.name, COUNT(Friend.friend_id) AS friend_count FROM Highschooler LEFT JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID, Highschooler.name
+[885/1034] FAIL   db=network_1 | Q: Show the names of high school students and their correspondi
+         reason: Result mismatch: predicted 16 row(s), gold 14 row(s)
+         pred:   SELECT Highschooler.name, COUNT(Friend.friend_id) FROM Highschooler LEFT JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID, Highschooler.name;
+[886/1034] FAIL   db=network_1 | Q: What are the names of the high schoolers and how many friend
+         reason: Result mismatch: predicted 16 row(s), gold 14 row(s)
+         pred:   SELECT Highschooler.name, COUNT(Friend.friend_id) FROM Highschooler LEFT JOIN Friend ON Highschooler.ID = Friend.student_id GROUP BY Highschooler.ID, Highschooler.name;
+[887/1034] EX     db=network_1 | Q: What is the name of the high schooler who has the greatest n
+[888/1034] EX     db=network_1 | Q: Return the name of the high school student with the most fri
+[889/1034] EX     db=network_1 | Q: Show the names of high schoolers who have at least 3 friends
+[890/1034] EX     db=network_1 | Q: What are the names of high schoolers who have 3 or more frie
+[891/1034] EX     db=network_1 | Q: Show the names of all of the high schooler Kyle's friends.
+[892/1034] EX     db=network_1 | Q: Return the names of friends of the high school student Kyle.
+[893/1034] EX     db=network_1 | Q: How many friends does the high school student Kyle have?
+[894/1034] EX     db=network_1 | Q: Count the number of friends Kyle has.
+[895/1034] FAIL   db=network_1 | Q: Show ids of all students who do not have any friends.
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT h.ID FROM Highschooler AS h WHERE NOT EXISTS (     SELECT 1     FROM Friend AS f     WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+[896/1034] FAIL   db=network_1 | Q: What are the ids of high school students who do not have fri
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT h.ID FROM Highschooler AS h WHERE NOT EXISTS (     SELECT 1     FROM Friend AS f     WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+[897/1034] FAIL   db=network_1 | Q: Show names of all high school students who do not have any f
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT h.name FROM Highschooler AS h WHERE NOT EXISTS (   SELECT 1   FROM Friend AS f   WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+[898/1034] FAIL   db=network_1 | Q: What are the names of students who have no friends?
+         reason: Result mismatch: predicted 0 row(s), gold 2 row(s)
+         pred:   SELECT h.name FROM Highschooler AS h WHERE NOT EXISTS (     SELECT 1     FROM Friend AS f     WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+[899/1034] EX     db=network_1 | Q: Show the ids of high schoolers who have friends and are also
+[900/1034] EX     db=network_1 | Q: What are the ids of students who both have friends and are l
+[901/1034] EX     db=network_1 | Q: Show name of all students who have some friends and also are
+[902/1034] EX     db=network_1 | Q: What are the names of high schoolers who both have friends a
+[903/1034] EX     db=network_1 | Q: Count the number of likes for each student id.
+[904/1034] EX     db=network_1 | Q: How many likes correspond to each student id?
+[905/1034] EX     db=network_1 | Q: Show the names of high schoolers who have likes, and numbers
+[906/1034] EX     db=network_1 | Q: What are the names of high schoolers who have likes, and how
+[907/1034] FAIL   db=network_1 | Q: What is the name of the high schooler who has the greatest n
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT h.name FROM Highschooler AS h JOIN Likes AS l ON l.liked_id = h.ID GROUP BY h.ID, h.name ORDER BY COUNT(*) DESC LIMIT 1;
+[908/1034] FAIL   db=network_1 | Q: Give the name of the student with the most likes.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT h.name FROM Highschooler AS h JOIN Likes AS l ON l.liked_id = h.ID GROUP BY h.ID, h.name ORDER BY COUNT(*) DESC LIMIT 1;
+[909/1034] EX     db=network_1 | Q: Show the names of students who have at least 2 likes.
+[910/1034] EX     db=network_1 | Q: What are the names of students who have 2 or more likes?
+[911/1034] EX     db=network_1 | Q: Show the names of students who have a grade higher than 5 an
+[912/1034] EX     db=network_1 | Q: What are the names of high schoolers who have a grade of ove
+[913/1034] EX     db=network_1 | Q: How many likes does Kyle have?
+[914/1034] EX     db=network_1 | Q: Return the number of likes that the high schooler named Kyle
+[915/1034] EX     db=network_1 | Q: Find the average grade of all students who have some friends
+[916/1034] EX     db=network_1 | Q: What is the average grade of students who have friends?
+[917/1034] FAIL   db=network_1 | Q: Find the minimum grade of students who have no friends.
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MIN(h.grade) FROM Highschooler AS h WHERE NOT EXISTS (   SELECT 1   FROM Friend AS f   WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+[918/1034] FAIL   db=network_1 | Q: What is the lowest grade of students who do not have any fri
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT MIN(h.grade) FROM Highschooler AS h WHERE NOT EXISTS (   SELECT 1   FROM Friend AS f   WHERE f.student_id = h.ID OR f.friend_id = h.ID );
+note: db=dog_kennels: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[919/1034] EX     db=dog_kennels | Q: Which states have both owners and professionals living there
+[920/1034] EX     db=dog_kennels | Q: Find the states where both owners and professionals live.
+[921/1034] FAIL   db=dog_kennels | Q: What is the average age of the dogs who have gone through an
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(CAST(Dogs.age AS REAL)) FROM Dogs JOIN Treatments ON Dogs.dog_id = Treatments.dog_id;
+[922/1034] FAIL   db=dog_kennels | Q: Find the average age of the dogs who went through treatments
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT AVG(CAST(Dogs.age AS REAL)) FROM Dogs JOIN Treatments ON Treatments.dog_id = Dogs.dog_id;
+[923/1034] EX     db=dog_kennels | Q: Which professionals live in the state of Indiana or have don
+[924/1034] EX     db=dog_kennels | Q: Find the id, last name and cell phone of the professionals w
+[925/1034] EX     db=dog_kennels | Q: Which dogs have not cost their owner more than 1000 for trea
+[926/1034] FAIL   db=dog_kennels | Q: What are the names of the dogs for which the owner has not s
+         reason: Result mismatch: predicted 6 row(s), gold 12 row(s)
+         pred:   SELECT d.name FROM Dogs AS d JOIN Owners AS o ON d.owner_id = o.owner_id WHERE d.dog_id IN (     SELECT t.dog_id     FROM Treatments AS t     GROUP BY t.dog_id     HAVING SUM(t.cost_of_treatment) <= 1
+[927/1034] EX     db=dog_kennels | Q: Which first names are used for professionals or owners but a
+[928/1034] EX     db=dog_kennels | Q: Find the first names that are used for professionals or owne
+[929/1034] EX     db=dog_kennels | Q: Which professional did not operate any treatment on dogs? Li
+[930/1034] EX     db=dog_kennels | Q: Give me the id, role and email of the professionals who did 
+[931/1034] EX     db=dog_kennels | Q: Which owner owns the most dogs? List the owner id, first nam
+[932/1034] EX     db=dog_kennels | Q: Return the owner id, first name and last name of the owner w
+[933/1034] EX     db=dog_kennels | Q: Which professionals have done at least two treatments? List 
+[934/1034] EX     db=dog_kennels | Q: What are the id, role, and first name of the professionals w
+[935/1034] EX     db=dog_kennels | Q: What is the name of the breed with the most dogs?
+[936/1034] EX     db=dog_kennels | Q: Which breed do the most dogs have? Give me the breed name.
+[937/1034] EX     db=dog_kennels | Q: Which owner has paid for the most treatments on his or her d
+[938/1034] EX     db=dog_kennels | Q: Tell me the owner id and last name of the owner who spent th
+[939/1034] EX     db=dog_kennels | Q: What is the description of the treatment type that costs the
+[940/1034] EX     db=dog_kennels | Q: Give me the description of the treatment type whose total co
+[941/1034] FAIL   db=dog_kennels | Q: Which owner has paid the largest amount of money in total fo
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT o.owner_id, o.zip_code FROM Owners AS o JOIN Dogs AS d ON d.owner_id = o.owner_id JOIN Treatments AS t ON t.dog_id = d.dog_id JOIN Charges AS c ON c.charge_id = t.treatment_id GROUP BY o.owner_
+[942/1034] EX     db=dog_kennels (attempts: 2) | Q: Find the owner id and zip code of the owner who spent the mo
+         [feedback] attempt 1 rejected: SQLite execution error: no such column: t.cost
+         [feedback] attempt 2 passed
+[943/1034] FAIL   db=dog_kennels | Q: Which professionals have done at least two types of treatmen
+         reason: Result mismatch: predicted 4 row(s), gold 6 row(s)
+         pred:   SELECT p.professional_id, p.cell_number FROM Professionals AS p JOIN Treatments AS t ON t.professional_id = p.professional_id JOIN Treatment_Types AS tt ON tt.treatment_type_code = t.treatment_type_co
+[944/1034] FAIL   db=dog_kennels | Q: Find the id and cell phone of the professionals who operate 
+         reason: Result mismatch: predicted 4 row(s), gold 6 row(s)
+         pred:   SELECT p.professional_id, p.cell_number FROM Professionals AS p JOIN Treatments AS t ON t.professional_id = p.professional_id GROUP BY p.professional_id, p.cell_number HAVING COUNT(DISTINCT t.treatmen
+[945/1034] FAIL   db=dog_kennels | Q: What are the first name and last name of the professionals w
+         reason: Result mismatch: predicted 5 row(s), gold 15 row(s)
+         pred:   SELECT DISTINCT p.first_name, p.last_name FROM Treatments AS t JOIN Professionals AS p ON t.professional_id = p.professional_id WHERE t.cost_of_treatment < (   SELECT AVG(cost_of_treatment)   FROM Tre
+[946/1034] FAIL   db=dog_kennels | Q: Which professionals have operated a treatment that costs les
+         reason: Result mismatch: predicted 5 row(s), gold 15 row(s)
+         pred:   SELECT DISTINCT p.first_name, p.last_name FROM Professionals AS p JOIN Treatments AS t ON t.professional_id = p.professional_id WHERE t.cost_of_treatment < (     SELECT AVG(cost_of_treatment)     FROM
+[947/1034] EX     db=dog_kennels | Q: List the date of each treatment, together with the first nam
+[948/1034] EX     db=dog_kennels | Q: What are the date and the operating professional's first nam
+[949/1034] EX     db=dog_kennels | Q: List the cost of each treatment and the corresponding treatm
+[950/1034] EX     db=dog_kennels | Q: What are the cost and treatment type description of each tre
+[951/1034] FAIL   db=dog_kennels | Q: List each owner's first name, last name, and the size of his
+         reason: Result mismatch: predicted 15 row(s), gold 15 row(s)
+         pred:   SELECT Owners.first_name, Owners.last_name, Sizes.size_description FROM Owners JOIN Dogs ON Dogs.owner_id = Owners.owner_id JOIN Sizes ON Sizes.size_code = Dogs.size_code;
+[952/1034] FAIL   db=dog_kennels | Q: What are each owner's first name, last name, and the size of
+         reason: Result mismatch: predicted 15 row(s), gold 15 row(s)
+         pred:   SELECT Owners.first_name, Owners.last_name, Sizes.size_description FROM Owners JOIN Dogs ON Dogs.owner_id = Owners.owner_id JOIN Sizes ON Dogs.size_code = Sizes.size_code;
+[953/1034] EX     db=dog_kennels | Q: List pairs of the owner's first name and the dogs's name.
+[954/1034] EX     db=dog_kennels | Q: What are each owner's first name and their dogs's name?
+[955/1034] EX     db=dog_kennels | Q: List the names of the dogs of the rarest breed and the treat
+[956/1034] EX     db=dog_kennels | Q: Which dogs are of the rarest breed? Show their names and tre
+[957/1034] FAIL   db=dog_kennels | Q: Which dogs are owned by someone who lives in Virginia? List 
+         reason: Result mismatch: predicted 0 row(s), gold 1 row(s)
+         pred:   SELECT Owners.first_name, Dogs.name FROM Dogs JOIN Owners ON Dogs.owner_id = Owners.owner_id WHERE Owners.zip_code LIKE '%VA%';
+[958/1034] EX     db=dog_kennels | Q: Find the first names of owners living in Virginia and the na
+[959/1034] FAIL   db=dog_kennels | Q: What are the arriving date and the departing date of the dog
+         reason: Result mismatch: predicted 15 row(s), gold 9 row(s)
+         pred:   SELECT Dogs.date_arrived, Dogs.date_departed FROM Dogs JOIN Treatments ON Treatments.dog_id = Dogs.dog_id;
+[960/1034] EX     db=dog_kennels | Q: Find the arriving date and the departing date of the dogs th
+[961/1034] FAIL   db=dog_kennels | Q: List the last name of the owner owning the youngest dog.
+         reason: Result mismatch: predicted 1 row(s), gold 3 row(s)
+         pred:   SELECT Owners.last_name FROM Dogs JOIN Owners ON Dogs.owner_id = Owners.owner_id ORDER BY Dogs.date_of_birth DESC LIMIT 1;
+[962/1034] FAIL   db=dog_kennels | Q: Who owns the youngest dog? Give me his or her last name.
+         reason: Result mismatch: predicted 1 row(s), gold 3 row(s)
+         pred:   SELECT Owners.last_name FROM Dogs JOIN Owners ON Dogs.owner_id = Owners.owner_id ORDER BY CAST(Dogs.age AS INTEGER) LIMIT 1;
+[963/1034] EX     db=dog_kennels | Q: List the emails of the professionals who live in the state o
+[964/1034] EX     db=dog_kennels | Q: What are the emails of the professionals living in either th
+[965/1034] EX     db=dog_kennels | Q: What are the arriving date and the departing date of all the
+[966/1034] EX     db=dog_kennels | Q: List the arrival date and the departure date for all the dog
+[967/1034] EX     db=dog_kennels | Q: How many dogs went through any treatments?
+[968/1034] EX     db=dog_kennels | Q: Count the number of dogs that went through a treatment.
+[969/1034] EX     db=dog_kennels | Q: How many professionals have performed any treatment to dogs?
+[970/1034] EX     db=dog_kennels | Q: Find the number of professionals who have ever treated dogs.
+[971/1034] EX     db=dog_kennels | Q: Which professionals live in a city containing the substring 
+[972/1034] EX     db=dog_kennels | Q: Find the role, street, city and state of the professionals l
+[973/1034] EX     db=dog_kennels | Q: Which owners live in the state whose name contains the subst
+[974/1034] EX     db=dog_kennels | Q: Return the first name, last name and email of the owners liv
+[975/1034] EX     db=dog_kennels | Q: How many dogs have an age below the average?
+[976/1034] EX     db=dog_kennels | Q: Count the number of dogs of an age below the average.
+[977/1034] EX     db=dog_kennels | Q: How much does the most recent treatment cost?
+[978/1034] EX     db=dog_kennels | Q: Show me the cost of the most recently performed treatment.
+[979/1034] EX     db=dog_kennels | Q: How many dogs have not gone through any treatment?
+[980/1034] EX     db=dog_kennels | Q: Tell me the number of dogs that have not received any treatm
+[981/1034] FAIL   db=dog_kennels | Q: How many owners temporarily do not have any dogs?
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM Owners AS o WHERE NOT EXISTS (     SELECT 1     FROM Dogs AS d     WHERE d.owner_id = o.owner_id       AND d.date_departed IS NULL       AND d.date_adopted IS NULL );
+[982/1034] FAIL   db=dog_kennels | Q: Find the number of owners who do not own any dogs at this mo
+         reason: Result mismatch: predicted 1 row(s), gold 1 row(s)
+         pred:   SELECT COUNT(*) FROM Owners AS o WHERE NOT EXISTS (   SELECT 1   FROM Dogs AS d   WHERE d.owner_id = o.owner_id     AND d.abandoned_yn = '0' );
+[983/1034] EX     db=dog_kennels | Q: How many professionals did not operate any treatment on dogs
+[984/1034] EX     db=dog_kennels | Q: Find the number of professionals who have not treated any do
+[985/1034] EX     db=dog_kennels | Q: List the dog name, age and weight of the dogs who have been 
+[986/1034] EX     db=dog_kennels | Q: What are the dog name, age and weight of the dogs that were 
+[987/1034] EX     db=dog_kennels | Q: What is the average age of all the dogs?
+[988/1034] EX     db=dog_kennels | Q: Compute the average age of all the dogs.
+[989/1034] EX     db=dog_kennels | Q: What is the age of the oldest dog?
+[990/1034] EX     db=dog_kennels | Q: Tell me the age of the oldest dog.
+[991/1034] EX     db=dog_kennels | Q: How much does each charge type costs? List both charge type 
+[992/1034] EX     db=dog_kennels | Q: List each charge type and its amount.
+[993/1034] EX     db=dog_kennels | Q: How much does the most expensive charge type costs?
+[994/1034] EX     db=dog_kennels | Q: What is the charge amount of the most expensive charge type?
+[995/1034] EX     db=dog_kennels | Q: List the email, cell phone and home phone of all the profess
+[996/1034] EX     db=dog_kennels | Q: What are the email, cell phone and home phone of each profes
+[997/1034] FAIL   db=dog_kennels | Q: What are all the possible breed type and size type combinati
+         reason: Result mismatch: predicted 7 row(s), gold 7 row(s)
+         pred:   SELECT DISTINCT   Breeds.breed_name,   Sizes.size_description FROM Dogs JOIN Breeds ON Dogs.breed_code = Breeds.breed_code JOIN Sizes ON Dogs.size_code = Sizes.size_code;
+[998/1034] FAIL   db=dog_kennels | Q: Find the distinct breed type and size type combinations for 
+         reason: Result mismatch: predicted 7 row(s), gold 7 row(s)
+         pred:   SELECT DISTINCT     Breeds.breed_name,     Sizes.size_description FROM Dogs JOIN Breeds ON Dogs.breed_code = Breeds.breed_code JOIN Sizes ON Dogs.size_code = Sizes.size_code;
+[999/1034] FAIL   db=dog_kennels | Q: List the first name of all the professionals along with the 
+         reason: Result mismatch: predicted 15 row(s), gold 12 row(s)
+         pred:   SELECT Professionals.first_name, Treatment_Types.treatment_type_description FROM Professionals JOIN Treatments ON Treatments.professional_id = Professionals.professional_id JOIN Treatment_Types ON Tre
+[1000/1034] FAIL   db=dog_kennels | Q: What are each professional's first name and description of t
+         reason: Result mismatch: predicted 15 row(s), gold 12 row(s)
+         pred:   SELECT p.first_name, tt.treatment_type_description FROM Professionals AS p JOIN Treatments AS t ON t.professional_id = p.professional_id JOIN Treatment_Types AS tt ON tt.treatment_type_code = t.treatm
+note: db=singer: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[1001/1034] EX     db=singer | Q: How many singers are there?
+[1002/1034] EX     db=singer | Q: What is the count of singers?
+[1003/1034] EX     db=singer | Q: List the name of singers in ascending order of net worth.
+[1004/1034] EX     db=singer | Q: What are the names of singers ordered by ascending net worth
+[1005/1034] EX     db=singer | Q: What are the birth year and citizenship of singers?
+[1006/1034] EX     db=singer | Q: What are the birth years and citizenships of the singers?
+[1007/1034] EX     db=singer | Q: List the name of singers whose citizenship is not "France".
+[1008/1034] EX     db=singer | Q: What are the names of the singers who are not French citizen
+[1009/1034] EX     db=singer | Q: Show the name of singers whose birth year is either 1948 or 
+[1010/1034] EX     db=singer | Q: What are the names of the singers whose birth years are eith
+[1011/1034] EX     db=singer | Q: What is the name of the singer with the largest net worth?
+[1012/1034] EX     db=singer | Q: What is the name of the singer who is worth the most?
+[1013/1034] EX     db=singer | Q: Show different citizenship of singers and the number of sing
+[1014/1034] EX     db=singer | Q: For each citizenship, how many singers are from that country
+[1015/1034] EX     db=singer | Q: Please show the most common citizenship of singers.
+[1016/1034] EX     db=singer | Q: What is the most common singer citizenship ?
+[1017/1034] EX     db=singer | Q: Show different citizenships and the maximum net worth of sin
+[1018/1034] EX     db=singer | Q: For each citizenship, what is the maximum net worth?
+[1019/1034] EX     db=singer | Q: Show titles of songs and names of singers.
+[1020/1034] EX     db=singer | Q: What are the song titles and singer names?
+[1021/1034] EX     db=singer | Q: Show distinct names of singers that have songs with sales mo
+[1022/1034] EX     db=singer | Q: what are the different names of the singers that have sales 
+[1023/1034] EX     db=singer | Q: Show the names of singers that have more than one song.
+[1024/1034] EX     db=singer | Q: What are the names of the singers that have more than one so
+[1025/1034] EX     db=singer | Q: Show the names of singers and the total sales of their songs
+[1026/1034] EX     db=singer | Q: For each singer name, what is the total sales for their song
+[1027/1034] EX     db=singer | Q: List the name of singers that do not have any song.
+[1028/1034] EX     db=singer | Q: What is the sname of every sing that does not have any song?
+[1029/1034] EX     db=singer | Q: Show the citizenship shared by singers with birth year befor
+[1030/1034] EX     db=singer | Q: What are the citizenships that are shared by singers with a 
+note: db=real_estate_properties: the existing Chroma collection held outdated schema units (from an earlier run); it was rebuilt
+[1031/1034] EX     db=real_estate_properties | Q: How many available features are there in total?
+[1032/1034] EX     db=real_estate_properties | Q: What is the feature type name of feature AirCon?
+[1033/1034] EX     db=real_estate_properties | Q: Show the property type descriptions of properties belonging 
+[1034/1034] FAIL   db=real_estate_properties | Q: What are the names of properties that are either houses or a
+         reason: Result mismatch: predicted 7 row(s), gold 8 row(s)
+         pred:   SELECT property_name FROM Properties WHERE property_type_code IN ('House', 'Apartment')   AND room_count > 1;
+
+Spider 1 Evaluation Results
+===========================
+Mode:                Feedback loop (static validation + SQLite execution)
+Retrieval K:         15
+Max attempts:        4
+Total Samples:       1034
+Execution Accuracy:  81.53%  (46 matched only after reordering columns)
+Inference failures:  0
+Skipped samples:     0
+LLM calls:           1040
+Tokens:              prompt: 797,365, completion: 38,378, reasoning: 0, cached: 0, total: 835,743
+
+Feedback diagnostics (paired, same run)
+  First-attempt EX:       81.14%  (= single-pass answer)
+  Change from feedback:   +0.39
+  Samples retried:        6 (0.58%)
+    recovered:            6  (a retry passed the checks)
+    exhausted:            0  (no attempt passed the checks)
+Run log:             runs\20261124T124034Z_spider_feedback_gpt-6-luna_k15_all_after_value_grounding
