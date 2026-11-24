@@ -7,7 +7,7 @@ Each schema element (table, column, relation) becomes a retrieval unit for RAG.
 
 import json
 from typing import List, Dict, Tuple
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -36,16 +36,22 @@ class Column:
     column_name: str
     meaning: str
     data_type: str
-    
+    values: List[str] = field(default_factory=list)
+    """The distinct values of a category column (a text column with few of them), else empty."""
+
     def to_embedding_text(self) -> str:
         """
         Convert column to embedding text format:
-        <TableName>.<ColumnName> Column: <meaning>, data type <data_type>.
+        <TableName>.<ColumnName> Column: <meaning>, data type <data_type>. Values: 'a', 'b'.
+        (the Values part only for a category column; the quotes are SQL string literals)
         """
-        return (
+        text = (
             f"{self.table_name}.{self.column_name} Column: {self.meaning}, "
             f"data type {self.data_type}."
         )
+        if self.values:
+            text += " Values: " + ", ".join("'" + v.replace("'", "''") + "'" for v in self.values) + "."
+        return text
 
 
 @dataclass
@@ -96,6 +102,7 @@ class SchemaManager:
                     "column_name": "CustomerID",
                     "meaning": "Unique customer identifier",
                     "data_type": "integer",
+                    "values": ["gold", "silver"]      # optional: the values of a category column
                 }
             ],
             "relations": [
@@ -127,7 +134,8 @@ class SchemaManager:
                 table_name=column_data["table_name"],
                 column_name=column_data["column_name"],
                 meaning=column_data["meaning"],
-                data_type=column_data["data_type"]
+                data_type=column_data["data_type"],
+                values=list(column_data.get("values", [])),
             )
             self.columns.append(column)
         
@@ -171,6 +179,7 @@ class SchemaManager:
                     column_name=column_data["column_name"],
                     meaning=column_data["meaning"],
                     data_type=column_data["data_type"],
+                    values=list(column_data.get("values", [])),
                 )
             )
 

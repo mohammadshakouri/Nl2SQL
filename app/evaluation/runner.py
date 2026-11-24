@@ -54,7 +54,7 @@ from app.evaluation.run_log import (
     utc_now,
 )
 from app.evaluation.benchmarks import Benchmark, Sample
-from app.evaluation.sqlite_schema_extractor import SQLiteSchemaExtractor
+from app.evaluation.sqlite_schema_extractor import MAX_LISTED_VALUES, MAX_VALUE_CHARS, SQLiteSchemaExtractor
 from app.evaluation import executor as executor_module
 from app.evaluation.executor import CompareResult, QueryRun, SQLiteExecutor
 from chromadb.utils import embedding_functions
@@ -728,9 +728,12 @@ def _run_meta(
         + inspect.getsource(SQLFeedbackLoop.get_feedback_prompt)
     )
     prompts_sha = sha256_text(prompts["system_first"] + "\0" + prompts["system_feedback"])
-    # The text of every retrieval unit comes from these templates.
+    # The text of every retrieval unit comes from these templates, and the values a category
+    # column lists come from the extractor's rule.
     units_sha = sha256_text(
         "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
+        + inspect.getsource(SQLiteSchemaExtractor._category_values)
+        + f"{MAX_LISTED_VALUES},{MAX_VALUE_CHARS}"
     )
     # The retrieval pipeline decides which units the model sees: same rule.
     retrieval_info = {
@@ -756,7 +759,10 @@ def _run_meta(
         "embedding": {**embedding, "function": _safe_name(embedding_fn)},
         "retrieval": retrieval_info,
         "prompts": {**prompts, "system_sha256": prompts_sha, "user_builder_sha256": builder_sha},
-        "retrieval_units": {"templates_sha256": units_sha},
+        "retrieval_units": {
+            "templates_sha256": units_sha,
+            "category_values": {"max_distinct": MAX_LISTED_VALUES, "max_chars": MAX_VALUE_CHARS},
+        },
         "scorer": {"sha256": scorer_sha},
         "dataset": dataset,
         "code": git_info(_REPO_DIR, exclude_dir=out_dir),

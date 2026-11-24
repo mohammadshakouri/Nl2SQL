@@ -12,7 +12,7 @@ SQLite rules:
 - LIMIT n for row limits (no TOP, no FETCH FIRST); no ANY/ALL/ILIKE.
 - Dates are text: strftime('%Y', c), date(), julianday() (no EXTRACT, YEAR(), DATEDIFF); substr(x, i, n) (no SUBSTRING ... FROM); || concatenates.
 - Integer division truncates: CAST(x AS REAL) / y (CAST AS DECIMAL does not help); ROUND(x, n) to round.
-- Strings in single quotes, compared case-sensitively by =; quote names with spaces or symbols as "name"."""
+- Strings in single quotes, compared case-sensitively by =: copy a value listed under Values exactly; quote names with spaces or symbols as "name"."""
 
 _RESULT_RULES: str = """\
 Result columns: exactly what the question asks for, in its order, one column per item (a full name = first-name and last-name columns); no extra id/count/helper columns; no SELECT * unless every column is asked for."""

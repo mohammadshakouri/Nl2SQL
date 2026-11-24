@@ -17,7 +17,8 @@ Output format:
             "table_name": str,
             "column_name": str,
             "meaning": str,
-            "data_type": str
+            "data_type": str,
+            "values": [str]        # only a category column: a text column with few distinct values
         }
     ],
     "relations": [
@@ -75,6 +76,12 @@ _TYPE_MAP: Dict[str, str] = {
 }
 
 
+MAX_LISTED_VALUES = 12
+"""A text column with at most this many distinct values is a category: its values go into its unit."""
+MAX_VALUE_CHARS = 30
+"""A longer value (a name, a sentence) means the column is not a category."""
+
+
 def _map_type(sqlite_type: Optional[str]) -> str:
     if not sqlite_type:
         return "varchar"
@@ -127,7 +134,29 @@ class SQLiteSchemaExtractor:
     def _connect(self) -> sqlite3.Connection:
         conn = sqlite3.connect(self.sqlite_path)
         conn.row_factory = sqlite3.Row
+        # a few databases hold bytes that are not UTF-8 (Spider's wta_1): read them, do not fail
+        conn.text_factory = lambda raw: raw.decode("utf-8", errors="replace")
         return conn
+
+    def _category_values(self, conn: sqlite3.Connection, table_name: str, column_name: str) -> List[str]:
+        """
+        The distinct values of a text column if it is a category: at most ``MAX_LISTED_VALUES``
+        of them (NULL and the empty string do not count and are not listed), each at most
+        ``MAX_VALUE_CHARS`` long, on one line and valid text. Sorted, so the unit text is the same
+        on every run. Otherwise ``[]``.
+        """
+        rows = conn.execute(
+            f"SELECT DISTINCT {_quote(column_name)} FROM {_quote(table_name)} "
+            f"WHERE {_quote(column_name)} IS NOT NULL AND {_quote(column_name)} != '' "
+            f"LIMIT {MAX_LISTED_VALUES + 1}"
+        ).fetchall()
+        values = [row[0] for row in rows]
+        if len(values) > MAX_LISTED_VALUES or not all(
+            isinstance(v, str) and len(v) <= MAX_VALUE_CHARS and "\n" not in v and "�" not in v
+            for v in values
+        ):
+            return []
+        return sorted(values)
 
     def _get_table_names(self, conn: sqlite3.Connection) -> List[str]:
         # sqlite_sequence and the like are SQLite's own bookkeeping, not schema.
@@ -215,14 +244,18 @@ class SQLiteSchemaExtractor:
 
                 for col in raw_cols:
                     meaning = self._meanings.get((table_name.lower(), col["name"].lower()))
-                    schema["columns"].append(
-                        {
-                            "table_name": table_name,
-                            "column_name": col["name"],
-                            "meaning": meaning or f"Column {col['name']} of table {table_name}",
-                            "data_type": _map_type(col["type"]),
-                        }
-                    )
+                    data_type = _map_type(col["type"])
+                    column = {
+                        "table_name": table_name,
+                        "column_name": col["name"],
+                        "meaning": meaning or f"Column {col['name']} of table {table_name}",
+                        "data_type": data_type,
+                    }
+                    if data_type == "varchar":
+                        values = self._category_values(conn, table_name, col["name"])
+                        if values:
+                            column["values"] = values
+                    schema["columns"].append(column)
 
                 # Foreign keys
                 for fk in self._get_foreign_keys(conn, table_name):

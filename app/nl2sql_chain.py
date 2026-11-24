@@ -381,8 +381,9 @@ class NL2SQLChain:
         prompt += "- Do not invent tables or columns\n"
         if evidence:
             prompt += (
-                "- External Knowledge is authoritative: use the columns, values and formulas "
-                "it names exactly as written, not a similar or precomputed column\n"
+                "- External Knowledge is authoritative: use the columns and formulas it names "
+                "exactly as written, not a similar or precomputed column; "
+                "a column's listed Values give the spelling stored in the data\n"
             )
         prompt += "- Output SQL only\n\n"
         prompt += "Corrected SQL Query:\n" if feedback else "SQL Query:\n"
