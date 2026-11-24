@@ -37,6 +37,8 @@ Optional flags
 --------------
     --limit N        Evaluate only the first N samples (default: all)
     --k K            Number of schema retrieval units (Top-K) (default: 15)
+    --rerank         Rerank the merged dense + BM25 list with a cross-encoder and keep the
+                     best K (default: off; the merged list of K to 1.5 K units is used)
     --quiet          Suppress per-sample progress output
     --feedback       Enable validation + retry feedback loop
     --exec-feedback  Also retry on SQLite execution errors (implies --feedback)
@@ -80,6 +82,7 @@ from app.evaluation.llm_io import preflight
 from app.evaluation.run_log import RunLog, StdoutCapture
 from app.evaluation.runner import run_evaluation
 from app.nl2sql_chain import configure_llm, get_llm_settings
+from app.retrieval import get_reranker
 
 
 def parse_args() -> argparse.Namespace:
@@ -126,7 +129,14 @@ def parse_args() -> argparse.Namespace:
         type=_positive_int,
         default=None,
         metavar="K",
-        help="Number of schema retrieval units (Top-K) retrieved per question (default: 15).",
+        help="K of the retrieval: dense Top-K + BM25 Top-K merged by RRF (default: 15).",
+    )
+    parser.add_argument(
+        "--rerank",
+        action="store_true",
+        default=False,
+        help="Rerank the merged list with the cross-encoder and keep the best K "
+             "(default: off, the merged list of K to 1.5 K units is used).",
     )
     parser.add_argument(
         "--quiet",
@@ -322,6 +332,7 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     saved = {
         "dataset": config.get("dataset", "spider"),   # logs written before BIRD are Spider logs
         "k": config["k"],
+        "rerank": bool(config.get("rerank")),
         "feedback": config["mode"] == "feedback",
         "exec_feedback": bool(config.get("execution_feedback")),
         "max_iter": config.get("max_attempts"),
@@ -332,7 +343,7 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     }
     given = {
         "dataset": args.dataset,
-        "k": args.k, "model": args.model,
+        "k": args.k, "model": args.model, "rerank": args.rerank or None,
         "max_iter": args.max_iter if saved["feedback"] else None,
         "feedback": args.feedback or None, "exec_feedback": args.exec_feedback or None,
         "no_evidence": args.no_evidence or None, "descriptions": args.descriptions or None,
@@ -353,6 +364,7 @@ def _apply_resume_settings(args: argparse.Namespace) -> None:
     args.no_evidence = saved["no_evidence"]
     args.descriptions = saved["descriptions"]
     args.k = saved["k"]
+    args.rerank = saved["rerank"]
     args.feedback = saved["feedback"]
     args.exec_feedback = saved["exec_feedback"]
     args.max_iter = saved["max_iter"]
@@ -380,6 +392,7 @@ async def _run_one(
             verbose=not args.quiet,
             max_samples=args.limit,
             k=args.k,
+            rerank=args.rerank,
             use_feedback_loop=feedback,
             feedback_max_iterations=args.max_iter,
             execution_feedback=args.exec_feedback if feedback else False,
@@ -469,7 +482,15 @@ async def _prepare():
     print(f"Loaded {len(samples)} samples.")
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
-    print(f"Retrieving Top-{args.k} schema units per question.")
+    print(f"Retrieval: dense Top-{args.k} + BM25 Top-{args.k} -> RRF"
+          + (" -> reranker -> Top-K." if args.rerank else " (K to 1.5 K schema units per question)."))
+    if args.rerank:
+        # Load the reranker now: a missing model should stop the run before it creates a log or calls the LLM.
+        try:
+            get_reranker()
+        except RuntimeError as exc:
+            print(f"ERROR: {exc}")
+            sys.exit(1)
     print(_llm_line(llm))
 
     if not args.no_preflight:

@@ -3,7 +3,7 @@ NL2SQL Chain Module - Schema-RAG Implementation
 
 Core orchestration class for the Schema-RAG NL2SQL pipeline:
 1. Natural language question input
-2. Schema retrieval via vector similarity
+2. Schema retrieval: hybrid (dense + BM25 -> RRF, optionally -> reranker; app/retrieval.py)
 3. Context enrichment with schema elements
 4. SQL generation via LLM
 
@@ -24,6 +24,7 @@ from openai import AsyncOpenAI
 from ollama import AsyncClient, ChatResponse
 
 import app.dotenv as env
+import app.retrieval as rt
 import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import SchemaManager
@@ -144,16 +145,23 @@ class NL2SQLChain:
     User Question → Schema Retrieval → Context Assembly → SQL Generation → Validation
     """
 
-    def __init__(self, schema_manager: SchemaManager, collection_name: str):
+    def __init__(
+        self, schema_manager: SchemaManager, collection_name: str, rerank: bool = False
+    ):
         """
         Initialize NL2SQL chain
 
         Args:
             schema_manager: SchemaManager instance with loaded schema
             collection_name: Name of ChromaDB collection for schema embeddings
+            rerank: Rerank the merged dense + BM25 list with the cross-encoder and keep
+                    the best K (otherwise the merged list itself is the result)
         """
         self.schema_manager = schema_manager
         self.collection_name = collection_name
+        self.rerank = rerank
+        self._bm25: Optional[rt.BM25Index] = None
+        self._unit_texts: Dict[str, str] = {}
         self.validator = SQLValidator(schema_manager)
 
         # Initialize embedding function
@@ -174,17 +182,63 @@ class NL2SQLChain:
         """Get the system prompt for a first attempt or a feedback retry"""
         return SYSTEM_PROMPT_NL2SQL_FEEDBACK if is_feedback else SYSTEM_PROMPT_NL2SQL
 
-    def retrieve_schema_units(self, question: str, n_results: int) -> List[Dict]:
+    def retrieve(self, question: str, n_results: int) -> Dict:
         """
-        Stage 3: Schema Linking via Vector Retrieval
+        Stage 3: Schema Linking (hybrid retrieval, ``app/retrieval.py``)
 
-        Retrieves the Top-K schema units (tables, columns, relations) for the
-        question, keeping each unit's collection id and distance so the
-        retrieval can be analysed afterwards (e.g. Recall@K).
+        dense Top-K + BM25 Top-K -> RRF merge, at most ceil(1.5 K) units in RRF order.
+        Without ``rerank`` that merged list is the result (K to 1.5 K units); with it,
+        the cross-encoder reorders the merged list and the best K are kept.
 
         Args:
-            question: User's natural language question
-            n_results: Number of schema units to retrieve
+            question: The retrieval query (the question, plus its external knowledge if any)
+            n_results: K
+
+        Returns:
+            {"units": [{"rank", "id", "text", "distance", "score"}, ...] best first,
+             "stages": {"dense": ids, "bm25": ids, "pool": ids}}.
+            ``distance`` is the dense distance (None for a unit the dense Top-K did not
+            contain), ``score`` the reranker score (None without ``rerank``), ``pool``
+            the merged list.
+        """
+        dense = self._retrieve_dense(question, n_results)
+        index = self._bm25_index()
+        dense_ids = [u["id"] for u in dense]
+        bm25_ids = [unit_id for unit_id, _ in index.top(question, n_results)]
+        pool = rt.rrf_fuse([dense_ids, bm25_ids])[: rt.pool_size(n_results)]
+        if self.rerank:
+            scores = rt.rerank(question, [self._unit_texts[unit_id] for unit_id in pool])
+            order = sorted(range(len(pool)), key=lambda j: -scores[j])[:n_results]   # stable: ties keep RRF order
+        else:
+            scores = [None] * len(pool)
+            order = range(len(pool))
+        distance = {u["id"]: u["distance"] for u in dense}
+        units = [
+            {
+                "rank": rank, "id": pool[j], "text": self._unit_texts[pool[j]],
+                "distance": distance.get(pool[j]), "score": scores[j],
+            }
+            for rank, j in enumerate(order, start=1)
+        ]
+        return {"units": units, "stages": {"dense": dense_ids, "bm25": bm25_ids, "pool": pool}}
+
+    def _bm25_index(self) -> rt.BM25Index:
+        """BM25 over the units of this database (the texts the collection holds), built once."""
+        if self._bm25 is None:
+            ids, documents = self.schema_manager.get_all_embedding_texts()
+            self._unit_texts = dict(zip(ids, documents))
+            self._bm25 = rt.BM25Index(ids, documents)
+        return self._bm25
+
+    def retrieve_schema_units(self, question: str, n_results: int) -> List[Dict]:
+        """The units of :meth:`retrieve`, best first."""
+        return self.retrieve(question, n_results)["units"]
+
+    def _retrieve_dense(self, question: str, n_results: int) -> List[Dict]:
+        """
+        Dense stage of the hybrid retrieval: the Top-K schema units (tables,
+        columns, relations) by embedding similarity, keeping each unit's
+        collection id and distance so the retrieval can be analysed afterwards.
 
         Returns:
             List of {"rank", "id", "text", "distance"} dicts, best first.
@@ -216,10 +270,10 @@ class NL2SQLChain:
         Same retrieval as :meth:`retrieve_schema_units`, as parallel lists.
 
         Returns:
-            Tuple of (retrieved_documents, distances)
+            Tuple of (retrieved_documents, reranker scores; None without rerank)
         """
         units = self.retrieve_schema_units(question, n_results)
-        return [u["text"] for u in units], [u["distance"] for u in units]
+        return [u["text"] for u in units], [u["score"] for u in units]
 
     def build_schema_context(self, retrieved_elements: List[str]) -> str:
         """

@@ -29,6 +29,7 @@ from typing import Dict, List, Optional, Tuple
 import chromadb
 
 import app.dotenv as env
+import app.retrieval as rt
 import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import Column, Relation, SchemaManager, Table
@@ -220,7 +221,7 @@ class InferenceResult:
     notes: List[str] = field(default_factory=list)
     """Per-attempt feedback messages, printed in verbose mode."""
     retrieval: Optional[dict] = None
-    """The retrieval step (Top-K units with ids and distances) for the run log."""
+    """The retrieval step (Top-K unit ids, dense distances, reranker scores, stage lists) for the run log."""
     attempt_log: List[dict] = field(default_factory=list)
     """One dict per LLM attempt (prompt, raw output, usage, checks) for the run log."""
     final_attempt: Optional[int] = None
@@ -243,14 +244,19 @@ def _retrieve_context(chain: NL2SQLChain, question: str, evidence: Optional[str]
     """
     query = f"{question}\n{evidence}" if evidence else question
     try:
-        units = chain.retrieve_schema_units(query, n_results=k)
+        found = chain.retrieve(query, n_results=k)
     except Exception as exc:
         return None, None, InferenceResult(
             None, f"schema retrieval failed: {describe_exc(exc)}", "retrieval_error"
         )
+    units = found["units"]
     retrieval = {
         "ids": [u["id"] for u in units],
-        "distances": [round(u["distance"], 4) for u in units],
+        # dense distance (None: the unit was not in the dense Top-K), reranker score,
+        # and the candidate lists of each stage
+        "distances": [None if u["distance"] is None else round(u["distance"], 4) for u in units],
+        "scores": [round(u["score"], 4) for u in units] if chain.rerank else None,
+        "stages": found["stages"],
     }
     if not units:
         return None, retrieval, InferenceResult(
@@ -535,6 +541,8 @@ def _base_record(index: int, sample: Sample) -> dict:
         "error": None,
         "retrieved": None,
         "distances": None,
+        "rerank_scores": None,
+        "retrieval_stages": None,
         "attempts": [],
         "final_sql": None,
         "final_attempt": None,
@@ -580,6 +588,8 @@ async def _process_sample(
         record.update(
             retrieved=(result.retrieval or {}).get("ids"),
             distances=(result.retrieval or {}).get("distances"),
+            rerank_scores=(result.retrieval or {}).get("scores"),
+            retrieval_stages=(result.retrieval or {}).get("stages"),
             attempts=result.attempt_log,
             final_sql=result.sql,
             final_attempt=result.final_attempt,
@@ -653,7 +663,7 @@ def _embedding_description(embedding_fn) -> dict:
 
 
 def _run_meta(
-    benchmark: Benchmark, n_samples: int, *, k: int, use_feedback_loop: bool,
+    benchmark: Benchmark, n_samples: int, *, k: int, rerank: bool, use_feedback_loop: bool,
     max_iterations: int, execution_feedback: bool, embedding_fn, out_dir: str,
 ) -> dict:
     llm = asdict(get_llm_settings())
@@ -663,6 +673,7 @@ def _run_meta(
         "dataset_options": benchmark.options,
         "mode": mode,
         "k": k,
+        "rerank": rerank,
         "max_attempts": max_iterations if use_feedback_loop else None,
         "execution_feedback": execution_feedback if use_feedback_loop else False,
     }
@@ -683,6 +694,13 @@ def _run_meta(
     units_sha = sha256_text(
         "".join(inspect.getsource(c.to_embedding_text) for c in (Table, Column, Relation))
     )
+    # The retrieval pipeline decides which units the model sees: same rule.
+    retrieval_info = {
+        **rt.describe(rerank),
+        "code_sha256": sha256_text("".join(
+            inspect.getsource(part) for part in (NL2SQLChain.retrieve, NL2SQLChain._retrieve_dense, rt)
+        )),
+    }
     # The scorer decides EX: a run must not be resumed after it has changed.
     scorer_sha = sha256_text(executor_module.scorer_source(benchmark.scoring))
     dataset = {
@@ -697,6 +715,7 @@ def _run_meta(
         "config": config,
         "llm": {**llm, "stream": True, "api_key_set": bool(env.openai_api_key)},
         "embedding": {**embedding, "function": _safe_name(embedding_fn)},
+        "retrieval": retrieval_info,
         "prompts": {**prompts, "system_sha256": prompts_sha, "user_builder_sha256": builder_sha},
         "retrieval_units": {"templates_sha256": units_sha},
         "scorer": {"sha256": scorer_sha},
@@ -707,6 +726,7 @@ def _run_meta(
             **config,
             "llm": {k_: llm[k_] for k_ in ("provider", "model", "temperature", "reasoning_effort")},
             "embedding": embedding,
+            "retrieval_pipeline": retrieval_info,
             "prompts_sha256": prompts_sha,
             "user_builder_sha256": builder_sha,
             "unit_templates_sha256": units_sha,
@@ -735,6 +755,7 @@ async def run_evaluation(
     verbose: bool = True,
     max_samples: Optional[int] = None,
     k: int = 15,
+    rerank: bool = False,
     use_feedback_loop: bool = False,
     feedback_max_iterations: int = 4,
     execution_feedback: bool = False,
@@ -753,7 +774,9 @@ async def run_evaluation(
         samples: ``benchmark.load_samples()``.
         verbose: If True, print per-sample progress to stdout.
         max_samples: Optional cap on the number of samples to evaluate.
-        k: Number of schema retrieval units (Top-K) passed to the retriever.
+        k: K of the hybrid retrieval: dense Top-K + BM25 Top-K, merged by RRF
+           (K to 1.5 K units, or exactly K with ``rerank``).
+        rerank: Rerank the merged list with the cross-encoder and keep the best K.
         use_feedback_loop: If True, use the validation + retry loop
                            (SQLFeedbackLoop). If False, single-pass only.
         feedback_max_iterations: Total attempts per question when
@@ -793,7 +816,7 @@ async def run_evaluation(
     latest: Dict[int, dict] = {}
     try:
         meta = _run_meta(
-            benchmark, len(samples), k=k, use_feedback_loop=use_feedback_loop,
+            benchmark, len(samples), k=k, rerank=rerank, use_feedback_loop=use_feedback_loop,
             max_iterations=feedback_max_iterations, execution_feedback=execution_feedback,
             embedding_fn=embedding_fn, out_dir=os.path.dirname(os.path.abspath(run_log.run_dir)),
         )
@@ -818,6 +841,8 @@ async def run_evaluation(
             print(f"feedback loop ({signal}), max {feedback_max_iterations} attempts, k={k}")
         else:
             print(f"single-pass inference, k={k}")
+        print("retrieval: hybrid (dense + BM25 -> RRF"
+              + (f" -> reranker {meta['retrieval']['reranker']})" if rerank else ")"))
         llm = meta["llm"]
         print(f"LLM: {llm['provider']} / {llm['model']}  temperature={llm['temperature']}"
               + (f"  reasoning_effort={llm['reasoning_effort']}" if llm["provider"] == "openai" else ""))
@@ -876,6 +901,7 @@ async def run_evaluation(
                     chain = NL2SQLChain(
                         schema_manager=schema_manager,
                         collection_name=collection_name,
+                        rerank=rerank,
                     )
                     # Inject the shared chroma client and embedding_fn so we
                     # don't open a second client pointed at the wrong directory.
