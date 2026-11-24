@@ -1,0 +1,195 @@
+{
+  "schema_version": 2,
+  "run_id": "20261124T075908Z_spider_feedback_gpt-6-luna_k15_all_Hybrid_retrieval",
+  "created_at": "2026-11-24T07:59:10.328+00:00",
+  "sessions": [
+    {
+      "session": 1,
+      "started_at": "2026-11-24T07:59:10.328+00:00",
+      "ended_at": "2026-11-24T08:28:30.710+00:00",
+      "status": "complete",
+      "resumed": false,
+      "argv": [
+        "cli_eval.py",
+        "--exec-feedback",
+        "--tag",
+        "all_Hybrid_retrieval"
+      ],
+      "limit": null,
+      "code": {
+        "commit": "68b7b16c220add343f34ca9a91a312a2140b3045",
+        "branch": "main",
+        "dirty": false
+      },
+      "environment": {
+        "python": "3.12.10",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "sqlite": "3.49.1",
+        "packages": {
+          "openai": "2.14.0",
+          "ollama": "0.6.1",
+          "chromadb": "1.3.7",
+          "sentence-transformers": "5.2.0",
+          "sqlparse": "0.5.3",
+          "numpy": "2.3.5"
+        }
+      },
+      "wall_seconds": 1760.4
+    }
+  ],
+  "config": {
+    "dataset": "spider",
+    "dataset_options": {},
+    "mode": "feedback",
+    "k": 15,
+    "rerank": false,
+    "max_attempts": 4,
+    "execution_feedback": true
+  },
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "temperature": 1,
+    "host": "api.openai.com (SDK default)",
+    "timeout_s": 120.0,
+    "max_retries": 5,
+    "reasoning_effort": "none",
+    "stream": true,
+    "api_key_set": true
+  },
+  "embedding": {
+    "provider": "local",
+    "model": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+    "function": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+  },
+  "retrieval": {
+    "dense": "Top-K",
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75,
+      "candidates": "K"
+    },
+    "rrf_c": 60,
+    "pool_max": "ceil(1.5 * K)",
+    "rerank": false,
+    "code_sha256": "3f6baef681f0116727f4bfabeb9594bd9f8262a0ecabafa400aca03dff9c4fce"
+  },
+  "prompts": {
+    "system_first": "[ROLE]\nYou are an expert SQL generator responsible for producing valid, executable SQL queries.\n\n[INPUT]\nInputs include a user question in natural language and a database Schema.\n\n[CRITICAL RULES]\n2. Use ONLY tables, columns, and relations provided in the Schema\n3. Do NOT invent any tables, columns, or relationships\n4. Use Schema information to infer correct JOINs\n5. SQL must be standard and executable\n6. Use appropriate aggregate functions (SUM, COUNT, AVG, MAX, MIN)\n7. Implement WHERE conditions and filters correctly\n8. Use appropriate DATE functions for temporal queries\n\n[OUTPUT FORMAT]\nYour output must be exactly in this format:\nSELECT ...\nFROM ...\nWHERE ...\n\nDo not write any explanation before or after the SQL.\n",
+    "system_feedback": "[ROLE]\nYou are an expert SQL developer correcting a previous query.\n\n[CONTEXT]\nYour previous query encountered an error. You must fix it.\n\n[CRITICAL RULES]\n1. Read the previous error carefully\n2. Generate ONLY corrected SQL - no explanations\n3. Use the provided Schema\n4. Check spelling of tables and columns\n5. Verify JOIN conditions\n6. Qualify ambiguous column names with aliases\n\n[OUTPUT]\nOnly the corrected SQL:\n",
+    "system_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "6d3a0431265413ad9d24f554f579a3f4f051ea8540528da9c203bb3256d9dd4e"
+  },
+  "retrieval_units": {
+    "templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8"
+  },
+  "scorer": {
+    "sha256": "fe3439f25792bae272c1a2c084216b7f964170dd0157189794a403462a4ad942"
+  },
+  "dataset": {
+    "name": "spider",
+    "n_samples": 1034,
+    "scoring": "spider",
+    "options": {},
+    "files": {
+      "dev.json": "30d64a3fccde493226df79687aed9e4a1c0129525baf44f29c0573d914d758a4"
+    }
+  },
+  "code": {
+    "commit": "68b7b16c220add343f34ca9a91a312a2140b3045",
+    "branch": "main",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "sqlite": "3.49.1",
+    "packages": {
+      "openai": "2.14.0",
+      "ollama": "0.6.1",
+      "chromadb": "1.3.7",
+      "sentence-transformers": "5.2.0",
+      "sqlparse": "0.5.3",
+      "numpy": "2.3.5"
+    }
+  },
+  "fingerprint": {
+    "dataset": "spider",
+    "dataset_options": {},
+    "mode": "feedback",
+    "k": 15,
+    "rerank": false,
+    "max_attempts": 4,
+    "execution_feedback": true,
+    "llm": {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "temperature": 1,
+      "reasoning_effort": "none"
+    },
+    "embedding": {
+      "provider": "local",
+      "model": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+    },
+    "retrieval_pipeline": {
+      "dense": "Top-K",
+      "bm25": {
+        "k1": 1.5,
+        "b": 0.75,
+        "candidates": "K"
+      },
+      "rrf_c": 60,
+      "pool_max": "ceil(1.5 * K)",
+      "rerank": false,
+      "code_sha256": "3f6baef681f0116727f4bfabeb9594bd9f8262a0ecabafa400aca03dff9c4fce"
+    },
+    "prompts_sha256": "cfa5f3ba61e6904d535c503d938a1028490e37c6b22680a5aaceb30bae9192e7",
+    "user_builder_sha256": "6d3a0431265413ad9d24f554f579a3f4f051ea8540528da9c203bb3256d9dd4e",
+    "unit_templates_sha256": "61b2b2a2c4e6a3f30551b4bb2e2a977472b48b7b448f9ec33426917519c65ba8",
+    "scorer_sha256": "fe3439f25792bae272c1a2c084216b7f964170dd0157189794a403462a4ad942",
+    "dataset_files": {
+      "dev.json": "30d64a3fccde493226df79687aed9e4a1c0129525baf44f29c0573d914d758a4"
+    }
+  },
+  "status": "complete",
+  "progress": {
+    "done": 1025,
+    "of": 1034,
+    "updated_at": "2026-11-24T08:28:15.514+00:00"
+  },
+  "results": {
+    "metrics": {
+      "total": 1034,
+      "execution_accuracy": 78.63,
+      "mode": "feedback",
+      "k": 15,
+      "skipped": 0,
+      "inference_failures": 0,
+      "failure_reasons": {},
+      "llm_calls": 1139,
+      "ex_column_reordered": 47,
+      "max_attempts": 4,
+      "execution_feedback": true,
+      "feedback": {
+        "retried": 101,
+        "recovered": 100,
+        "exhausted": 1,
+        "first_attempt_execution_accuracy": 72.73
+      }
+    },
+    "tokens": {
+      "prompt_tokens": 636247,
+      "completion_tokens": 44029,
+      "total_tokens": 680276,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "samples_without_usage": 0
+    },
+    "status_counts": {
+      "scored": 1034
+    },
+    "n_samples_logged": 1034,
+    "of": 1034,
+    "finished_at": "2026-11-24T08:28:30.710+00:00"
+  }
+}
