@@ -239,6 +239,18 @@ class NL2SQLChain:
             self._bm25 = rt.BM25Index(ids, documents)
         return self._bm25
 
+    def expand_context(self, selected: List[str], sql: str) -> List[str]:
+        """
+        Ids of the units to add to the schema context after ``sql`` was rejected (a missing column,
+        an empty result): every column of the tables it names (``rt.expand``).
+        """
+        self._bm25_index()
+        return rt.expand(selected, self.validator.table_names(sql), self._catalog)
+
+    def context_of(self, unit_ids: List[str]) -> str:
+        """The schema context of these units (after a retrieval, which loads their texts)."""
+        return self.build_schema_context([self._unit_texts[unit_id] for unit_id in unit_ids])
+
     def retrieve_schema_units(self, question: str, n_results: int) -> List[Dict]:
         """The units of :meth:`retrieve`, best first."""
         return self.retrieve(question, n_results)["units"]

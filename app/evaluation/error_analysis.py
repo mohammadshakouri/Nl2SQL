@@ -617,6 +617,8 @@ def classify_rejection(rejected: dict, sql: str) -> str:
     error = rejected["error"]
     if "Could not decode to UTF-8" in error:
         return "harness: UTF-8 decode error of the database"
+    if rejected["stage"] == "semantic":
+        return "semantic: empty result"
     if rejected["stage"] == "static":
         return "static validator: table not found"
     if "syntax error" in error:

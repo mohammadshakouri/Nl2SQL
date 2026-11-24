@@ -65,13 +65,18 @@ class _Spec:
     """Comparison rule of EX (a key of ``executor.MATCHERS``)."""
     options: Dict[str, bool]
     """Option name -> default value."""
+    empty_result_is_error: bool = False
+    """A query whose result has no rows (or only NULLs) is wrong, so the feedback loop retries it."""
 
 
 _SPECS: Dict[str, _Spec] = {
     "spider": _Spec("Spider 1", "Spider", "database", "query", "spider", {}),
+    # Every BIRD dev gold answer has rows (0 of 1,532 executable gold queries is empty), while
+    # Spider has questions whose right answer is empty ("airports without flights").
     "bird": _Spec(
         "BIRD", "BIRD", "dev_databases", "SQL", "bird",
         {"evidence": True, "descriptions": False},
+        empty_result_is_error=True,
     ),
 }
 
@@ -155,6 +160,10 @@ class Benchmark:
     @property
     def scoring(self) -> str:
         return self._spec.scoring
+
+    @property
+    def empty_result_is_error(self) -> bool:
+        return self._spec.empty_result_is_error
 
     @property
     def chroma_dir_name(self) -> str:

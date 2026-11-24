@@ -41,7 +41,7 @@ Optional flags
                      best K (default: off; the merged list of K to 1.5 K units is used)
     --quiet          Suppress per-sample progress output
     --feedback       Enable validation + retry feedback loop
-    --exec-feedback  Also retry on SQLite execution errors (implies --feedback)
+    --exec-feedback  Also retry on SQLite execution errors; BIRD: and on an empty result (implies --feedback)
     --compare        Run single-pass and feedback modes and print a comparison table
     --max-iter N     Total attempts per question in feedback mode (default: 4)
 
@@ -157,7 +157,7 @@ def parse_args() -> argparse.Namespace:
         dest="exec_feedback",
         help="In the feedback loop, also execute each predicted query on the "
              "sample's SQLite database and retry on execution errors "
-             "(implies --feedback).",
+             "(BIRD: also on an empty result; implies --feedback).",
     )
     parser.add_argument(
         "--compare",

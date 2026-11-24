@@ -181,6 +181,7 @@ class SchemaCatalog:
         """``ids``: the unit ids in ``SchemaManager.get_all_embedding_texts`` order: tables, columns, relations."""
         self.order = {unit_id: pos for pos, unit_id in enumerate(ids)}
         n_tables, n_columns = len(tables), len(columns)
+        self.units_of: Dict[str, List[str]] = {}                 # table -> its table unit and column units
         self.table_of: Dict[str, str] = {}                       # table / column unit id -> table
         self.column_id: Dict[Tuple[str, str], str] = {}          # (table, column) -> unit id
         self.key_columns: Dict[str, List[str]] = {}              # table -> key column names
@@ -189,11 +190,13 @@ class SchemaCatalog:
         for unit_id, table in zip(ids[:n_tables], tables):
             name = table.name.lower()
             self.table_of[unit_id] = name
+            self.units_of[name] = [unit_id]
             self.key_columns[name] = [c.lower() for c in table.key_columns]
         named: Dict[str, List[Tuple[str, str]]] = {}
         for unit_id, column in zip(ids[n_tables : n_tables + n_columns], columns):
             table, name = column.table_name.lower(), column.column_name.lower()
             self.table_of[unit_id] = table
+            self.units_of.setdefault(table, []).append(unit_id)
             self.column_id[(table, name)] = unit_id
             if _NAME_COLUMN.search(name):
                 named.setdefault(table, []).append((name, unit_id))
@@ -234,6 +237,18 @@ def complete(selected: Sequence[str], catalog: SchemaCatalog) -> List[str]:
     return sorted(extra - have, key=catalog.order.__getitem__)
 
 
+def expand(selected: Sequence[str], tables: Sequence[str], catalog: SchemaCatalog) -> List[str]:
+    """
+    Units to add to ``selected`` once a query over ``tables`` was rejected for a reason the schema
+    context can cause (a missing column, an empty result): every table and column unit of those
+    tables, then what ``complete`` adds for the enlarged set. Returned in schema order.
+    """
+    have = set(selected)
+    extra = {unit_id for table in tables for unit_id in catalog.units_of.get(table.lower(), [])} - have
+    extra.update(complete(list(have | extra), catalog))
+    return sorted(extra, key=catalog.order.__getitem__)
+
+
 def describe(rerank: bool) -> dict:
     """The settings that define the retrieval pipeline, for the run manifest."""
     info = {
@@ -243,6 +258,7 @@ def describe(rerank: bool) -> dict:
         "pool_max": f"ceil({POOL_FACTOR} * K)",
         "rerank": rerank,
         "completion": "key columns, name column, foreign keys between retrieved tables",
+        "expand_on_retry": "every column of the tables a rejected query names",
     }
     if rerank:
         info["reranker"] = model_label(reranker_source())

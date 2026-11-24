@@ -479,18 +479,22 @@ def write_brief(run_dir: str) -> int:
 def rebuild_user_prompts(record: dict, units: Dict[str, dict]) -> List[str]:
     """
     The user prompt of every attempt of ``record``, rebuilt from the question
-    (and its evidence, if it had any), the retrieved unit ids, schema_units.json
-    (``units``: this db's units by id) and the earlier attempts' SQL and
-    rejection messages.
+    (and its evidence, if it had any), the retrieved unit ids plus the units a
+    retry added (``units_added``), schema_units.json (``units``: this db's
+    units by id) and the earlier attempts' SQL and rejection messages.
     """
     from app.nl2sql_chain import NL2SQLChain
     from app.sql_validator import SQLFeedbackLoop, SQLValidator
 
     chain = NL2SQLChain.__new__(NL2SQLChain)   # the prompt builders do not use instance state
-    context = chain.build_schema_context([units[i]["text"] for i in record["retrieved"]])
+    unit_ids = list(record["retrieved"])
+    context = chain.build_schema_context([units[i]["text"] for i in unit_ids])
     loop = SQLFeedbackLoop(SQLValidator(), max_iterations=len(record["attempts"]) + 1)
     prompts = []
     for attempt in record["attempts"]:
+        if attempt.get("units_added"):
+            unit_ids += attempt["units_added"]
+            context = chain.build_schema_context([units[i]["text"] for i in unit_ids])
         prompts.append(chain.build_user_prompt(
             record["question"], context, loop.get_feedback_prompt(), record.get("evidence")
         ))

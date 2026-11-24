@@ -13,7 +13,9 @@ For each sample the runner:
 3. Instantiates NL2SQLChain with that collection
 4. Retrieves the Top-K schema units and generates SQL, either single-pass or
    with the feedback/retry loop (static validation, optionally plus the
-   predicted query's own SQLite execution error)
+   predicted query's own SQLite execution error and, for BIRD, an empty
+   result); a retry caused by a missing column or an empty result also
+   widens the schema context with every column of the tables the query named
 5. Evaluates Execution Accuracy
 6. Writes one complete record for the sample to the run log (see run_log.py)
    and, at the end, returns metrics recomputed from the log
@@ -34,7 +36,7 @@ import app.utilities as utils
 from app.utilities import LocalSTEmbeddingFunction
 from app.schema_manager import Column, Relation, SchemaManager, Table
 from app.nl2sql_chain import NL2SQLChain, get_llm_settings
-from app.sql_validator import SQLFeedbackLoop, SQLValidator
+from app.sql_validator import EMPTY_RESULT_ERROR, SQLFeedbackLoop, SQLValidator
 from app.system_prompt import SYSTEM_PROMPT_NL2SQL, SYSTEM_PROMPT_NL2SQL_FEEDBACK
 from app.evaluation.llm_io import LLMCall, call_llm, describe_exc, token_counts
 from app.evaluation.run_log import (
@@ -366,18 +368,25 @@ async def _predict_sql(
 # Inference WITH feedback/retry loop
 # ---------------------------------------------------------------------------
 
+def _carries_no_information(rows: Optional[list]) -> bool:
+    """No rows, or nothing but NULLs (an aggregate over no matching row)."""
+    return rows is not None and all(cell is None for row in rows for cell in row)
+
+
 def _check_sql(
-    chain: NL2SQLChain, sql: str, executor: Optional[SQLiteExecutor]
+    chain: NL2SQLChain, sql: str, executor: Optional[SQLiteExecutor], empty_result_is_error: bool = False
 ) -> Tuple[bool, Optional[str], Optional[str], Optional[QueryRun]]:
     """
     Static validation, then (when ``executor`` is given) the query's own
-    SQLite execution error. Only the predicted query is executed; the gold
-    SQL is never consulted, so this is a legitimate inference-time signal.
+    SQLite execution error and, with ``empty_result_is_error``, an empty
+    result. Only the predicted query is executed; the gold SQL is never
+    consulted, so this is a legitimate inference-time signal.
 
     Returns:
-        (ok, error, stage, execution) where ``stage`` is ``static`` or
-        ``execution`` for a rejected query, and ``execution`` is the run of
-        the query when it was executed.
+        (ok, error, stage, execution) where ``stage`` is ``static``,
+        ``execution`` or ``semantic`` (the query ran but its result is empty)
+        for a rejected query, and ``execution`` is the run of the query when
+        it was executed.
     """
     is_valid, error = chain.validator.validate_query(sql)
     if not is_valid:
@@ -388,8 +397,15 @@ def _check_sql(
         run = QueryRun(ok, exec_error, rows, (time.perf_counter() - started) * 1000)
         if not ok:
             return False, f"SQLite execution error: {exec_error}", "execution", run
+        if empty_result_is_error and _carries_no_information(rows):
+            return False, EMPTY_RESULT_ERROR, "semantic", run
         return True, None, None, run
     return True, None, None, None
+
+
+def _widens_context(stage: Optional[str], error: Optional[str]) -> bool:
+    """Is the rejection one that a fuller schema context can cure: an empty result or a missing column."""
+    return stage == "semantic" or (stage == "execution" and "no such column" in (error or "").lower())
 
 
 async def _predict_sql_with_feedback(
@@ -399,6 +415,7 @@ async def _predict_sql_with_feedback(
     k: int,
     max_iterations: int,
     executor: Optional[SQLiteExecutor] = None,
+    empty_result_is_error: bool = False,
 ) -> InferenceResult:
     """
     SQL inference with the ``SQLFeedbackLoop`` validation + retry loop,
@@ -410,6 +427,11 @@ async def _predict_sql_with_feedback(
     kept, so the loop can only change the answer by finding a query that
     passes the checks.
 
+    When the rejection is a missing column or an empty result, the schema
+    context of the next attempts also gets every column of the tables the
+    rejected query named (``NL2SQLChain.expand_context``); the units added
+    before an attempt are logged in its ``units_added``.
+
     Args:
         chain: NL2SQLChain bound to the sample's database.
         question: Natural-language question.
@@ -417,11 +439,15 @@ async def _predict_sql_with_feedback(
         k: Number of schema retrieval units to retrieve (Top-K).
         max_iterations: Total attempts (1 initial + max_iterations-1 retries).
         executor: If given, SQLite execution errors also trigger a retry.
+        empty_result_is_error: With ``executor``, a query whose result is empty
+            (no rows, or only NULLs) is rejected too (``Benchmark.empty_result_is_error``).
     """
     schema_context, retrieval, failed = _retrieve_context(chain, question, evidence, k)
     if failed:
         return failed
 
+    context_ids = list(retrieval["ids"])
+    units_added: List[str] = []          # added after the last attempt, not yet seen by the model
     feedback_loop = SQLFeedbackLoop(chain.validator, max_iterations=max_iterations)
     first_sql: Optional[str] = None
     attempts = 0
@@ -436,6 +462,9 @@ async def _predict_sql_with_feedback(
         )
         call = await call_llm(messages)
         attempt = _attempt_entry(messages, call)
+        if units_added:
+            attempt["units_added"] = units_added
+            units_added = []
         attempt_log.append(attempt)
         if call.error:
             error = f"LLM call failed on attempt {attempts}: {call.error}"
@@ -447,11 +476,16 @@ async def _predict_sql_with_feedback(
         if first_sql is None:
             first_sql = sql
 
-        ok, check_error, stage, execution = _check_sql(chain, sql, executor)
+        ok, check_error, stage, execution = _check_sql(chain, sql, executor, empty_result_is_error)
         attempt["rejected"] = None if ok else {"stage": stage, "error": check_error}
         if execution is not None and execution.ok and execution.rows is not None:
             attempt["exec_rows"] = len(execution.rows)
         feedback_loop.add_iteration(sql, check_error, success=ok)
+        if not ok and feedback_loop.should_continue() and _widens_context(stage, check_error):
+            units_added = chain.expand_context(context_ids, sql)
+            if units_added:
+                context_ids += units_added
+                schema_context = chain.context_of(context_ids)
         if ok:
             if attempts > 1:
                 notes.append(f"attempt {attempts} passed")
@@ -571,6 +605,7 @@ async def _process_sample(
     use_feedback_loop: bool,
     max_iterations: int,
     execution_feedback: bool,
+    empty_result_is_error: bool = False,
 ) -> Tuple[dict, InferenceResult]:
     """Infer and score one sample. Never raises for ordinary failures: they are the record."""
     record = _base_record(index, sample)
@@ -581,6 +616,7 @@ async def _process_sample(
             result = await _predict_sql_with_feedback(
                 chain, sample.question, sample.evidence, k=k, max_iterations=max_iterations,
                 executor=executor if execution_feedback else None,
+                empty_result_is_error=empty_result_is_error,
             )
         else:
             result = await _predict_sql(chain, sample.question, sample.evidence, k=k)
@@ -676,6 +712,8 @@ def _run_meta(
         "rerank": rerank,
         "max_attempts": max_iterations if use_feedback_loop else None,
         "execution_feedback": execution_feedback if use_feedback_loop else False,
+        # a retry on an empty result needs the execution signal, and only some benchmarks have it
+        "empty_result_retry": bool(use_feedback_loop and execution_feedback and benchmark.empty_result_is_error),
     }
     prompts = {
         "system_first": SYSTEM_PROMPT_NL2SQL,
@@ -698,7 +736,8 @@ def _run_meta(
     retrieval_info = {
         **rt.describe(rerank),
         "code_sha256": sha256_text("".join(
-            inspect.getsource(part) for part in (NL2SQLChain.retrieve, NL2SQLChain._retrieve_dense, rt)
+            inspect.getsource(part)
+            for part in (NL2SQLChain.retrieve, NL2SQLChain._retrieve_dense, NL2SQLChain.expand_context, rt)
         )),
     }
     # The scorer decides EX: a run must not be resumed after it has changed.
@@ -838,6 +877,8 @@ async def run_evaluation(
                   f"{meta['code'].get('commit')} + dirty=true")
         if use_feedback_loop:
             signal = "static validation + SQLite execution" if execution_feedback else "static validation"
+            if meta["config"]["empty_result_retry"]:
+                signal += " + empty result"
             print(f"feedback loop ({signal}), max {feedback_max_iterations} attempts, k={k}")
         else:
             print(f"single-pass inference, k={k}")
@@ -933,6 +974,7 @@ async def run_evaluation(
             record, result = await _process_sample(
                 idx, sample, chain, executor, k=k, use_feedback_loop=use_feedback_loop,
                 max_iterations=feedback_max_iterations, execution_feedback=execution_feedback,
+                empty_result_is_error=benchmark.empty_result_is_error,
             )
             run_log.append(record)
             latest[idx] = record

@@ -11,6 +11,12 @@ import re
 import sqlparse
 from typing import Dict, List, Tuple, Optional
 
+EMPTY_RESULT_ERROR = "The query ran but returned no rows or only NULL values"
+"""The rejection message of a query whose result carries no information (see ``runner._check_sql``)."""
+
+_TABLE_PATTERN = re.compile(r'\b(?:from|join)\s+["`\[]?([a-z_][a-z0-9_]*)')
+_CTE_PATTERN = re.compile(r'(?:\bwith(?:\s+recursive)?|,)\s+([a-z_][a-z0-9_]*)\s+as\s*\(')
+
 
 class SQLValidator:
     """Validates SQL queries against schema metadata and syntax rules"""
@@ -99,25 +105,23 @@ class SQLValidator:
             # Skip validation if no schema manager
             return True, None
         
-        # Blank out string literals so words inside them ('... from X') are ignored
-        sql_lower = re.sub(r"'(?:[^']|'')*'", "''", sql_query.lower())
-
-        # CTE names are legal FROM/JOIN targets even though they are not tables
-        cte_names = set(re.findall(r'(?:\bwith(?:\s+recursive)?|,)\s+([a-z_][a-z0-9_]*)\s+as\s*\(', sql_lower))
-
-        # Extract table names (basic pattern matching)
-        # Look for FROM and JOIN clauses
-        table_pattern = r'\b(?:from|join)\s+["`\[]?([a-z_][a-z0-9_]*)'
-        found_tables = re.findall(table_pattern, sql_lower)
-
-        # Check if tables exist
-        for table in found_tables:
-            if table not in self.valid_tables and table not in cte_names:
+        # Tables named in FROM/JOIN clauses (basic pattern matching)
+        for table in self.table_names(sql_query):
+            if table not in self.valid_tables:
                 return False, f"Table '{table}' does not exist in schema"
 
         # Column names are not checked here; use execution feedback
         # (SQLiteExecutor) to catch "no such column" errors.
         return True, None
+
+    @staticmethod
+    def table_names(sql_query: str) -> List[str]:
+        """Lower-cased names after FROM / JOIN, in order; CTE names (not tables) are left out."""
+        # Blank out string literals so words inside them ('... from X') are ignored
+        sql_lower = re.sub(r"'(?:[^']|'')*'", "''", sql_query.lower())
+        # CTE names are legal FROM/JOIN targets even though they are not tables
+        cte_names = set(_CTE_PATTERN.findall(sql_lower))
+        return [t for t in _TABLE_PATTERN.findall(sql_lower) if t not in cte_names]
     
     def validate_query(self, sql_query: str) -> Tuple[bool, Optional[str]]:
         """
@@ -156,7 +160,10 @@ class SQLValidator:
 
         # Parse common error types (static validator and SQLite messages)
         error_lower = error_message.lower()
-        if any(s in error_lower for s in ("does not exist", "no such table", "no such column")):
+        if EMPTY_RESULT_ERROR.lower() in error_lower:
+            feedback += "- The correct answer is not empty: check that each filter value matches how the data is stored (spelling, case, format), using the values given in the question and the External Knowledge\n"
+            feedback += "- Check the JOIN columns and that no condition is too strict\n"
+        elif any(s in error_lower for s in ("does not exist", "no such table", "no such column")):
             feedback += "- Check table and column names\n"
             feedback += "- Verify spelling matches schema exactly\n"
         elif "ambiguous" in error_lower:
