@@ -483,7 +483,8 @@ async def _prepare():
     if args.limit:
         print(f"Limiting evaluation to first {args.limit} samples.")
     print(f"Retrieval: dense Top-{args.k} + BM25 Top-{args.k} -> RRF"
-          + (" -> reranker -> Top-K." if args.rerank else " (K to 1.5 K schema units per question)."))
+          + (" -> reranker -> Top-K" if args.rerank else " (K to 1.5 K schema units)")
+          + ", then completion (keys, joins, name column).")
     if args.rerank:
         # Load the reranker now: a missing model should stop the run before it creates a log or calls the LLM.
         try:

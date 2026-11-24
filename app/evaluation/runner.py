@@ -255,7 +255,7 @@ def _retrieve_context(chain: NL2SQLChain, question: str, evidence: Optional[str]
         # dense distance (None: the unit was not in the dense Top-K), reranker score,
         # and the candidate lists of each stage
         "distances": [None if u["distance"] is None else round(u["distance"], 4) for u in units],
-        "scores": [round(u["score"], 4) for u in units] if chain.rerank else None,
+        "scores": [None if u["score"] is None else round(u["score"], 4) for u in units] if chain.rerank else None,
         "stages": found["stages"],
     }
     if not units:
@@ -842,7 +842,7 @@ async def run_evaluation(
         else:
             print(f"single-pass inference, k={k}")
         print("retrieval: hybrid (dense + BM25 -> RRF"
-              + (f" -> reranker {meta['retrieval']['reranker']})" if rerank else ")"))
+              + (f" -> reranker {meta['retrieval']['reranker']}" if rerank else "") + ") + completion")
         llm = meta["llm"]
         print(f"LLM: {llm['provider']} / {llm['model']}  temperature={llm['temperature']}"
               + (f"  reasoning_effort={llm['reasoning_effort']}" if llm["provider"] == "openai" else ""))

@@ -3,10 +3,12 @@ Hybrid schema retrieval.
 
     dense Top-K  +  BM25 Top-K  ->  merge (RRF), at most ceil(POOL_FACTOR * K) units
                                  ->  [optional: reranker  ->  Top-K]
+                                 ->  completion (keys, joins, name column)
 
 Without the reranker the merged list is the result: between K and ceil(POOL_FACTOR * K)
 units (when the merge is longer than the cap, RRF's own order decides which are kept).
 With the reranker the merged list goes to the cross-encoder and its best K are kept.
+Completion then appends the units that a query over the retrieved tables almost always needs.
 
 * dense: the Chroma query of ``NL2SQLChain`` (embedding similarity);
 * BM25: Okapi BM25 over the text of the same retrieval units (identifier words
@@ -14,7 +16,8 @@ With the reranker the merged list goes to the cross-encoder and its best K are k
   matches "player");
 * RRF: reciprocal rank fusion of the two rankings;
 * reranker (``--rerank`` only): a cross-encoder (default ``BAAI/bge-reranker-v2-m3``,
-  loaded from the local HuggingFace cache, never downloaded) scores (query, unit text) pairs.
+  loaded from the local HuggingFace cache, never downloaded) scores (query, unit text) pairs;
+* completion: see ``complete``.
 
 Everything here is pure ranking code except ``get_reranker``; the orchestration
 (which collection, which texts) is ``NL2SQLChain.retrieve``.
@@ -164,6 +167,73 @@ def rerank(query: str, texts: Sequence[str]) -> List[float]:
     return [float(s) for s in scores]
 
 
+# ---------------------------------------------------------------------------
+# Completion
+# ---------------------------------------------------------------------------
+
+_NAME_COLUMN = re.compile(r"(^|_)(name|title)$|^(name|title)(_|$)|name$", re.I)
+
+
+class SchemaCatalog:
+    """Which unit stands for which table, column or relation of one database (names lower-cased)."""
+
+    def __init__(self, ids: Sequence[str], tables, columns, relations):
+        """``ids``: the unit ids in ``SchemaManager.get_all_embedding_texts`` order: tables, columns, relations."""
+        self.order = {unit_id: pos for pos, unit_id in enumerate(ids)}
+        n_tables, n_columns = len(tables), len(columns)
+        self.table_of: Dict[str, str] = {}                       # table / column unit id -> table
+        self.column_id: Dict[Tuple[str, str], str] = {}          # (table, column) -> unit id
+        self.key_columns: Dict[str, List[str]] = {}              # table -> key column names
+        self.name_column: Dict[str, str] = {}                    # table -> its name/title column unit id
+        self.relations: List[Tuple[str, str, str, str, str]] = []
+        for unit_id, table in zip(ids[:n_tables], tables):
+            name = table.name.lower()
+            self.table_of[unit_id] = name
+            self.key_columns[name] = [c.lower() for c in table.key_columns]
+        named: Dict[str, List[Tuple[str, str]]] = {}
+        for unit_id, column in zip(ids[n_tables : n_tables + n_columns], columns):
+            table, name = column.table_name.lower(), column.column_name.lower()
+            self.table_of[unit_id] = table
+            self.column_id[(table, name)] = unit_id
+            if _NAME_COLUMN.search(name):
+                named.setdefault(table, []).append((name, unit_id))
+        for table, candidates in named.items():
+            exact = [c for c in candidates if c[0] in ("name", "title")]
+            self.name_column[table] = (exact or candidates)[0][1]
+        for unit_id, rel in zip(ids[n_tables + n_columns :], relations):
+            self.relations.append((unit_id, rel.source_table.lower(), rel.source_column.lower(),
+                                   rel.target_table.lower(), rel.target_column.lower()))
+
+    @classmethod
+    def from_manager(cls, manager) -> "SchemaCatalog":
+        ids, _ = manager.get_all_embedding_texts()
+        return cls(ids, manager.tables, manager.columns, manager.relations)
+
+
+def complete(selected: Sequence[str], catalog: SchemaCatalog) -> List[str]:
+    """
+    Units that are not in ``selected`` but that a query over its tables almost always needs.
+
+    A table is in play when ``selected`` holds its table unit or one of its column units. For
+    each table in play: its key columns (the primary key), and one name column (``name``,
+    ``title``, ``*_name``). For each relation between two tables in play: its relation unit
+    and the two foreign-key columns. Returned in schema order.
+    """
+    have = set(selected)
+    tables = {catalog.table_of[unit_id] for unit_id in have if unit_id in catalog.table_of}
+    extra = set()
+    for table in tables:
+        for column in catalog.key_columns.get(table, []):
+            extra.add(catalog.column_id.get((table, column)))
+        extra.add(catalog.name_column.get(table))
+    for unit_id, source, source_column, target, target_column in catalog.relations:
+        if source in tables and target in tables:
+            extra.update([unit_id, catalog.column_id.get((source, source_column)),
+                          catalog.column_id.get((target, target_column))])
+    extra.discard(None)
+    return sorted(extra - have, key=catalog.order.__getitem__)
+
+
 def describe(rerank: bool) -> dict:
     """The settings that define the retrieval pipeline, for the run manifest."""
     info = {
@@ -172,6 +242,7 @@ def describe(rerank: bool) -> dict:
         "rrf_c": RRF_C,
         "pool_max": f"ceil({POOL_FACTOR} * K)",
         "rerank": rerank,
+        "completion": "key columns, name column, foreign keys between retrieved tables",
     }
     if rerank:
         info["reranker"] = model_label(reranker_source())

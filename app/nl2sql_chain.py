@@ -161,6 +161,7 @@ class NL2SQLChain:
         self.collection_name = collection_name
         self.rerank = rerank
         self._bm25: Optional[rt.BM25Index] = None
+        self._catalog: Optional[rt.SchemaCatalog] = None
         self._unit_texts: Dict[str, str] = {}
         self.validator = SQLValidator(schema_manager)
 
@@ -188,18 +189,21 @@ class NL2SQLChain:
 
         dense Top-K + BM25 Top-K -> RRF merge, at most ceil(1.5 K) units in RRF order.
         Without ``rerank`` that merged list is the result (K to 1.5 K units); with it,
-        the cross-encoder reorders the merged list and the best K are kept.
+        the cross-encoder reorders the merged list and the best K are kept. Completion
+        (``rt.complete``) then appends the key columns, name column and foreign keys of the
+        tables that are in play, so the prompt holds more than K units.
 
         Args:
             question: The retrieval query (the question, plus its external knowledge if any)
             n_results: K
 
         Returns:
-            {"units": [{"rank", "id", "text", "distance", "score"}, ...] best first,
-             "stages": {"dense": ids, "bm25": ids, "pool": ids}}.
+            {"units": [{"rank", "id", "text", "distance", "score"}, ...] best first, the
+             completion units last,
+             "stages": {"dense": ids, "bm25": ids, "pool": ids, "added": ids}}.
             ``distance`` is the dense distance (None for a unit the dense Top-K did not
-            contain), ``score`` the reranker score (None without ``rerank``), ``pool``
-            the merged list.
+            contain), ``score`` the reranker score (None without ``rerank`` and for the
+            completion units), ``pool`` the merged list, ``added`` the completion units.
         """
         dense = self._retrieve_dense(question, n_results)
         index = self._bm25_index()
@@ -207,26 +211,31 @@ class NL2SQLChain:
         bm25_ids = [unit_id for unit_id, _ in index.top(question, n_results)]
         pool = rt.rrf_fuse([dense_ids, bm25_ids])[: rt.pool_size(n_results)]
         if self.rerank:
-            scores = rt.rerank(question, [self._unit_texts[unit_id] for unit_id in pool])
-            order = sorted(range(len(pool)), key=lambda j: -scores[j])[:n_results]   # stable: ties keep RRF order
+            pool_scores = rt.rerank(question, [self._unit_texts[unit_id] for unit_id in pool])
+            order = sorted(range(len(pool)), key=lambda j: -pool_scores[j])[:n_results]   # stable: ties keep RRF order
         else:
-            scores = [None] * len(pool)
+            pool_scores = [None] * len(pool)
             order = range(len(pool))
+        ids = [pool[j] for j in order]
+        scores = [pool_scores[j] for j in order]
+        added = rt.complete(ids, self._catalog)
         distance = {u["id"]: u["distance"] for u in dense}
         units = [
             {
-                "rank": rank, "id": pool[j], "text": self._unit_texts[pool[j]],
-                "distance": distance.get(pool[j]), "score": scores[j],
+                "rank": rank, "id": unit_id, "text": self._unit_texts[unit_id],
+                "distance": distance.get(unit_id), "score": score,
             }
-            for rank, j in enumerate(order, start=1)
+            for rank, (unit_id, score) in enumerate(zip(ids + added, scores + [None] * len(added)), start=1)
         ]
-        return {"units": units, "stages": {"dense": dense_ids, "bm25": bm25_ids, "pool": pool}}
+        stages = {"dense": dense_ids, "bm25": bm25_ids, "pool": pool, "added": added}
+        return {"units": units, "stages": stages}
 
     def _bm25_index(self) -> rt.BM25Index:
         """BM25 over the units of this database (the texts the collection holds), built once."""
         if self._bm25 is None:
             ids, documents = self.schema_manager.get_all_embedding_texts()
             self._unit_texts = dict(zip(ids, documents))
+            self._catalog = rt.SchemaCatalog.from_manager(self.schema_manager)
             self._bm25 = rt.BM25Index(ids, documents)
         return self._bm25
 

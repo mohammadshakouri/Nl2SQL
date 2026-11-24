@@ -809,6 +809,8 @@ def analyse(
     cols_total = {c: 0 for c in ks}
     cols_hit = {c: 0 for c in ks}
     tab_total = tab_hit = 0
+    prompt_cols_total = prompt_cols_hit = 0
+    prompt_units: List[int] = []
     unmapped = 0
     star_golds = 0
     for i in ids:
@@ -839,9 +841,13 @@ def analyse(
         for c in ks:
             cols_total[c] += len(wanted)
             cols_hit[c] += sum(1 for r, _ in wanted if r <= c)
+        prompt_cols_total += len(wanted)
+        prompt_cols_hit += sum(1 for r, _ in wanted if r < 10**6)
+        prompt_units.append(len(record["retrieved"]))
         retrieval[i] = {
             "all_columns": {c: all(r <= c for r, _ in wanted) for c in ks},
-            "complete": all(r <= k for r, _ in wanted) and covered == len(tabs),
+            # in the prompt, at any rank: a hybrid run keeps more than K units (pool, completion)
+            "complete": all(r < 10**6 for r, _ in wanted) and covered == len(tabs),
             "n_units": index["n"],
             "n_gold_columns": len(wanted),
         }
@@ -857,6 +863,9 @@ def analyse(
     out["retrieval"] = {
         "k": k,
         "column_recall_pct": {str(c): _pct(cols_hit[c], cols_total[c]) for c in ks},
+        # every unit that reached the prompt (K to 1.5 K from the hybrid pool, plus completion)
+        "column_recall_in_prompt_pct": _pct(prompt_cols_hit, prompt_cols_total),
+        "avg_units_in_prompt": round(statistics.mean(prompt_units), 1),
         "samples_with_all_gold_columns_pct": {
             str(c): _pct(sum(retrieval[i]["all_columns"][c] for i in ids), n) for c in ks},
         "table_coverage_pct": _pct(tab_hit, tab_total),
@@ -982,6 +991,8 @@ def format_report(a: dict) -> str:
     r = a["retrieval"]
     w(f"\nRetrieval (K={r['k']}): column recall by cut-off = {r['column_recall_pct']}, "
       f"all gold columns present = {r['samples_with_all_gold_columns_pct']}, tables {r['table_coverage_pct']}%")
+    w(f"  in the prompt (all {r['avg_units_in_prompt']} units on average): "
+      f"column recall {r['column_recall_in_prompt_pct']}%")
     if r["column_recall_by_role_pct"]:
         w(f"  by role: {r['column_recall_by_role_pct']}")
     if r["gold_with_star_projection"]:
