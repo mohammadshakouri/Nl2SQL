@@ -28,7 +28,7 @@ with different ones):
                    schema) instead of the generic "Column x of table y".
 
 ``dev_tied_append.json`` (BIRD's tied-answer variants of 42 gold queries) is not
-used: it comes from an older dev set (3 of its questions have since been reworded
+used: it comes from an older dev set (5 of its questions have since been reworded
 in dev.json) and BIRD's own evaluation scores against dev.json.
 """
 
@@ -71,7 +71,7 @@ class _Spec:
 
 _SPECS: Dict[str, _Spec] = {
     "spider": _Spec("Spider 1", "Spider", "database", "query", "spider", {}),
-    # Every BIRD dev gold answer has rows (0 of 1,532 executable gold queries is empty), while
+    # Every BIRD dev gold answer has rows (0 of 1,531 executable gold queries is empty), while
     # Spider has questions whose right answer is empty ("airports without flights").
     "bird": _Spec(
         "BIRD", "BIRD", "dev_databases", "SQL", "bird",
