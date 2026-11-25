@@ -1,0 +1,235 @@
+{
+  "schema_version": 2,
+  "run_id": "20261124T132741Z_bird_feedback_gpt-6-luna_k30_all_after_value_grounding",
+  "created_at": "2026-11-24T13:27:42.973+00:00",
+  "sessions": [
+    {
+      "session": 1,
+      "started_at": "2026-11-24T13:27:42.973+00:00",
+      "ended_at": "2026-11-24T14:51:56.856+00:00",
+      "status": "complete",
+      "resumed": false,
+      "argv": [
+        "cli_eval.py",
+        "--dataset",
+        "bird",
+        "--k",
+        "30",
+        "--exec-feedback",
+        "--descriptions",
+        "--tag",
+        "all_after_value_grounding"
+      ],
+      "limit": null,
+      "code": {
+        "commit": "dff9ff0bc176bea37f4bafafa0dc86eaac623737",
+        "branch": "main",
+        "dirty": false
+      },
+      "environment": {
+        "python": "3.12.10",
+        "platform": "Windows-11-10.0.26300-SP0",
+        "sqlite": "3.49.1",
+        "packages": {
+          "openai": "2.14.0",
+          "ollama": "0.6.1",
+          "chromadb": "1.3.7",
+          "sentence-transformers": "5.2.0",
+          "sqlparse": "0.5.3",
+          "numpy": "2.3.5"
+        }
+      },
+      "wall_seconds": 5053.9
+    }
+  ],
+  "config": {
+    "dataset": "bird",
+    "dataset_options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "mode": "feedback",
+    "k": 30,
+    "rerank": false,
+    "max_attempts": 4,
+    "execution_feedback": true,
+    "empty_result_retry": true
+  },
+  "llm": {
+    "provider": "openai",
+    "model": "gpt-6-luna",
+    "temperature": 1,
+    "host": "api.openai.com (SDK default)",
+    "timeout_s": 120.0,
+    "max_retries": 5,
+    "reasoning_effort": "none",
+    "stream": true,
+    "api_key_set": true
+  },
+  "embedding": {
+    "provider": "local",
+    "model": "57c266a740f537b4dc058e1b0cda161fd15afa75",
+    "function": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+  },
+  "retrieval": {
+    "dense": "Top-K",
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75,
+      "candidates": "K"
+    },
+    "rrf_c": 60,
+    "pool_max": "ceil(1.5 * K)",
+    "rerank": false,
+    "completion": "key columns, name column, foreign keys between retrieved tables",
+    "expand_on_retry": "every column of the tables a rejected query names",
+    "code_sha256": "6d5c11f7d63ed1e59aa8ef7602f51d24c86e59b1d1ddc2c3952f8e81da2ebb3f"
+  },
+  "prompts": {
+    "system_first": "Write one SQLite query that answers the question, using only the tables, columns and relations of the Schema: never invent any, and join along the relations.\n\nSQLite rules:\n- LIMIT n for row limits (no TOP, no FETCH FIRST); no ANY/ALL/ILIKE.\n- Dates are text: strftime('%Y', c), date(), julianday() (no EXTRACT, YEAR(), DATEDIFF); substr(x, i, n) (no SUBSTRING ... FROM); || concatenates.\n- Integer division truncates: CAST(x AS REAL) / y (CAST AS DECIMAL does not help); ROUND(x, n) to round.\n- Strings in single quotes, compared case-sensitively by =: copy a value listed under Values exactly; quote names with spaces or symbols as \"name\".\n\nResult columns: exactly what the question asks for, in its order, one column per item (a full name = first-name and last-name columns); no extra id/count/helper columns; no SELECT * unless every column is asked for.\n\nOutput only the SQL, no explanation.\n",
+    "system_feedback": "Your previous SQLite query failed or was rejected: fix it using the error you are given. Check table and column spellings against the Schema and the JOIN conditions, and qualify ambiguous columns with aliases.\n\nSQLite rules:\n- LIMIT n for row limits (no TOP, no FETCH FIRST); no ANY/ALL/ILIKE.\n- Dates are text: strftime('%Y', c), date(), julianday() (no EXTRACT, YEAR(), DATEDIFF); substr(x, i, n) (no SUBSTRING ... FROM); || concatenates.\n- Integer division truncates: CAST(x AS REAL) / y (CAST AS DECIMAL does not help); ROUND(x, n) to round.\n- Strings in single quotes, compared case-sensitively by =: copy a value listed under Values exactly; quote names with spaces or symbols as \"name\".\n\nResult columns: exactly what the question asks for, in its order, one column per item (a full name = first-name and last-name columns); no extra id/count/helper columns; no SELECT * unless every column is asked for.\n\nOutput only the corrected SQL, no explanation.\n",
+    "system_sha256": "46ce0172c3486e15b001cb44cf04f164703c55b629224be412e531b1f171aa1e",
+    "user_builder_sha256": "d9a0017b5c37989e12b1b42550eab58a914a3dfa5d45d1982972a2365d46d276"
+  },
+  "retrieval_units": {
+    "templates_sha256": "65374fa57c2395e67a6331f70eceae4e0cbf7a15cd0222bf1cd22353ffb5cabe",
+    "category_values": {
+      "max_distinct": 12,
+      "max_chars": 30
+    }
+  },
+  "scorer": {
+    "sha256": "996aa00aea94779f57f2a6d0db2149c7cc3885e9cf637fe1c19f15ac1cf9e50a"
+  },
+  "dataset": {
+    "name": "bird",
+    "n_samples": 1534,
+    "scoring": "bird",
+    "options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "files": {
+      "dev.json": "ffd8018378ddb1a8794753e0a31cfc81862ff7318a5184c22f3dc4ce03a03feb",
+      "database_description/*.csv": "8905fea01b3b4a8e548e99764fe00b62b01ab0fab6af5bc75e3add0ef43dd5db"
+    }
+  },
+  "code": {
+    "commit": "dff9ff0bc176bea37f4bafafa0dc86eaac623737",
+    "branch": "main",
+    "dirty": false
+  },
+  "environment": {
+    "python": "3.12.10",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "sqlite": "3.49.1",
+    "packages": {
+      "openai": "2.14.0",
+      "ollama": "0.6.1",
+      "chromadb": "1.3.7",
+      "sentence-transformers": "5.2.0",
+      "sqlparse": "0.5.3",
+      "numpy": "2.3.5"
+    }
+  },
+  "fingerprint": {
+    "dataset": "bird",
+    "dataset_options": {
+      "evidence": true,
+      "descriptions": true
+    },
+    "mode": "feedback",
+    "k": 30,
+    "rerank": false,
+    "max_attempts": 4,
+    "execution_feedback": true,
+    "empty_result_retry": true,
+    "llm": {
+      "provider": "openai",
+      "model": "gpt-6-luna",
+      "temperature": 1,
+      "reasoning_effort": "none"
+    },
+    "embedding": {
+      "provider": "local",
+      "model": "57c266a740f537b4dc058e1b0cda161fd15afa75"
+    },
+    "retrieval_pipeline": {
+      "dense": "Top-K",
+      "bm25": {
+        "k1": 1.5,
+        "b": 0.75,
+        "candidates": "K"
+      },
+      "rrf_c": 60,
+      "pool_max": "ceil(1.5 * K)",
+      "rerank": false,
+      "completion": "key columns, name column, foreign keys between retrieved tables",
+      "expand_on_retry": "every column of the tables a rejected query names",
+      "code_sha256": "6d5c11f7d63ed1e59aa8ef7602f51d24c86e59b1d1ddc2c3952f8e81da2ebb3f"
+    },
+    "prompts_sha256": "46ce0172c3486e15b001cb44cf04f164703c55b629224be412e531b1f171aa1e",
+    "user_builder_sha256": "d9a0017b5c37989e12b1b42550eab58a914a3dfa5d45d1982972a2365d46d276",
+    "unit_templates_sha256": "65374fa57c2395e67a6331f70eceae4e0cbf7a15cd0222bf1cd22353ffb5cabe",
+    "scorer_sha256": "996aa00aea94779f57f2a6d0db2149c7cc3885e9cf637fe1c19f15ac1cf9e50a",
+    "dataset_files": {
+      "dev.json": "ffd8018378ddb1a8794753e0a31cfc81862ff7318a5184c22f3dc4ce03a03feb",
+      "database_description/*.csv": "8905fea01b3b4a8e548e99764fe00b62b01ab0fab6af5bc75e3add0ef43dd5db"
+    }
+  },
+  "status": "complete",
+  "progress": {
+    "done": 1525,
+    "of": 1534,
+    "updated_at": "2026-11-24T14:50:52.371+00:00"
+  },
+  "results": {
+    "metrics": {
+      "total": 1534,
+      "execution_accuracy": 64.47,
+      "by_difficulty": {
+        "simple": {
+          "total": 860,
+          "execution_accuracy": 73.72
+        },
+        "moderate": {
+          "total": 443,
+          "execution_accuracy": 63.88
+        },
+        "challenging": {
+          "total": 231,
+          "execution_accuracy": 31.17
+        }
+      },
+      "mode": "feedback",
+      "k": 30,
+      "skipped": 0,
+      "inference_failures": 0,
+      "failure_reasons": {},
+      "llm_calls": 1736,
+      "ex_column_reordered": 0,
+      "max_attempts": 4,
+      "execution_feedback": true,
+      "feedback": {
+        "retried": 124,
+        "recovered": 98,
+        "exhausted": 26,
+        "first_attempt_execution_accuracy": 60.95
+      }
+    },
+    "tokens": {
+      "prompt_tokens": 3321993,
+      "completion_tokens": 125415,
+      "total_tokens": 3447408,
+      "reasoning_tokens": 0,
+      "cached_tokens": 0,
+      "samples_without_usage": 0
+    },
+    "status_counts": {
+      "scored": 1534
+    },
+    "n_samples_logged": 1534,
+    "of": 1534,
+    "finished_at": "2026-11-24T14:51:56.856+00:00"
+  }
+}
